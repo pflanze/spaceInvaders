@@ -28,7 +28,7 @@
 #define TOPLIMIT 6
 
 //Ship collision line
-#define SHIPCOLISIONLINE LOWERLIMIT-PLAYERH+2
+#define SHIPCOLLISIONLINE LOWERLIMIT-PLAYERH+2
 
 //ship midPoints
 #define SHIP_MIDP ((PLAYERW>>1)-1)
@@ -76,7 +76,7 @@ struct State {
 
 typedef struct State STyp;
 
-//----------------------------------------------------------Funtion definition------------------------------------------------
+//----------------------------------------------------------Function definition------------------------------------------------
 void Player_Move(void);
 void LaserInit_ship(void);
 void ShipInit(void);

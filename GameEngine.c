@@ -453,6 +453,7 @@ void MasterDraw(struct State *st_ptr){
 	if(st_ptr->life){
 		//noidea...
 		//if I tried to have "frame = FrameCount" insde the if... and have a singgle line for the nokia... everythink start blinking like crazy
+		//However I did not try to access FrameCount by reference
 		if(st_ptr->id == ID_ENEMY){		//only enemies need change between frames
 			Nokia5110_PrintBMP(st_ptr->x, st_ptr->y, st_ptr->image[FrameCount], 0); //frame is always 0, except for enemies
 		}
@@ -688,7 +689,7 @@ void EnemyLaserCollisions(void){
 	if(Ship.life){
 		for(i=0;i<MAXLASERS;i++){
 			//check agains the ship
-			if(Laser_enemy[i].life && (Laser_enemy[i].y > SHIPCOLISIONLINE)){
+			if(Laser_enemy[i].life && (Laser_enemy[i].y > SHIPCOLLISIONLINE)){
 				signed char collision = ( Ship.x + SHIP_MIDP - Laser_enemy[i].x);
 				collision = absValue(collision);
 				if(collision <= SHIP_MIDP){
@@ -846,17 +847,10 @@ void FirstLast(unsigned char row, unsigned char column){
 // assumes: na
 #if DRAW_ENEMIES
 	unsigned char LastL(void){
-		unsigned char found = 0;
-		
-		//calculates the first enemy line
-		while (found == 0){								
-			if(Estat_row[lastLine].Epr == 0){
-				lastLine--;
-			}
-			else{
-				found = 1;
-			}
-		}
+
+	while(Estat_row[lastLine].Epr == 0){
+		lastLine--;
+	}
 		return lastLine;
 	}
 #endif
@@ -924,17 +918,17 @@ signed char absValue(signed char value){
 	}
 	return value;
 }
-//----------------------------------------------------------TODOS--------------------------------------------------
+//---------------------------------------------------------------TODOS--------------------------------------------------
 /*
 changes:
 	*Enemy random.. decrease range as they get killed
 	*add sound
 	*MAX_ENEMY_PR-1
-	*optimize code: 
-		-create functions and pass value by reference
 	*Try to make it scalable
-	*delete "legacy funcions"
 	*defaults and init may be duplicated
+	*Pass by reference:
+- Before changing anything: check addresses on watch window
+		-EnemyscanX, FirstLast, EnemyscanY, Enemy_Move, Convert2Distance, absValue
 
 note!!!
 	*I created a temporal function to test passing by reference 2D-array of structs
