@@ -2,3 +2,5 @@
 
 
 void Red(void);
+
+void Green(void);
