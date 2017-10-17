@@ -451,7 +451,6 @@ void MasterDraw(struct State *st_ptr){
 		}
 	}
 	if(st_ptr->life){
-		//noidea...
 		//if I tried to have "frame = FrameCount" insde the if... and have a singgle line for the nokia... everythink start blinking like crazy
 		//However I did not try to access FrameCount by reference
 		if(st_ptr->id == ID_ENEMY){		//only enemies need change between frames
@@ -579,7 +578,7 @@ void CheckingCollisions(void){
 	}
 }
 //********PlayerLaserCollisions*****************
-//Checks if the laser have a hit to an enemy
+//Checks if the laser have a hit to an enemy (for every laser)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -690,9 +689,9 @@ void EnemyLaserCollisions(void){
 		for(i=0;i<MAXLASERS;i++){
 			//check agains the ship
 			if(Laser_enemy[i].life && (Laser_enemy[i].y > SHIPCOLLISIONLINE)){
-				signed char collision = ( Ship.x + SHIP_MIDP - Laser_enemy[i].x);
+				signed char collision = ( Ship.x + SHIPMIDDLE - Laser_enemy[i].x);
 				collision = absValue(collision);
-				if(collision <= SHIP_MIDP){
+				if(collision <= SHIPMIDDLE){
 					Laser_enemy[i].life = 0;
 					Laser_enemy[i].JK = 0;
 					Ship.life = 0;
@@ -727,7 +726,6 @@ void LaserCollision(void){
 							Laser_enemy[lasernumEnemy].life = 0;
 							Laser_enemy[lasernumEnemy].JK = 1;
 							Laser_ship[lasernumShip].life = 0;
-							Laser_ship[lasernumShip].JK = 1;					//no needed, added for troubleshooting
 						}
 					}
 				}
@@ -808,8 +806,8 @@ void FirstLast(unsigned char row, unsigned char column){
 					}
 				}
 				
-				if((lastCheck == 0)&&(Enemy[row][MAX_ENEMY_PR-1-column].life)){		//counts backwards
-					Estat_row[row].Lep = MAX_ENEMY_PR-1-column;
+				if((lastCheck == 0)&&(Enemy[row][REAL_MAX_EPR-column].life)){		//counts backwards
+					Estat_row[row].Lep = REAL_MAX_EPR-column;
 					lastCheck = 1;
 				}	
 				
@@ -922,12 +920,12 @@ signed char absValue(signed char value){
 /*
 changes:
 	*Enemy random.. decrease range as they get killed
-	*add sound
-	*MAX_ENEMY_PR-1
+	*add sound:
+		-lab13
 	*Try to make it scalable
 	*defaults and init may be duplicated
 	*Pass by reference:
-- Before changing anything: check addresses on watch window
+		- Before changing anything: check addresses on watch window
 		-EnemyscanX, FirstLast, EnemyscanY, Enemy_Move, Convert2Distance, absValue
 
 note!!!

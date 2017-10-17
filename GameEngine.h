@@ -15,6 +15,7 @@
 //game max
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
+#define REAL_MAX_EPR (MAX_ENEMY_PR-1)
 #define MAXROWS	1
 
 //collision offset
@@ -28,10 +29,11 @@
 #define TOPLIMIT 6
 
 //Ship collision line
+
 #define SHIPCOLLISIONLINE LOWERLIMIT-PLAYERH+2
 
 //ship midPoints
-#define SHIP_MIDP ((PLAYERW>>1)-1)
+#define SHIPMIDDLE	((PLAYERW>>1)-1)
 
 //BonusShip
 #define BONUS_C_LINE TOPLIMIT+ENEMYBONUSH
@@ -47,10 +49,10 @@
 #define E_LASER_OFFY 5
 
 //Game over status
-#define INGAME	0
-#define LOOSE		1
-#define WIN			2
-#define STANDBY	3
+#define INGAME		0
+#define LOOSE			1
+#define WIN				2
+#define STANDBY		3
 
 //Objecdt IDs
 #define ID_SHIP			0
@@ -58,8 +60,6 @@
 #define ID_BONUS		2
 #define ID_E_LASER	3
 #define ID_S_LASER	4
-
-
 
 //----------------------------------------------------------Structs------------------------------------------------
 
@@ -69,8 +69,8 @@ struct State {
 	unsigned char x;      // x coordinate
 	unsigned char y;      // y coordinate
 	const unsigned char *image[2]; // two pointers to images
-	unsigned char life :1;            // 0=dead, 1=alive
-	unsigned char JK :1;	//status for image replacement, represents "Just Killed"				, needs updating
+	unsigned char life;            // 0=dead, 1=alive
+	unsigned char JK;	//status for image replacement, represents "Just Killed"				, needs updating
 	unsigned char id;
 };         
 
@@ -82,7 +82,6 @@ void LaserInit_ship(void);
 void ShipInit(void);
 void MoveObjects(void);
 void Draw(void);
-unsigned long Convert2Distance(unsigned long sample);
 unsigned long ADC0_In(void);
 
 
@@ -105,9 +104,7 @@ unsigned long ADC0_In(void);
 void CheckingCollisions(void);
 void BonusLaserCollision(void);
 void LaserShip_Move(void);
-void EnemyscanY(unsigned char laserNum);
-unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
-void FirstLast(unsigned char row, unsigned char column);
+
 void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
@@ -116,7 +113,12 @@ unsigned char LastL(void);
 void FirstEPC(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
-signed char absValue(signed char value);
+
 
 void MasterDraw(struct State *st_ptr);
 
+void EnemyscanY(unsigned char laserNum);
+unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
+void FirstLast(unsigned char row, unsigned char column);
+signed char absValue(signed char value);
+unsigned long Convert2Distance(unsigned long sample);

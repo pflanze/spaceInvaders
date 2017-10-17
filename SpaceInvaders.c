@@ -78,8 +78,7 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 
 //testing & preprocessing directives
 #define IMESSAGE			0		//Enables/disables inittial message
-#define PORTF1 				0		//Enables/disables portF, Logic Analizer frequency test
-#define AUDIO					0		
+
 
 //messages
 #define SWAPDELAYMSG 10
@@ -158,13 +157,14 @@ void GameReset(void){
 // inputs: none
 // outputs: none
 // assumes: na
+#if AUDIO
 void Timer2A_Handler(void){ 
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
 	//GPIO_PORTF_DATA_R ^= 0x02;
 	TimerCount++;
   Semaphore = 1; // trigger
 }
-
+#endif
 //********SysTick_Handler*****************
 //Multiline description
 // inputs: none
@@ -220,14 +220,14 @@ void SysTick_Handler(void){			// runs at 30 Hz
 void init_Hw(void){
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	
-	#ifdef PORTF1
+	#if PORTF1
 		PortF_init();								//test only
 	#endif
 	
   
   Nokia5110_Init();
 	
-	#ifdef AUDIO
+	#if AUDIO
 		Timer2_Init(7272);					//initialized @11kHz
 	#endif
 	
@@ -239,7 +239,6 @@ void init_Hw(void){
 	LED_Init();
 	EnableInterrupts();
 }
-
 //********main*****************
 //Multiline description
 // inputs: none
@@ -269,4 +268,3 @@ int main(void){
     SysTickFlag = 0;
 	}
 }
-

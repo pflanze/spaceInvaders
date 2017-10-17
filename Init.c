@@ -14,6 +14,7 @@ void Systick_Init(unsigned long periodSystick){
 
 
 // You can use this timer only if you learn how it works
+#if AUDIO
 void Timer2_Init(unsigned long period){ 
   unsigned long volatile delay;
   SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
@@ -31,7 +32,7 @@ void Timer2_Init(unsigned long period){
   NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
   TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A
 }
-
+#endif
 
 void Buttons_Init(){
 	//Clock for Port E already active
@@ -93,6 +94,7 @@ void LED_Init(void){
 
 
 //initialize PortF !!!!testing Only!!!!
+#if PORTF1
 void PortF_init(void){ volatile unsigned long delay;
 	SYSCTL_RCGC2_R |= 0x00000020;     // activate clock for Port F
 	delay = SYSCTL_RCGC2_R;           // allow time for clock to start
@@ -102,4 +104,4 @@ void PortF_init(void){ volatile unsigned long delay;
 	GPIO_PORTF_AMSEL_R &= ~0x02;     // 5) disable analog function on PF1
 	GPIO_PORTF_DATA_R &= ~0x02;			//off by default
 }
-
+#endif

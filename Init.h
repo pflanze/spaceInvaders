@@ -1,5 +1,9 @@
 //initialize HW
 
+//testing code
+#define AUDIO	0
+#define PORTF1 				0		//Enables/disables portF, Logic Analizer frequency test
+
 void init_Hw(void);							//Initializes the system (help to keep main clean)
 void Systick_Init(unsigned long periodSystick);
 void Timer2_Init(unsigned long period);
