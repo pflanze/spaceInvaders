@@ -113,7 +113,7 @@ void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
 unsigned char queryLiveRows(void);
-unsigned char LastL(void);
+void LastL(void);
 void FirstEPC(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);

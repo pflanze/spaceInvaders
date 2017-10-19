@@ -127,9 +127,6 @@ void Timer2A_Handler(void){
 // assumes: na
 void SysTick_Handler(void){			// runs at 30 Hz
 	volatile static unsigned clickCounter = 0;			//keeps track of clicks
-	#if DRAW_ENEMIES
-		static unsigned char EFcounter = 0;
-	#endif
 	
 	#if PORTF1
 		GPIO_PORTF_DATA_R ^= 0x02;	//test only
@@ -140,17 +137,19 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	}
 	
 	switch(gameOverFlag){
-		case INGAME:
+		case INGAME:{
 			if(clickCounter){
 				LaserInit_ship();
 				//Fire1_Sound();
 				clickCounter = 0;
 			}	
 			#if DRAW_ENEMIES
-			EFcounter++;
-			if(EFcounter > 6){			//enemy shooting frequency
-				EnemyLaserInit();
-				EFcounter = 0;
+			{static unsigned char EFcounter = 0;
+				EFcounter++;
+				if(EFcounter > 6){			//enemy shooting frequency
+					EnemyLaserInit();
+					EFcounter = 0;
+				}
 			}
 			#endif
 			
@@ -160,7 +159,8 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			CheckingCollisions();
 			MoveObjects();				//game engine
 			break;
-		case STANDBY:
+		}
+		case STANDBY:{
 			Player_Move();
 			if(clickCounter == 1){
 				LaserInit_ship();
@@ -168,6 +168,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				gameOverFlag = INGAME;
 			}
 			break;
+		}	
 		default:{
 			static char swapMessage = 0;
 			if(swapMessage < SWAPDELAYMSG){
@@ -210,7 +211,6 @@ void init_Hw(void){
 	#if PORTF1
 		PortF_init();								//test only
 	#endif
-	
   
   Nokia5110_Init();
 	
@@ -256,3 +256,9 @@ int main(void){
     SysTickFlag = 0;
 	}
 }
+
+/*
+fix:
+swapMessage: replace for current... mask current to get a smaller timing
+
+*/
