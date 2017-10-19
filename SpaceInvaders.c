@@ -45,7 +45,6 @@ special weapon fire button connected to PE1
 1*R resistor DAC bit 3 on PB3 (most significant bit)
 LED on PB4
 LED on PB5
-
 */
 
 
@@ -105,52 +104,8 @@ volatile unsigned char gameOverFlag = STANDBY;
 //function Prototypes
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
-void GameReset(void);					//resets the game
+//static void GameReset(void);	//resets the game
 
-//********GameReset*****************
-//Multiline description
-// inputs: none
-// outputs: none
-// assumes: na
-void GameReset(void){
-	volatile static unsigned clickCounter = 0;			//keeps track of the number of right clicks
-	
-		if(Pressfire_B1()){
-			clickCounter++;
-		}
-	
-		if(clickCounter == 1){				//Resets the game
-			#if DRAW_ENEMIES
-				EnemyInit();
-			#endif
-			ShipInit();
-			defaultValues();
-			gameOverFlag = STANDBY;
-			Random_Init(1);
-		}
-		else if(clickCounter == 2){			//starts the game
-			gameOverFlag = INGAME;
-			clickCounter = 0;
-		}
-		else{														//message swap (avoiding sw delay function)
-			static char swapMessage = 0;
-			if(swapMessage < SWAPDELAYMSG){
-				if(gameOverFlag == LOOSE){
-					GameOverMessage();
-				}
-				else{
-					WinMessage();
-				}
-			}
-			else{
-				RestartMessage();
-				if(swapMessage > SWAPDELAYMSG_2){			//Swapmessage intermitent every 50 cycles
-					swapMessage = 0;
-				}
-			}
-			swapMessage++;
-		}
-}
 
 //********Timer2A_Handler*****************
 //Multiline description
@@ -171,6 +126,7 @@ void Timer2A_Handler(void){
 // outputs: none
 // assumes: na
 void SysTick_Handler(void){			// runs at 30 Hz
+	volatile static unsigned clickCounter = 0;			//keeps track of clicks
 	#if DRAW_ENEMIES
 		static unsigned char EFcounter = 0;
 	#endif
@@ -178,37 +134,68 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	#if PORTF1
 		GPIO_PORTF_DATA_R ^= 0x02;	//test only
 	#endif
-
-	if(gameOverFlag == INGAME){					//*****************In game section*****************
-		if(Pressfire_B1()){
-			LaserInit_ship();
-			//Fire1_Sound();
-		}
-		
-		#if DRAW_ENEMIES
+	
+	if(Pressfire_B1()){
+		clickCounter++;
+	}
+	
+	switch(gameOverFlag){
+		case INGAME:
+			if(clickCounter){
+				LaserInit_ship();
+				//Fire1_Sound();
+				clickCounter = 0;
+			}	
+			#if DRAW_ENEMIES
 			EFcounter++;
 			if(EFcounter > 6){			//enemy shooting frequency
 				EnemyLaserInit();
 				EFcounter = 0;
 			}
-		#endif
-		
-		#if DRAW_ENEMYBONUS	
-			enemyBonusCreate();
-		#endif	
-		CheckingCollisions();
-		MoveObjects();				//game engine
-	}
-	else if(gameOverFlag == STANDBY){
-				
-		Player_Move();
-		if(Pressfire_B1()){
-			gameOverFlag = INGAME;
-			LaserInit_ship();
+			#endif
+			
+			#if DRAW_ENEMYBONUS	
+				enemyBonusCreate();
+			#endif	
+			CheckingCollisions();
+			MoveObjects();				//game engine
+			break;
+		case STANDBY:
+			Player_Move();
+			if(clickCounter == 1){
+				LaserInit_ship();
+				clickCounter = 0;
+				gameOverFlag = INGAME;
+			}
+			break;
+		default:{
+			static char swapMessage = 0;
+			if(swapMessage < SWAPDELAYMSG){
+				if(gameOverFlag == LOOSE){
+					GameOverMessage();
+				}
+				else{
+					WinMessage();
+				}
+			}
+			else{
+				RestartMessage();
+				if(swapMessage > SWAPDELAYMSG_2){			//Swapmessage intermitent every 50 cycles
+					swapMessage = 0;
+				}
+			}
+			swapMessage++;
+			if(clickCounter){
+				#if DRAW_ENEMIES
+					EnemyInit();
+				#endif
+				Random_Init(1);
+				ShipInit();
+				defaultValues();
+				clickCounter = 0;
+				gameOverFlag = STANDBY;
+			}
 		}
-	}
-	else{													//*****************win/loose section*****************
-		GameReset();
 	}
   SysTickFlag = 1;
 }
@@ -257,6 +244,7 @@ int main(void){
 	#endif
 	
 	ShipInit();
+
 	defaultValues();
 	Random_Init(1);
 

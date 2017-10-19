@@ -15,6 +15,7 @@ unsigned char down = 0;			//moves the enemies, 1: moves down
 
 //----------------------------------------------------------Structs------------------------------------------------
 //game stats per column
+#if DRAW_ENEMIES
 struct GameStatColumn {
 	unsigned char Fep;		//"First enemy position"
 	unsigned char Epc;		//"Enemies per column"
@@ -32,15 +33,18 @@ struct GameStatRow {
 
 typedef struct GameStatRow Etype; 
 Etype Estat_row[MAXROWS];
+#endif
 
 STyp Ship;
 STyp Laser_ship[MAXLASERS];
 
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
-	static unsigned char enemyTracking[] = {0,3};					//keeps track of the first and last enemy across diferrent rows
+	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
 	static unsigned lastLine = MAXROWS-1;
 	static unsigned char LiveRows[MAXROWS];
+	volatile static unsigned char LiveCols = MAX_ENEMY_PR;
+	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
 	
 	STyp Enemy [MAXROWS][MAX_ENEMY_PR];
@@ -71,7 +75,6 @@ STyp Laser_ship[MAXLASERS];
 				Enemy[row][column].life = 1;				// 0=dead, 1=alive
 				Enemy[row][column].JK = 0;
 				Enemy[row][column].id = ID_ENEMY;
-				
 				switch(row){
 					case 0:
 						Enemy[row][column].image[0] = SmallEnemy30PointA;
@@ -87,6 +90,7 @@ STyp Laser_ship[MAXLASERS];
 						break;
 				}
 			}
+			//initializes Estat
 			Estat_row[row].Epr = MAX_ENEMY_PR;	//keeps track od the amount of enemies per row
 			Estat_row[row].Fep = 0;							//first end position
 			Estat_row[row].Lep = 3;							//last end position
@@ -135,8 +139,10 @@ void LaserInit_ship(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-	void EnemyLaserInit(void){
-	unsigned char  columnNew = (Random32()>>24)%4;		//generates number [0-3]
+	void EnemyLaserInit(void){	
+	unsigned char randN = (Random32()>>24)%LiveCols;		//generates number [0-aliveCols]
+	unsigned char columnNew	= AlColsMat[randN];
+	
 		
 		if(Estat_column[columnNew].Epc){
 			unsigned char row = Estat_column[columnNew].Fep;
@@ -183,8 +189,8 @@ void defaultValues(void){
 
 	//tracking defaults
 	#if DRAW_ENEMIES
-		enemyTracking[0] = 0;
-		enemyTracking[1] = 3;
+		enemyTracking[0] = FIRST_E;
+		enemyTracking[1] = LAST_E;
 	
 		enemyCount = MAXROWS*MAX_ENEMY_PR;
 		lastLine = MAXROWS-1;
@@ -202,6 +208,12 @@ void defaultValues(void){
 		//liverows[] defaults
 		for(i=0;i<MAXROWS;i++){
 			LiveRows[i] = 1;
+		}
+		
+		//resets general column stats
+		LiveCols = MAX_ENEMY_PR;
+			for(i=0;i<MAX_ENEMY_PR;i++){
+		AlColsMat[i] = i;
 		}
 	#endif
 		
@@ -265,7 +277,6 @@ void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){
 	
 	while(row<MAXROWS){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
-			
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
 				right = 0;	//moves left
@@ -368,31 +379,31 @@ void BonusEnemy_Move(void){
 // assumes: na
 void Draw(void){ 
 	Nokia5110_ClearBuffer();
+
+	//drawing enemies
+	#if DRAW_ENEMIES
+		if(gameOverFlag == INGAME){
+			EnemyDraw();											//Uses MasterDraw
+			FrameCount = (FrameCount+1)&0x01; // 0,1,0,1,...
+		}
+		else if(gameOverFlag == STANDBY){
+			EnemyDraw();			//Uses MasterDraw
+		}
+		LaserEnemyDraw();		//Uses MasterDraw
+	#endif
+	
+	//drawing battleship
+	MasterDraw(&Ship);
 		
-		//drawing enemies
-		#if DRAW_ENEMIES
-			if(gameOverFlag == INGAME){
-				EnemyDraw();											//Uses MasterDraw
-				FrameCount = (FrameCount+1)&0x01; // 0,1,0,1,...
-			}
-			else if(gameOverFlag == STANDBY){
-				EnemyDraw();			//Uses MasterDraw
-			}
-			LaserEnemyDraw();		//Uses MasterDraw
-		#endif
+	//drawing laser
+	LaserShipDraw();		//uses MasterDraw
+	
+	#if DRAW_ENEMYBONUS		
+		MasterDraw(&EnemyBonus);
+	#endif	
 		
-		//drawing battleship
-		MasterDraw(&Ship);
-			
-		//drawing laser
-		LaserShipDraw();		//uses MasterDraw
-		
-		#if DRAW_ENEMYBONUS		
-			MasterDraw(&EnemyBonus);
-		#endif	
-			
-		// draw buffer
-		Nokia5110_DisplayBuffer();      
+	// draw buffer
+	Nokia5110_DisplayBuffer();      
 }
 //********EnemyDraw*****************
 //Sends the Enemy information to screen buffer
@@ -419,49 +430,47 @@ void EnemyDraw(void){
 // inputs: &EnemyBonus, 
 // outputs: none
 // assumes: na
-void MasterDraw(struct State *st_ptr){
+void MasterDraw(struct State *s){
 	static unsigned char frame = 0;
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
-	if(st_ptr->JK){
+	if(s->JK){
 		//used to change explosions offset values
-		if(st_ptr->id == ID_BONUS){	//BONUS
+		if(s->id == ID_BONUS){	//BONUS
 			offsetX = OFFSETEXPLOSIONX;
 			offsetY = OFFSETEXPLOSIONY;
 		}
-		else if(st_ptr->id == ID_E_LASER){	//BONUS
+		else if(s->id == ID_E_LASER){	//BONUS
 			offsetX = -5;
 		}
 		
 		switch (frame){
 		case 0:
-			st_ptr->image[0] = SmallExplosion0;
+			s->image[0] = SmallExplosion0;
 			break;
 		case 1:
-			st_ptr->image[1] = SmallExplosion1;
+			s->image[1] = SmallExplosion1;
 			break;
 		case 2:
-			st_ptr->JK = 0;
+			s->JK = 0;
 			frame = 0;
-			if(st_ptr == &Ship){
+			if(s == &Ship){
 				gameOverFlag = LOOSE;
 			}
 			break;
 		}
 	}
-	if(st_ptr->life){
-		//if I tried to have "frame = FrameCount" insde the if... and have a singgle line for the nokia... everythink start blinking like crazy
-		//However I did not try to access FrameCount by reference
-		if(st_ptr->id == ID_ENEMY){		//only enemies need change between frames
-			Nokia5110_PrintBMP(st_ptr->x, st_ptr->y, st_ptr->image[FrameCount], 0); //frame is always 0, except for enemies
+	if(s->life){
+		if(s->id == ID_ENEMY){		//only enemies need change between frames
+			Nokia5110_PrintBMP(s->x, s->y, s->image[FrameCount], 0); //frame is always 0, except for enemies
 		}
 		else{
-			Nokia5110_PrintBMP(st_ptr->x, st_ptr->y, st_ptr->image[0], 0); //frame is always 0, except for enemies
+			Nokia5110_PrintBMP(s->x, s->y, s->image[0], 0); //frame is always 0, except for enemies
 		}	
 	}
-	else if(st_ptr->JK){
-		Nokia5110_PrintBMP(st_ptr->x + offsetX, st_ptr->y + offsetY, st_ptr->image[frame], 0);
+	else if(s->JK){
+		Nokia5110_PrintBMP(s->x + offsetX, s->y + offsetY, s->image[frame], 0);
 		frame++;
 	}
 }
@@ -472,7 +481,6 @@ void MasterDraw(struct State *st_ptr){
 // assumes: na
 void LaserShipDraw(void){
 	unsigned char laserNum = 0;
-	
 	for(laserNum=0;laserNum<MAXLASERS;laserNum++){
 		if(Laser_ship[laserNum].life){
 			MasterDraw(&Laser_ship[laserNum]);
@@ -861,7 +869,7 @@ void FirstLast(unsigned char row, unsigned char column){
 #if DRAW_ENEMIES
 	void FirstEPC(void){
 		unsigned char column = 0;
-		
+		unsigned char aliveCol = 0;
 		//we are reading left>right, dowun>up
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			signed char row = Estat_column[column].Fep;		//start from last known position
@@ -869,7 +877,11 @@ void FirstLast(unsigned char row, unsigned char column){
 			if(Estat_column[column].Epc == 0){
 				continue;
 			}
+		
+			AlColsMat[aliveCol] = column;
+			aliveCol++;
 			
+			//finds the first enemy on a column
 			while(quit==0 && row>=0){
 				if(Enemy[row][column].life){
 					Estat_column[column].Fep = row;
@@ -880,6 +892,7 @@ void FirstLast(unsigned char row, unsigned char column){
 				}
 			}
 		}
+		LiveCols = aliveCol;
 	}
 #endif
 //--------------------------------------------------------------Miscelaneus----------------------------------------------------------

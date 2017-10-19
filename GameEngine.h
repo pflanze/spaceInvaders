@@ -8,15 +8,15 @@
 #define DRAW_ENEMIES	1
 #define DRAW_ENEMYBONUS 1
 
-//used for Convert2Distance calibration
-#define Avalue 16
-#define Bvalue 0
-
 //game max
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
 #define REAL_MAX_EPR (MAX_ENEMY_PR-1)
 #define MAXROWS	1
+
+//used for Convert2Distance calibration
+#define Avalue 16
+#define Bvalue 0
 
 //collision offset
 #define YOFFSET 6
@@ -61,6 +61,10 @@
 #define ID_E_LASER	3
 #define ID_S_LASER	4
 
+
+//Default values
+#define	FIRST_E	0
+#define	LAST_E	3
 //----------------------------------------------------------Structs------------------------------------------------
 
 
