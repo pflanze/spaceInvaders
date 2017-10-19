@@ -384,12 +384,10 @@ void Draw(void){
 	//drawing enemies
 	#if DRAW_ENEMIES
 		if(gameOverFlag == INGAME){
-			EnemyDraw();											//Uses MasterDraw
 			FrameCount = (FrameCount+1)&0x01; // 0,1,0,1,...
 		}
-		else if(gameOverFlag == STANDBY){
-			EnemyDraw();			//Uses MasterDraw
-		}
+		
+		EnemyDraw();			//Uses MasterDraw
 		LaserEnemyDraw();		//Uses MasterDraw
 	#endif
 	
@@ -923,6 +921,5 @@ signed char absValue(signed char value){
 changes:
 	*add sound:
 		-lab13
-	*change may be possible in drawing, near gameoverflag
-*MasterDraw near: FrameCount
+	*eliminate extern: this can be done passing by reference or value, creating a function that updates the values on the main engine
 */
