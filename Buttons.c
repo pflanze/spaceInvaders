@@ -30,3 +30,6 @@ unsigned char Pressfire_B2(void){
 	return Fire_Bool_2;
 }
 
+
+//The mask needs changing, not pointing to the right adress
+//Merge both functions into one

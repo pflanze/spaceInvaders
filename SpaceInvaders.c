@@ -232,6 +232,7 @@ void init_Hw(void){
 // outputs: none
 // assumes: na
 int main(void){	
+	
 	init_Hw();											//call all initializing functions
 	//Create initial message
 	#if IMESSAGE
@@ -247,7 +248,7 @@ int main(void){
 
 	defaultValues();
 	Random_Init(1);
-
+	
   while(1){
 	 while(SysTickFlag == 0){};
 		if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
@@ -260,5 +261,5 @@ int main(void){
 /*
 fix:
 swapMessage: replace for current... mask current to get a smaller timing
-
+create a led.h
 */

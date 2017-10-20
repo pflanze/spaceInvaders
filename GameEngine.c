@@ -14,9 +14,9 @@ rows/columns with enemies alive,
 extern unsigned char gameOverFlag;		//0: Keep playing
 
 //local variables
-unsigned char FrameCount=0;
-unsigned char right = 1;			//moves the enemies, 0: moves left
-unsigned char down = 0;			//moves the enemies, 1: moves down
+unsigned char FrameCount = 0;
+unsigned char right = TRUE;			//moves the enemies, 0: moves left
+unsigned char down = FALSE;			//moves the enemies, 1: moves down
 
 //----------------------------------------------------------Structs------------------------------------------------
 //game stats per column
@@ -26,8 +26,7 @@ struct GameStatColumn {
 	unsigned char Epc;		//"Enemies per column"
 };
 
-typedef struct GameStatColumn Ctype; 
-Ctype Estat_column[MAX_ENEMY_PR];
+struct GameStatColumn Estat_column[MAX_ENEMY_PR];
 
 //game stats per row
 struct GameStatRow {
@@ -36,12 +35,20 @@ struct GameStatRow {
 	unsigned char Epr;		//"Enemies per row"
 };
 
-typedef struct GameStatRow Etype; 
-Etype Estat_row[MAXROWS];
+struct GameStatRow Estat_row[MAXROWS];
+
+struct State Enemy[MAXROWS][MAX_ENEMY_PR];
+struct State Laser_enemy[MAXLASERS];
+struct State Ship;
+struct State Laser_ship[MAXLASERS];
 #endif
 
-STyp Ship;
-STyp Laser_ship[MAXLASERS];
+
+
+#if DRAW_ENEMYBONUS
+	struct State  EnemyBonus;
+#endif	
+
 
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
@@ -51,15 +58,7 @@ STyp Laser_ship[MAXLASERS];
 	volatile static unsigned char LiveCols = MAX_ENEMY_PR;
 	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
-	
-	STyp Enemy [MAXROWS][MAX_ENEMY_PR];
-	STyp Laser_enemy[MAXLASERS];
 #endif
-
-#if DRAW_ENEMYBONUS
-	STyp EnemyBonus;
-#endif	
-	
 //-----------------------------------------------------------INIT-----------------------------------------------------------------------
 //********EnemyInit*****************
 //Initialize enemies
@@ -280,12 +279,12 @@ void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
-				right = 0;	//moves left
-				down = 1;
+				right = FALSE;	//moves left
+				down = TRUE;
 			}
 			else if(Enemy[row][LeftShiftColumn].x <= LEFTLIMIT){
-				right = 1;
-				down = 1;
+				right = TRUE;
+				down = TRUE;
 			}	
 			//moves left/right using the switches
 			for(column=0;column<MAX_ENEMY_PR;column++){
@@ -301,7 +300,7 @@ void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){
 				for(column=0;column<4;column++){
 					Enemy[row][column].y += 1;
 				}
-				down = 0;
+				down = FALSE;
 			}
 		}
 		else{										//Enemies have reached the earth
@@ -380,6 +379,9 @@ void BonusEnemy_Move(void){
 // assumes: na
 void Draw(void){ 
 	Nokia5110_ClearBuffer();
+	
+	//drawing battleship
+	MasterDraw(&Ship);
 
 	//drawing enemies
 	#if DRAW_ENEMIES
@@ -390,9 +392,6 @@ void Draw(void){
 		EnemyDraw();			//Uses MasterDraw
 		LaserEnemyDraw();		//Uses MasterDraw
 	#endif
-	
-	//drawing battleship
-	MasterDraw(&Ship);
 		
 	//drawing laser
 	LaserShipDraw();		//uses MasterDraw
@@ -507,9 +506,9 @@ void LaserEnemyDraw(void){
 // assumes: na
 #if DRAW_ENEMIES
 void EnemyShiftTrack(void){
+	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
+	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
 	switch(queryLiveRows()){
-		static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
-		static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
 		case 1:
 			if(Estat_row[lastLine].Epr == 1){
 				enemyTracking[0] = Estat_row[lastLine].Fep;
@@ -663,7 +662,7 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
 				FirstLast(row, column);
-				LastL();								//updates last line value
+				Verify_lastLine();								//updates last line value
 				#if DRAW_ENEMIES
 					EnemyShiftTrack();
 				#endif
@@ -793,8 +792,8 @@ void FirstLast(unsigned char row, unsigned char column){
 
 		if(Estat_row[row].Epr){
 			unsigned char column=0;
+			unsigned char firstCheck = 0;
 			for(column=0;column<MAX_ENEMY_PR;column++){
-				unsigned char firstCheck = 0;
 				if ((firstCheck == 0)&&(Enemy[row][column].life)){									//counts forward, check = 0 >> keeps checking
 					Estat_row[row].Fep = column;
 					firstCheck = 1;
@@ -834,14 +833,14 @@ void FirstLast(unsigned char row, unsigned char column){
 		return lr_counter;
 	}
 #endif
-//********LastL*****************
+//********Verify_lastLine*****************
 //Keeps track of the last enemy line
 // changes: lastLine
 // inputs: none
 // outputs: lastLine
 // assumes: na
 #if DRAW_ENEMIES
-void LastL(void){
+void Verify_lastLine(void){
 	while(Estat_row[lastLine].Epr == 0){
 		lastLine--;
 	}
@@ -891,7 +890,7 @@ void LastL(void){
 // assumes: na
 #if DRAW_ENEMYBONUS
 	void enemyBonusCreate(void){
-		static unsigned localCounter = 0;
+		static unsigned char localCounter = 0;
 		
 		if((EnemyBonus.life == 0) && (localCounter >= BONUSTIMING)){
 			BonusEnemyInit();

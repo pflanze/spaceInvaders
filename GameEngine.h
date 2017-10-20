@@ -65,6 +65,11 @@
 //Default values
 #define	FIRST_E	0
 #define	LAST_E	3
+
+//Boolean
+#define	TRUE	1
+#define	FALSE 0
+
 //----------------------------------------------------------Structs------------------------------------------------
 
 
@@ -78,7 +83,7 @@ struct State {
 	unsigned char id;
 };         
 
-typedef struct State STyp;
+
 
 //----------------------------------------------------------Function definition------------------------------------------------
 void Player_Move(void);
@@ -113,7 +118,7 @@ void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
 unsigned char queryLiveRows(void);
-void LastL(void);
+void Verify_lastLine(void);
 void FirstEPC(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
