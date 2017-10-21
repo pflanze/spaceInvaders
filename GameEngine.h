@@ -70,6 +70,10 @@
 #define	TRUE	1
 #define	FALSE 0
 
+
+extern volatile unsigned char gameOverFlag;		
+
+
 //----------------------------------------------------------Structs------------------------------------------------
 
 
@@ -113,17 +117,13 @@ unsigned long ADC0_In(void);
 void CheckingCollisions(void);
 void BonusLaserCollision(void);
 void LaserShip_Move(void);
-
 void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
 unsigned char queryLiveRows(void);
-void Verify_lastLine(void);
 void FirstEPC(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
-
-
 void MasterDraw(struct State *st_ptr);
 
 void EnemyscanY(unsigned char laserNum);
@@ -131,3 +131,6 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
 void FirstLast(unsigned char row, unsigned char column);
 signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
+static unsigned Verify_lastLine(unsigned lastLine);
+
+

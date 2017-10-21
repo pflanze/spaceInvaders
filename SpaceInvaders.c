@@ -96,7 +96,8 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 unsigned long TimerCount;
 unsigned long Semaphore;
 unsigned char SysTickFlag=0;
-volatile unsigned char gameOverFlag = STANDBY;		
+
+volatile unsigned char gameOverFlag = STANDBY;
 																//0: In game
 																//1: Game Over (you loose)
 																//2: Just Won

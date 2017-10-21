@@ -11,7 +11,6 @@ rows/columns with enemies alive,
 #include "..//tm4c123gh6pm.h"
 #include "Random.h"
 
-extern unsigned char gameOverFlag;		//0: Keep playing
 
 //local variables
 unsigned char FrameCount = 0;
@@ -662,7 +661,7 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
 				FirstLast(row, column);
-				Verify_lastLine();								//updates last line value
+				lastLine = Verify_lastLine(lastLine);								//updates last line value
 				#if DRAW_ENEMIES
 					EnemyShiftTrack();
 				#endif
@@ -840,10 +839,11 @@ void FirstLast(unsigned char row, unsigned char column){
 // outputs: lastLine
 // assumes: na
 #if DRAW_ENEMIES
-void Verify_lastLine(void){
+static unsigned Verify_lastLine(unsigned lastLine){
 	while(Estat_row[lastLine].Epr == 0){
 		lastLine--;
 	}
+	return lastLine;
 }
 #endif
 //********FirstEPC*****************
@@ -920,5 +920,5 @@ signed char absValue(signed char value){
 changes:
 	*add sound:
 		-lab13
-	*eliminate extern: this can be done passing by reference or value, creating a function that updates the values on the main engine
+Improve firing: adding firing secuences
 */
