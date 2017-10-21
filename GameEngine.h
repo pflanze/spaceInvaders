@@ -73,6 +73,10 @@
 //Return vs update
 #define RETURNVAL	0
 #define UPDATE		1
+#define RETURNARR	3
+
+//Miselaneus
+#define NA 1
 
 
 extern volatile unsigned char gameOverFlag;		
@@ -124,7 +128,6 @@ void LaserShip_Move(void);
 void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
-unsigned char queryLiveRows(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr);
@@ -133,9 +136,10 @@ unsigned char FirstEPC(unsigned char mode);
 
 void EnemyscanY(unsigned char laserNum);
 unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
-void FirstLast(unsigned char row, unsigned char column);
 signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
 static unsigned Verify_lastLine(unsigned lastLine);
+
+unsigned int FirstLast(unsigned char row, unsigned char column, unsigned char mode);
 
 

@@ -53,7 +53,6 @@ struct State Laser_ship[MAXLASERS];
 	//use to keep the statistics from the game
 	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
 	static unsigned lastLine = MAXROWS-1;
-	static unsigned char AliveRows[MAXROWS];
 	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 #endif
 //-----------------------------------------------------------INIT-----------------------------------------------------------------------
@@ -205,12 +204,6 @@ void defaultValues(void){
 		for(i=0;i<MAXLASERS;i++){											
 			Laser_enemy[i].life = 0;
 		}
-		
-		//liverows[] defaults
-		for(i=0;i<MAXROWS;i++){
-			AliveRows[i] = 1;
-		}
-
 	#endif
 		
 	#if DRAW_ENEMYBONUS
@@ -486,7 +479,7 @@ void LaserEnemyDraw(void){
 }
 #endif
 //********EnemyShiftTrack*****************
-//Used to calculate the position the enemy next position
+//Keeps track if the leftmost and right most Enemies.
 // changes: enemyTracking[]
 // inputs: none
 // outputs: none
@@ -495,7 +488,8 @@ void LaserEnemyDraw(void){
 void EnemyShiftTrack(void){
 	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
 	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
-	switch(queryLiveRows()){
+	
+	switch(FirstLast(NA, NA, RETURNVAL)){
 		case 1:
 			if(Estat_row[lastLine].Epr == 1){
 				enemyTracking[0] = Estat_row[lastLine].Fep;
@@ -648,7 +642,7 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 				Laser_ship[laserNum].life = 0;
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
-				FirstLast(row, column);
+				FirstLast(row, column, UPDATE);
 				lastLine = Verify_lastLine(lastLine);								//updates last line value
 				#if DRAW_ENEMIES
 					EnemyShiftTrack();
@@ -748,21 +742,47 @@ void BonusLaserCollision(void){
 #endif
 //--------------------------------------------------------------GAME STATS----------------------------------------------------------
 //********FirstLast*****************
-//The last and first elements representing the enemies alive on the respaective positions
-//The function will return 0x0000 when there is not more enemies alive (row)
-//Meaning that it aslo keeps track of the enemies alive in rows and columns (counter)
-//The function uses left and right shifting for the return value
-//this function should keep track of the number of enemies on each row
+//this function should keep track of:
+//					the number of enemies on each row
+//					
 // changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, gameOverFlag, AliveRows[row]
-// inputs: row, column
+// inputs: row, column, mode(UPDATE|RETURNVAL)
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void FirstLast(unsigned char row, unsigned char column){
+	unsigned int FirstLast(unsigned char row, unsigned char column, unsigned char mode){
 	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
+	static unsigned char AliveRows[MAXROWS];
 	unsigned char lastCheck = 0;
 	
-	if(gameOverFlag == WIN || gameOverFlag == WIN) {enemyCount = MAXROWS*MAX_ENEMY_PR;}
+	//setting defaults
+	if(gameOverFlag == WIN || gameOverFlag == WIN) {
+		enemyCount = MAXROWS*MAX_ENEMY_PR;
+		{	//liverows[] defaults
+			unsigned char i;
+			for(i=0;i<MAXROWS;i++){
+				AliveRows[i] = 1;
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	//MODE SELECTION
+	//Used for EnemyShiftTrack
+	if(mode == RETURNVAL){
+		unsigned int lr_counter = 0;
+		{unsigned char i;
+			for(i=0;i<=MAXROWS-1;i++){
+				if(AliveRows[i]){
+					lr_counter++;
+				}
+			}
+		}
+		return lr_counter;
+	}
 	
 	Estat_row[row].Epr--;
 	Estat_column[column].Epc--;
@@ -803,25 +823,9 @@ void FirstLast(unsigned char row, unsigned char column){
 			}
 		}
 	}
+	//update mode discard the value
+	return NA;
 }
-#endif
-//********queryLiveRows*****************
-// Returns the number of rows alive
-// inputs: none
-// outputs: lr_counter
-// assumes: na
-#if DRAW_ENEMIES
-	unsigned char queryLiveRows(void){
-		signed char i;
-		unsigned char lr_counter = 0;		//number of rows alive
-		
-		for(i=0;i<=MAXROWS-1;i++){
-			if(AliveRows[i]){
-				lr_counter++;
-			}
-		}
-		return lr_counter;
-	}
 #endif
 //********Verify_lastLine*****************
 //Keeps track of the last enemy line
@@ -840,7 +844,7 @@ static unsigned Verify_lastLine(unsigned lastLine){
 //********FirstEPC*****************
 // Keep track of the first enemy per column
 // changes: Estat_column[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
-// inputs: 0|1 (RETURNVAL|UPDATE)
+// inputs: mode = 0|1 (RETURNVAL|UPDATE)
 // outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
@@ -963,4 +967,6 @@ Functions:
 
 status:Easy rescope, however difficult to set to a default value on restart
 
+
+i have to go back and see if I can scopeConstrain variable declarations
 */
