@@ -144,7 +144,7 @@ void LaserInit_ship(void){
 #if DRAW_ENEMIES
 	void EnemyLaserInit(void){	
 	unsigned char randN = (Random32()>>24)%LiveCols;		//generates number [0-aliveCols]
-	unsigned char columnNew	= AlColsMat[randN];
+	unsigned char columnNew	= AlColsMat[randN];					//matrix holds the valid Enemy firing positions
 		
 		if(Estat_column[columnNew].Epc){
 			unsigned char row = Estat_column[columnNew].Fep;
@@ -921,4 +921,12 @@ changes:
 	*add sound:
 		-lab13
 Improve firing: adding firing secuences
+
+review:
+	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
+	static unsigned lastLine = MAXROWS-1;
+	static unsigned char LiveRows[MAXROWS];
+	volatile static unsigned char LiveCols = MAX_ENEMY_PR;
+	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
+	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
 */

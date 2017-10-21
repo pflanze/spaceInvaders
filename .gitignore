@@ -1,6 +1,7 @@
 *.uvproj
 *.xls
 Lab15Files/
+Doxygen/
 *.crf
 *.d
 *.o
