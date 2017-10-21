@@ -53,10 +53,8 @@ struct State Laser_ship[MAXLASERS];
 	//use to keep the statistics from the game
 	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
 	static unsigned lastLine = MAXROWS-1;
-	static unsigned char LiveRows[MAXROWS];
-	volatile static unsigned char LiveCols = MAX_ENEMY_PR;
+	static unsigned char AliveRows[MAXROWS];
 	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
-	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
 #endif
 //-----------------------------------------------------------INIT-----------------------------------------------------------------------
 //********EnemyInit*****************
@@ -130,6 +128,7 @@ void LaserInit_ship(void){
 			Laser_ship[i].image[0] = Laser0;
 			Laser_ship[i].life = 1;				// 0=dead, 1=alive
 			Laser_ship[i].id = ID_S_LASER;
+			Laser_ship[i].JK = 0;
 			break;			//terminate loop when a slot is found
 		}
 	}	
@@ -143,7 +142,7 @@ void LaserInit_ship(void){
 // assumes: na
 #if DRAW_ENEMIES
 	void EnemyLaserInit(void){	
-	unsigned char randN = (Random32()>>24)%LiveCols;		//generates number [0-aliveCols]
+	unsigned char randN = (Random32()>>24)%(FirstEPC(RETURNVAL));		//generates number [0-aliveCols]
 	unsigned char columnNew	= AlColsMat[randN];					//matrix holds the valid Enemy firing positions
 		
 		if(Estat_column[columnNew].Epc){
@@ -182,7 +181,7 @@ void BonusEnemyInit(void){
 //-----------------------------------------------------------DEFAULT VALUES-----------------------------------------------------------------------
 //********defaultValues*****************
 // Resets the values to default 
-// changes: enemyTracking[], Laser_ship[i].life, Laser_enemy[i].life, LiveRows[i], lastLine, Estat_column[i].(Epc|Fep)
+// changes: enemyTracking[], Laser_ship[i].life, Laser_enemy[i].life, AliveRows[i], lastLine, Estat_column[i].(Epc|Fep)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -194,7 +193,6 @@ void defaultValues(void){
 		enemyTracking[0] = FIRST_E;
 		enemyTracking[1] = LAST_E;
 	
-		enemyCount = MAXROWS*MAX_ENEMY_PR;
 		lastLine = MAXROWS-1;
 	
 		//sets defaults column stats
@@ -203,15 +201,14 @@ void defaultValues(void){
 			Estat_column[i].Fep = lastLine;
 			AlColsMat[i] = i;
 		}	
-		LiveCols = MAX_ENEMY_PR;
-		
+
 		for(i=0;i<MAXLASERS;i++){											
 			Laser_enemy[i].life = 0;
 		}
 		
 		//liverows[] defaults
 		for(i=0;i<MAXROWS;i++){
-			LiveRows[i] = 1;
+			AliveRows[i] = 1;
 		}
 
 	#endif
@@ -219,15 +216,6 @@ void defaultValues(void){
 	#if DRAW_ENEMYBONUS
 		EnemyBonus.life = 0;
 	#endif
-		
-	//laser defaults
-	for(i=0;i<MAXLASERS;i++){											
-		Laser_ship[i].life = 0;
-	}
-	
-	//Ship defaults
-	Ship.image[0] = PlayerShip0;
-	Ship.life = 1;				// 0=dead, 1=alive
 }
 //--------------------------------------------------------------MOVE OBJECTS-------------------------------------------------------------------------
 //********MoveObjects*****************
@@ -665,7 +653,7 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 				#if DRAW_ENEMIES
 					EnemyShiftTrack();
 				#endif
-				FirstEPC();
+				FirstEPC(UPDATE);																					//update point
 				enemyDestroyed = 1;
 			}
 		}
@@ -765,20 +753,23 @@ void BonusLaserCollision(void){
 //Meaning that it aslo keeps track of the enemies alive in rows and columns (counter)
 //The function uses left and right shifting for the return value
 //this function should keep track of the number of enemies on each row
-// changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, gameOverFlag, LiveRows[row]
+// changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, gameOverFlag, AliveRows[row]
 // inputs: row, column
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
 void FirstLast(unsigned char row, unsigned char column){
+	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
 	unsigned char lastCheck = 0;
+	
+	if(gameOverFlag == WIN || gameOverFlag == WIN) {enemyCount = MAXROWS*MAX_ENEMY_PR;}
 	
 	Estat_row[row].Epr--;
 	Estat_column[column].Epc--;
 	enemyCount--;
 	
 	if(enemyCount == 0){
-		LiveRows[row] = 0;					//needed only to update stats before quiting, good for debugging
+		AliveRows[row] = 0;					//needed only to update stats before quiting, good for debugging
 		gameOverFlag = WIN;
 	}
 	else{
@@ -786,7 +777,7 @@ void FirstLast(unsigned char row, unsigned char column){
 			lastCheck = 1;			//Does forward checking only
 		}
 		else if(Estat_row[row].Epr == 0){
-			LiveRows[row] = 0;
+			AliveRows[row] = 0;
 		}
 
 		if(Estat_row[row].Epr){
@@ -825,7 +816,7 @@ void FirstLast(unsigned char row, unsigned char column){
 		unsigned char lr_counter = 0;		//number of rows alive
 		
 		for(i=0;i<=MAXROWS-1;i++){
-			if(LiveRows[i]){
+			if(AliveRows[i]){
 				lr_counter++;
 			}
 		}
@@ -849,13 +840,18 @@ static unsigned Verify_lastLine(unsigned lastLine){
 //********FirstEPC*****************
 // Keep track of the first enemy per column
 // changes: Estat_column[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
-// inputs: none
-// outputs: none
+// inputs: 0|1 (RETURNVAL|UPDATE)
+// outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
-	void FirstEPC(void){
+	unsigned char FirstEPC(unsigned char mode){
+		static unsigned char LiveCols = MAX_ENEMY_PR;
 		unsigned char column = 0;
 		unsigned char aliveCol = 0;
+		
+		if(gameOverFlag == WIN || gameOverFlag == WIN) {LiveCols = MAX_ENEMY_PR;}
+		if(mode == RETURNVAL){return LiveCols;}
+		
 		//we are reading left>right, dowun>up
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			signed char row = Estat_column[column].Fep;		//start from last known position
@@ -879,6 +875,7 @@ static unsigned Verify_lastLine(unsigned lastLine){
 			}
 		}
 		LiveCols = aliveCol;
+		return LiveCols;
 	}
 #endif
 //--------------------------------------------------------------Miscelaneus----------------------------------------------------------
@@ -922,11 +919,48 @@ changes:
 		-lab13
 Improve firing: adding firing secuences
 
-review:
-	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
-	static unsigned lastLine = MAXROWS-1;
-	static unsigned char LiveRows[MAXROWS];
-	volatile static unsigned char LiveCols = MAX_ENEMY_PR;
-	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
-	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
+*/
+
+
+
+/*
+-------------------------------------------------------------Var Map Globals---------------------------------------------
+I created this section to identify the needs to re-scoping.
+>: Static value modified to default(Special care or consideration)
+
+Var: lastLine
+updated@:Verify_lastLine
+Functions:
+		Verify_lastLine
+		EnemyscanX
+		EnemyscanY
+		defaultValues
+		Enemy_Move
+		EnemyShiftTrack
+		PlayerLaserCollisions
+		
+Var: AlColsMat[]
+updated@:
+Functions:
+		EnemyLaserInit
+		>defaultValues
+		FirstEPC
+		
+Var: enemyTracking[]
+updated@:EnemyShiftTrack
+Functions:
+		>defaultValues
+		MoveObjects
+		EnemyShiftTrack
+
+
+Var: AliveRows[]
+updated@:queryLiveRows
+Functions:
+		>defaultValues
+		FirstLast
+		queryLiveRows
+
+status:Easy rescope, however difficult to set to a default value on restart
+
 */

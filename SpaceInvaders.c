@@ -122,7 +122,7 @@ void Timer2A_Handler(void){
 }
 #endif
 //********SysTick_Handler*****************
-//Multiline description
+//Game sequency: STANDBY>INGAME>LOOSE|WIN
 // inputs: none
 // outputs: none
 // assumes: na

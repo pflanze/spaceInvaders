@@ -70,6 +70,10 @@
 #define	TRUE	1
 #define	FALSE 0
 
+//Return vs update
+#define RETURNVAL	0
+#define UPDATE		1
+
 
 extern volatile unsigned char gameOverFlag;		
 
@@ -121,10 +125,11 @@ void EnemyDraw(void);
 void LaserShipDraw(void);
 void defaultValues(void);
 unsigned char queryLiveRows(void);
-void FirstEPC(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr);
+
+unsigned char FirstEPC(unsigned char mode);
 
 void EnemyscanY(unsigned char laserNum);
 unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
