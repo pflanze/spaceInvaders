@@ -109,7 +109,7 @@ unsigned long ADC0_In(void);
 #if DRAW_ENEMIES
 	void EnemyInit(void);
 	void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn);
-	void EnemyShiftTrack(void);
+	void EnemyShiftTrack(unsigned int localAliveRows);
 	void EnemyLaserCollisions(void);
 	void LaserCollision(void);
 	void LaserEnemy_Move(void);
@@ -140,6 +140,6 @@ signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
 static unsigned Verify_lastLine(unsigned lastLine);
 
-unsigned int FirstLast(unsigned char row, unsigned char column, unsigned char mode);
+unsigned int FirstLast(unsigned char row, unsigned char column);
 
 

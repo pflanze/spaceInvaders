@@ -485,11 +485,11 @@ void LaserEnemyDraw(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void EnemyShiftTrack(void){
+void EnemyShiftTrack(unsigned int localAliveRows){
 	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
 	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
 	
-	switch(FirstLast(NA, NA, RETURNVAL)){
+	switch(localAliveRows){
 		case 1:
 			if(Estat_row[lastLine].Epr == 1){
 				enemyTracking[0] = Estat_row[lastLine].Fep;
@@ -639,13 +639,14 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 			signed char enemyInRange = (Enemy[row][column].x + E_LASER_OFFX - Laser_ship[laserNum].x);
 			enemyInRange = absValue(enemyInRange);
 			if (enemyInRange <= E_LASER_OFFX){	
+				unsigned int alive_rows;
 				Laser_ship[laserNum].life = 0;
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
-				FirstLast(row, column, UPDATE);
+				alive_rows = FirstLast(row, column);
 				lastLine = Verify_lastLine(lastLine);								//updates last line value
 				#if DRAW_ENEMIES
-					EnemyShiftTrack();
+					EnemyShiftTrack(alive_rows);
 				#endif
 				FirstEPC(UPDATE);																					//update point
 				enemyDestroyed = 1;
@@ -744,13 +745,14 @@ void BonusLaserCollision(void){
 //********FirstLast*****************
 //this function should keep track of:
 //					the number of enemies on each row
-//					
+//					It is called by EnemyscanX to update Estat_row
+//					it is also used to update general game stats
 // changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, gameOverFlag, AliveRows[row]
 // inputs: row, column, mode(UPDATE|RETURNVAL)
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-	unsigned int FirstLast(unsigned char row, unsigned char column, unsigned char mode){
+unsigned int FirstLast(unsigned char row, unsigned char column){
 	static unsigned char enemyCount = MAXROWS*MAX_ENEMY_PR;
 	static unsigned char AliveRows[MAXROWS];
 	unsigned char lastCheck = 0;
@@ -769,20 +771,6 @@ void BonusLaserCollision(void){
 	
 	
 	
-	
-	//MODE SELECTION
-	//Used for EnemyShiftTrack
-	if(mode == RETURNVAL){
-		unsigned int lr_counter = 0;
-		{unsigned char i;
-			for(i=0;i<=MAXROWS-1;i++){
-				if(AliveRows[i]){
-					lr_counter++;
-				}
-			}
-		}
-		return lr_counter;
-	}
 	
 	Estat_row[row].Epr--;
 	Estat_column[column].Epc--;
@@ -824,7 +812,16 @@ void BonusLaserCollision(void){
 		}
 	}
 	//update mode discard the value
-	return NA;
+	{unsigned int alr_counter = 0;
+		{unsigned char i;
+			for(i=0;i<=MAXROWS-1;i++){
+				if(AliveRows[i]){
+					alr_counter++;
+				}
+			}
+		}
+		return alr_counter;
+	}
 }
 #endif
 //********Verify_lastLine*****************
@@ -957,13 +954,6 @@ Functions:
 		MoveObjects
 		EnemyShiftTrack
 
-
-Var: AliveRows[]
-updated@:queryLiveRows
-Functions:
-		>defaultValues
-		FirstLast
-		queryLiveRows
 
 status:Easy rescope, however difficult to set to a default value on restart
 
