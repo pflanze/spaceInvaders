@@ -2,7 +2,10 @@
 #ifndef __DIV_H
 #define __DIV_H
 
-typedef unsigned char bool;
+typedef enum {
+    false = 0,
+    true = 1
+} bool;
 
 
 #endif
