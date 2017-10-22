@@ -7,6 +7,8 @@ OBJS=Buttons.o Buttons.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o Space
 test: $(OBJS)
 	gcc -o test $(OBJS)
 
+clean:
+	rm *.o
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
