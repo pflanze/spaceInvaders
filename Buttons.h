@@ -1,6 +1,6 @@
 //Buttons.h
 
+#include "utils.h"
 
-
-unsigned char Pressfire_B1(void);
-unsigned char Pressfire_B2(void);
+bool Pressfire_B1(void);
+bool Pressfire_B2(void);
