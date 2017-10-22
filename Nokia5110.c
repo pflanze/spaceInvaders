@@ -55,6 +55,8 @@
 #include "Nokia5110.h"
 #include "Nokia5110_font.h"
 
+#ifndef TEST_WITHOUT_IO
+
 #define DC                      (*((volatile unsigned long *)0x40004100))
 #define DC_COMMAND              0
 #define DC_DATA                 0x40
@@ -134,6 +136,9 @@ void static lcdwrite(enum typeOfWrite type, char message){
   }
 }
 
+#endif /* TEST_WITHOUT_IO */
+
+
 //********Nokia5110_Init*****************
 // Initialize Nokia 5110 48x84 LCD by sending the proper
 // commands to the PCD8544 driver.  One new feature of the
@@ -144,6 +149,7 @@ void static lcdwrite(enum typeOfWrite type, char message){
 // outputs: none
 // assumes: system clock rate of 80 MHz
 void Nokia5110_Init(void){
+#ifndef TEST_WITHOUT_IO
   volatile unsigned long delay;
   SYSCTL_RCGC1_R |= SYSCTL_RCGC1_SSI0;  // activate SSI0
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
@@ -186,6 +192,7 @@ void Nokia5110_Init(void){
 
   lcdwrite(COMMAND, 0x20);              // we must send 0x20 before modifying the display control mode
   lcdwrite(COMMAND, 0x0C);              // set display control to normal mode: 0x0D for inverse
+#endif
 }
 
 //********Nokia5110_OutChar*****************
@@ -201,12 +208,14 @@ void Nokia5110_Init(void){
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
 void Nokia5110_OutChar(unsigned char data){
+#ifndef TEST_WITHOUT_IO
   int i;
   lcdwrite(DATA, 0x00);                 // blank vertical line padding
   for(i=0; i<5; i=i+1){
     lcdwrite(DATA, ASCII[data - 0x20][i]);
   }
   lcdwrite(DATA, 0x00);                 // blank vertical line padding
+#endif
 }
 
 //********Nokia5110_OutString*****************
@@ -217,10 +226,12 @@ void Nokia5110_OutChar(unsigned char data){
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
 void Nokia5110_OutString(char *ptr){
+#ifndef TEST_WITHOUT_IO
   while(*ptr){
     Nokia5110_OutChar((unsigned char)*ptr);
     ptr = ptr + 1;
   }
+#endif
 }
 
 //********Nokia5110_OutUDec*****************
@@ -273,12 +284,14 @@ void Nokia5110_OutUDec(unsigned short n){
 //         newY  new Y-position of the cursor (0<=newY<=5)
 // outputs: none
 void Nokia5110_SetCursor(unsigned char newX, unsigned char newY){
+#ifndef TEST_WITHOUT_IO
   if((newX > 11) || (newY > 5)){        // bad input
     return;                             // do nothing
   }
   // multiply newX by 7 because each character is 7 columns wide
   lcdwrite(COMMAND, 0x80|(newX*7));     // setting bit 7 updates X-position
   lcdwrite(COMMAND, 0x40|newY);         // setting bit 6 updates Y-position
+#endif
 }
 
 //********Nokia5110_Clear*****************
@@ -287,11 +300,13 @@ void Nokia5110_SetCursor(unsigned char newX, unsigned char newY){
 // inputs: none
 // outputs: none
 void Nokia5110_Clear(void){
+#ifndef TEST_WITHOUT_IO
   int i;
   for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
     lcdwrite(DATA, 0x00);
   }
   Nokia5110_SetCursor(0, 0);
+#endif
 }
 
 //********Nokia5110_DrawFullImage*****************
@@ -300,12 +315,15 @@ void Nokia5110_Clear(void){
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
 void Nokia5110_DrawFullImage(const char *ptr){
+#ifndef TEST_WITHOUT_IO
   int i;
   Nokia5110_SetCursor(0, 0);
   for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
     lcdwrite(DATA, ptr[i]);
   }
+#endif
 }
+
 char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be printed on the screen
 
 //********Nokia5110_PrintBMP*****************

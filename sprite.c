@@ -65,7 +65,9 @@
 // back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~80mA total
 
 #include "Nokia5110.h"
-#include "PLL.h"
+#ifndef TEST_WITHOUT_IO
+#  include "PLL.h"
+#endif
 
 
 // enemy ship that starts at the top of the screen (arms/mouth closed)
@@ -114,6 +116,7 @@ void Draw(void){ int i;
   }
   Nokia5110_DisplayBuffer();      // draw buffer
 }
+#ifndef TEST_WITHOUT_IO
 int main(void){
   PLL_Init();                   // set system clock to 80 MHz
   Random_Init(1);
@@ -128,3 +131,4 @@ int main(void){
     Delay100ms(2);
   }
 }
+#endif

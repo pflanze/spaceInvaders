@@ -6,9 +6,11 @@
 // Jonathan Valvano
 // November 19, 2012
 
-#include "DAC.h"
-#include "Timer0.h"
-#include "Sound.h"
+#ifndef TEST_WITHOUT_IO
+#  include "DAC.h"
+#  include "Timer0.h"
+#  include "Sound.h"
+#endif
 
 const unsigned char shoot[4080] = {
   129, 99, 103, 164, 214, 129, 31, 105, 204, 118, 55, 92, 140, 225, 152, 61, 84, 154, 184, 101, 

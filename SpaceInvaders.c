@@ -83,13 +83,15 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
 
-#include "..//tm4c123gh6pm.h"
+#ifndef TEST_WITHOUT_IO
+#  include "..//tm4c123gh6pm.h"
+#  include "TExaS.h"
+#endif
 #include "Nokia5110.h"
-#include "TExaS.h"
 #include "Init.h"
 #include "Buttons.h"
 #include "GameEngine.h"
-#include "Random.h"
+#include "random.h"
 #include "Message.h"
 
 //Global variables
@@ -115,10 +117,12 @@ void EnableInterrupts(void);  // Enable interrupts
 // assumes: na
 #if AUDIO
 void Timer2A_Handler(void){ 
+#ifndef TEST_WITHOUT_IO
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
 	//GPIO_PORTF_DATA_R ^= 0x02;
 	TimerCount++;
   Semaphore = 1; // trigger
+#endif
 }
 #endif
 //********SysTick_Handler*****************
@@ -207,6 +211,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 // outputs: none
 // assumes: na
 void init_Hw(void){
+#ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	
 	#if PORTF1
@@ -226,12 +231,14 @@ void init_Hw(void){
 	DAC_Init();
 	LED_Init();
 	EnableInterrupts();
+#endif
 }
 //********main*****************
 //Multiline description
 // inputs: none
 // outputs: none
 // assumes: na
+#ifndef TEST_WITHOUT_IO
 int main(void){	
 	
 	init_Hw();											//call all initializing functions
@@ -258,6 +265,7 @@ int main(void){
     SysTickFlag = 0;
 	}
 }
+#endif
 
 /*
 fix:

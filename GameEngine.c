@@ -8,7 +8,9 @@ rows/columns with enemies alive,
 #include "GameEngine.h"
 #include "sprites.h"
 #include "Nokia5110.h"
-#include "..//tm4c123gh6pm.h"
+#ifndef TEST_WITHOUT_IO
+#  include "..//tm4c123gh6pm.h"
+#endif
 #include "Random.h"
 
 

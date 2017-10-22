@@ -2,7 +2,7 @@
 
 #include "Buttons.h"
 
-#ifndef TEST_NO_IO
+#ifndef TEST_WITHOUT_IO
 #  include "..//tm4c123gh6pm.h"
 #else
 bool GPIO_PORTE_DATA_R= 0;
