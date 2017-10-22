@@ -1,6 +1,12 @@
 SRCS=Buttons.c Buttons.h GameEngine.c GameEngine.h Init.c Init.h LED.c LED.h Message.c Message.h Nokia5110.c Nokia5110.h Nokia5110_font.h Sound.c Sound.h SpaceInvaders.c random.h sprite.c sprites.h utils.h
 
-CFLAGS=-O1 -std=c89 -Wall -pedantic 
+CFLAGS=-O1 -std=c89 -Wall -pedantic -DTEST_WITHOUT_IO
+
+OBJS=Buttons.o Buttons.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o SpaceInvaders.o sprite.o 
+
+test: $(OBJS)
+	gcc -o test $(OBJS)
+
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
