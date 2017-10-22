@@ -53,6 +53,7 @@
 // back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~80mA total
 
 #include "Nokia5110.h"
+#include "Nokia5110_font.h"
 
 #define DC                      (*((volatile unsigned long *)0x40004100))
 #define DC_COMMAND              0
