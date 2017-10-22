@@ -11,7 +11,7 @@ rows/columns with enemies alive,
 #ifndef TEST_WITHOUT_IO
 #  include "..//tm4c123gh6pm.h"
 #endif
-#include "Random.h"
+#include "random.h"
 
 
 //local variables
