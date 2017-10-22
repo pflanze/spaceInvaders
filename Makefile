@@ -15,7 +15,7 @@ depend:
 
 Buttons.o: Buttons.h utils.h
 Buttons.o: utils.h
-GameEngine.o: GameEngine.h sprites.h Nokia5110.h
+GameEngine.o: GameEngine.h sprites.h Nokia5110.h random.h
 Init.o: Init.h
 Message.o: Message.h Nokia5110.h
 Nokia5110.o: Nokia5110.h Nokia5110_font.h
