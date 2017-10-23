@@ -72,14 +72,13 @@
 #define	TRUE	1
 #define	FALSE 0
 
-//Return vs update
+//Return vs update (mode)
 #define RETURNVAL	0
 #define UPDATE		1
 #define RETURNARR	3
 
 //Miselaneus
 #define NA 1
-
 
 extern volatile unsigned char gameOverFlag;		
 
@@ -103,7 +102,6 @@ struct State {
 void Player_Move(void);
 void LaserInit_ship(void);
 void ShipInit(void);
-void MoveObjects(void);
 void Draw(void);
 unsigned long ADC0_In(void);
 
@@ -115,7 +113,7 @@ extern unsigned long ADC0_SSFIFO3_R;
 #if DRAW_ENEMIES
 	void EnemyInit(void);
 	void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn);
-	void EnemyShiftTrack(unsigned int localAliveRows);
+
 	void EnemyLaserCollisions(void);
 	void LaserCollision(void);
 	void LaserEnemy_Move(void);
@@ -146,6 +144,8 @@ signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
 
 unsigned int FirstLast(unsigned char row, unsigned char column);
+void MoveObjects(unsigned char mode);
+unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned char mode);
 
 
 #endif
