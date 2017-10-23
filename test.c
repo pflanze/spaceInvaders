@@ -33,24 +33,25 @@ int main () {
 	GPIO_PORTE_DATA_R=1;
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
-	SysTickFlag=0;
+	main_update_LCD();
 
 	SysTick_Handler();
+	main_update_LCD();
 
 	// look at Nokia buffer.
 	trap();
