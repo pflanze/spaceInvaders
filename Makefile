@@ -31,6 +31,6 @@ SpaceInvaders.o: Nokia5110.h Init.h Buttons.h utils.h GameEngine.h random.h
 SpaceInvaders.o: Message.h
 random.o: /usr/include/stdlib.h /usr/include/features.h /usr/include/alloca.h
 test.o: trap.h /usr/include/signal.h /usr/include/features.h
-test.o: /usr/include/time.h /usr/include/unistd.h /usr/include/getopt.h
-test.o: Buttons.h utils.h GameEngine.h Init.h LED.h Message.h
-test.o: Nokia5110_font.h Nokia5110.h random.h Sound.h sprites.h
+test.o: /usr/include/time.h Buttons.h utils.h GameEngine.h Init.h LED.h
+test.o: Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h
+test.o: SpaceInvaders.h
