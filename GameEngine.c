@@ -601,8 +601,6 @@ void PlayerLaserCollisions(void){
 #if DRAW_ENEMIES
 void EnemyscanY(unsigned char laserNum){
 	signed char row = lastLine;
-	unsigned char found = 0;
-	unsigned char exit = 0;
 	
 	unsigned char ELL[MAXROWS];		//Enemy line low
 	unsigned char ELH[MAXROWS];		//Enemy line high
@@ -612,22 +610,23 @@ void EnemyscanY(unsigned char laserNum){
 		ELL[row] = Enemy[row][0].y + YOFFSET;
 		ELH[row] = Enemy[row][0].y;
 	}
-	
-	row = lastLine;//temporal variable reset
-		
-	while((found == 0)&&(exit == 0)){
+
+	for (row=lastLine; row>=0; row--) {
 		if(Laser_ship[laserNum].y > ELL[row]){
-			exit = 1;
+			// exit
+			break;
 		}
-		else if(Laser_ship[laserNum].y < ELH[row]){
+		if(Laser_ship[laserNum].y < ELH[row]){
 		 row--;
 		}
 		else{
 			if(EnemyscanX(row, laserNum)){
-				found = 1;
+				// found
+				break;
 			}
 			else{							//temporal testing
-				exit = 1;
+				// exit
+				break;
 			}
 		}
 	}	
