@@ -23,5 +23,4 @@ Message.o: Message.h Nokia5110.h
 Nokia5110.o: Nokia5110.h Nokia5110_font.h
 SpaceInvaders.o: Nokia5110.h Init.h Buttons.h utils.h GameEngine.h random.h
 SpaceInvaders.o: Message.h
-sprite.o: Nokia5110.h
 random.o: /usr/include/stdlib.h /usr/include/features.h /usr/include/alloca.h
