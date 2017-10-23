@@ -86,8 +86,8 @@ struct State {
   const unsigned char *image; // ptr->image
   long life;            // 0=dead, 1=alive
 };          
-typedef struct State STyp;
-STyp Enemy[4];
+
+struct State Enemy[4];
 void Init(void){ int i;
   for(i=0;i<4;i++){
     Enemy[i].x = 20*i;
