@@ -632,6 +632,20 @@ void EnemyscanY(unsigned char laserNum){
 	}	
 }
 #endif
+//********Verify_lastLine*****************
+//Keeps track of the last enemy line
+// changes: lastLine
+// inputs: none
+// outputs: lastLine
+// assumes: na
+#if DRAW_ENEMIES
+static unsigned Verify_lastLine(unsigned lastLine){
+	while(Estat_row[lastLine].Epr == 0){
+		lastLine--;
+	}
+	return lastLine;
+}
+#endif
 //********EnemyscanX*****************
 // Scans for a enemy collition on a single row (x axis)
 // changes: Laser_ship[index].life, Enemy[row][column].life, Enemy[row][column].JK
@@ -832,20 +846,6 @@ unsigned int FirstLast(unsigned char row, unsigned char column){
 		}
 		return alr_counter;
 	}
-}
-#endif
-//********Verify_lastLine*****************
-//Keeps track of the last enemy line
-// changes: lastLine
-// inputs: none
-// outputs: lastLine
-// assumes: na
-#if DRAW_ENEMIES
-static unsigned Verify_lastLine(unsigned lastLine){
-	while(Estat_row[lastLine].Epr == 0){
-		lastLine--;
-	}
-	return lastLine;
 }
 #endif
 //********FirstEPC*****************
