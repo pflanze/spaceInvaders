@@ -3,4 +3,6 @@
 
 void SysTick_Handler(void);
 
+extern unsigned char SysTickFlag;
+
 #endif
