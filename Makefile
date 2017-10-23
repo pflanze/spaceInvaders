@@ -17,7 +17,8 @@ depend:
 /usr/include/stdlib.h:
 /usr/include/features.h:
 /usr/include/alloca.h:
-
+/usr/include/signal.h:
+/usr/include/time.h:
 
 # DO NOT DELETE
 
