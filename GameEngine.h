@@ -105,6 +105,10 @@ void MoveObjects(void);
 void Draw(void);
 unsigned long ADC0_In(void);
 
+#ifdef TEST_WITHOUT_IO
+extern unsigned long ADC0_SSFIFO3_R;
+#endif
+
 
 #if DRAW_ENEMIES
 	void EnemyInit(void);
