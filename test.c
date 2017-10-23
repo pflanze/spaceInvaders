@@ -14,7 +14,12 @@
 #include "utils.h"
 
 
+static void game_step() {
+	SysTick_Handler();
+	main_update_LCD();
+}
 
+#define REPEAT(n, expr)  for(int i=0; i<n; i++) { expr; }
 
 int main () {
 	init_Hw();
@@ -28,30 +33,11 @@ int main () {
 	ShipInit();
 	defaultValues();
 	Random_Init(1);
-	
-	SysTick_Handler();
+
+	REPEAT(1, game_step());
 	GPIO_PORTE_DATA_R=1;
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
-
-	SysTick_Handler();
-	main_update_LCD();
+	
+	REPEAT(8, game_step());
 
 	// look at Nokia buffer.
 	trap();
