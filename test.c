@@ -9,6 +9,7 @@
 #include "Nokia5110.h"
 #include "random.h"
 #include "Sound.h"
+#include "SpaceInvaders.h"
 // #include "sprites.h"
 #include "utils.h"
 
