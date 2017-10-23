@@ -1,3 +1,6 @@
+#ifndef _NOKIA5110_H
+#define _NOKIA5110_H
+
 // Nokia5110.h
 // Runs on LM4F120/TM4C123
 // Use SSI0 to send an 8-bit code to the Nokia5110 48x84
@@ -168,3 +171,6 @@ void Nokia5110_ClearBuffer(void);
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
 void Nokia5110_DisplayBuffer(void);
+
+
+#endif

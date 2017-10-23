@@ -1,4 +1,6 @@
 //GameEngine.h
+#ifndef _GAMEENGINE_H
+#define _GAMEENGINE_H
 
 
 
@@ -146,3 +148,4 @@ unsigned long Convert2Distance(unsigned long sample);
 unsigned int FirstLast(unsigned char row, unsigned char column);
 
 
+#endif
