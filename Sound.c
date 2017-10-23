@@ -1145,6 +1145,7 @@ unsigned long Index = 0;
 const unsigned char *Wave;
 unsigned long Count = 0;
 void Play(void){
+#ifndef TEST_WITHOUT_IO
   if(Count){
     DAC_Out(Wave[Index]>>4);
     Index = Index + 1;
@@ -1152,8 +1153,10 @@ void Play(void){
   }else{
   NVIC_DIS0_R = 1<<19;           // disable IRQ 19 in NVIC
   }
+#endif
 }
 void Sound_Init(void){
+#ifndef TEST_WITHOUT_IO
   DAC_Init(8);               // initialize simple 4-bit DAC
 //  Timer0B_Init(&Play, 20000); // 4 kHz
   Timer0_Init(&Play, 80000000/11025);     // 11.025 kHz
@@ -1162,13 +1165,16 @@ void Sound_Init(void){
 //   while(1){
 //     DAC_Out(2048);
 //   }
+#endif
 }
 void Sound_Play(const unsigned char *pt, unsigned long count){
+#ifndef TEST_WITHOUT_IO
   Wave = pt;
   Index = 0;
   Count = count;
   NVIC_EN0_R = 1<<19;           // 9) enable IRQ 19 in NVIC
   TIMER0_CTL_R = 0x00000001;    // 10) enable TIMER0A
+#endif
 }
 void Sound_Shoot(void){
   Sound_Play(shoot,4080);
