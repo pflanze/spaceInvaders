@@ -17,8 +17,8 @@ rows/columns with enemies alive,
 
 //local variables
 unsigned char FrameCount = 0;
-unsigned char right = TRUE;			//moves the enemies, 0: moves left
-unsigned char down = FALSE;			//moves the enemies, 1: moves down
+bool right = true;			//moves the enemies, 0: moves left
+bool down = false;			//moves the enemies, 1: moves down
 
 //----------------------------------------------------------Structs------------------------------------------------
 //game stats per column
@@ -265,12 +265,12 @@ void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
-				right = FALSE;	//moves left
-				down = TRUE;
+				right = false;	//moves left
+				down = true;
 			}
 			else if(Enemy[row][LeftShiftColumn].x <= LEFTLIMIT){
-				right = TRUE;
-				down = TRUE;
+				right = true;
+				down = true;
 			}	
 			//moves left/right using the switches
 			for(column=0;column<MAX_ENEMY_PR;column++){
@@ -286,7 +286,7 @@ void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){
 				for(column=0;column<4;column++){
 					Enemy[row][column].y += 1;
 				}
-				down = FALSE;
+				down = false;
 			}
 		}
 		else{										//Enemies have reached the earth

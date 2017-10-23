@@ -68,10 +68,6 @@
 #define	FIRST_E	0
 #define	LAST_E	3
 
-//Boolean
-#define	TRUE	1
-#define	FALSE 0
-
 //Return vs update (mode)
 #define RETURNVAL	0
 #define UPDATE		1
