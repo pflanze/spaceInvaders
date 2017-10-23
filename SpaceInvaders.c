@@ -158,7 +158,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				enemyBonusCreate();
 			#endif	
 			CheckingCollisions();
-			MoveObjects();				//game engine
+			MoveObjects(UPDATE);				//game engine
 			break;
 		}
 		case STANDBY:{

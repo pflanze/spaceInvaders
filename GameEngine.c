@@ -10,6 +10,7 @@ rows/columns with enemies alive,
 #include "Nokia5110.h"
 #include "..//tm4c123gh6pm.h"
 #include "Random.h"
+#include "utils.h"
 
 
 //local variables
@@ -51,7 +52,6 @@ struct State Laser_ship[MAXLASERS];
 
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
-	static unsigned char enemyTracking[] = {FIRST_E,LAST_E};					//keeps track of the first and last enemy across diferrent rows
 	static unsigned lastLine = MAXROWS-1;
 	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 #endif
@@ -189,8 +189,8 @@ void defaultValues(void){
 
 	//tracking defaults
 	#if DRAW_ENEMIES
-		enemyTracking[0] = FIRST_E;
-		enemyTracking[1] = LAST_E;
+//		enemyTracking[0] = FIRST_E;
+//		enemyTracking[1] = LAST_E;
 	
 		lastLine = MAXROWS-1;
 	
@@ -213,16 +213,20 @@ void defaultValues(void){
 //--------------------------------------------------------------MOVE OBJECTS-------------------------------------------------------------------------
 //********MoveObjects*****************
 //Updates the position values of the asociated objects
-// inputs: none
+// inputs: mode = RETURNARR|UPDATE
 // outputs: none
 // assumes: na
-void MoveObjects(void){
+void MoveObjects(unsigned char mode){
+	unsigned int *ETracking;
+	
+	ETracking = EnemyShiftTrack(NA,RETURNARR);
+	
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
 		Player_Move();						//calls ADC0_in, Convert2Distance
 		
 		if(gameOverFlag == INGAME){
 			#if DRAW_ENEMIES
-				Enemy_Move(enemyTracking[0], enemyTracking[1]);					//updates enemy coordinate
+				Enemy_Move(ETracking[0], ETracking[1]);					//updates enemy coordinate
 				LaserEnemy_Move();
 			#endif
 			
@@ -485,9 +489,14 @@ void LaserEnemyDraw(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void EnemyShiftTrack(unsigned int localAliveRows){
+unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned char mode){
+	static unsigned int enemyTracking[] = {FIRST_E,LAST_E};	//keeps track of the first and last enemy across diferrent rows
 	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
 	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
+	
+	
+	if(gameOverFlag == LOOSE || gameOverFlag == WIN) {	enemyTracking[0] = FIRST_E;		enemyTracking[1] = LAST_E;}
+	if(mode == RETURNARR){return enemyTracking;}
 	
 	switch(localAliveRows){
 		case 1:
@@ -518,6 +527,7 @@ void EnemyShiftTrack(unsigned int localAliveRows){
 			enemyTracking[0] = lowest;
 		}	
 	}
+	return NULL;
 }
 #endif
 
@@ -646,7 +656,8 @@ unsigned char EnemyscanX(unsigned char row, unsigned char laserNum){
 				alive_rows = FirstLast(row, column);
 				lastLine = Verify_lastLine(lastLine);								//updates last line value
 				#if DRAW_ENEMIES
-					EnemyShiftTrack(alive_rows);
+					//updates 
+					EnemyShiftTrack(alive_rows,UPDATE);
 				#endif
 				FirstEPC(UPDATE);																					//update point
 				enemyDestroyed = 1;

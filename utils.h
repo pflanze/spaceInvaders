@@ -9,3 +9,8 @@ typedef enum {
 
 
 #endif
+
+
+
+#define NULL 0
+
