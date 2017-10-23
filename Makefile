@@ -2,7 +2,7 @@ SRCS=Buttons.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInva
 
 CFLAGS=-O1 -std=c99 -Wall -DTEST_WITHOUT_IO
 
-OBJS=Buttons.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o
+OBJS=Buttons.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o
 
 test: $(OBJS)
 	gcc -o test $(OBJS)
