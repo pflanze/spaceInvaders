@@ -13,6 +13,12 @@ clean:
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
 
+# hack to ignore those parts from the auto-generated directions below:
+/usr/include/stdlib.h:
+/usr/include/features.h:
+/usr/include/alloca.h:
+
+
 # DO NOT DELETE
 
 Buttons.o: Buttons.h utils.h
