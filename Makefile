@@ -1,4 +1,4 @@
-SRCS=Buttons.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c sprite.c
+SRCS=Buttons.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c sprite.c random.c
 
 CFLAGS=-O1 -std=c99 -Wall -DTEST_WITHOUT_IO
 
