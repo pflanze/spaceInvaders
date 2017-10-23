@@ -3,6 +3,7 @@
 
 void SysTick_Handler(void);
 
-extern unsigned char SysTickFlag;
+void main_update_LCD(void);
+
 
 #endif

@@ -238,6 +238,15 @@ void init_Hw(void){
 // inputs: none
 // outputs: none
 // assumes: na
+
+void main_update_LCD(void) {
+	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
+		Draw(); // update the LCD
+	}
+	SysTickFlag = 0;
+}
+
+
 #ifndef TEST_WITHOUT_IO
 int main(void){	
 	
@@ -259,10 +268,7 @@ int main(void){
 	
   while(1){
 	 while(SysTickFlag == 0){};
-		if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-			Draw(); // update the LCD
-		}
-    SysTickFlag = 0;
+	 main_update_LCD();
 	}
 }
 #endif
