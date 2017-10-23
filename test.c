@@ -31,12 +31,25 @@ int main () {
 	
 	SysTick_Handler();
 	GPIO_PORTE_DATA_R=1;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
+	SysTickFlag=0;
+
 	SysTick_Handler();
 
 	// look at Nokia buffer.
