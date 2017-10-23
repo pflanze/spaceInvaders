@@ -16,7 +16,6 @@ depend:
 # DO NOT DELETE
 
 Buttons.o: Buttons.h utils.h
-Buttons.o: utils.h
 GameEngine.o: GameEngine.h sprites.h Nokia5110.h random.h
 Init.o: Init.h
 LED.o: LED.h
