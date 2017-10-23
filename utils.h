@@ -1,4 +1,3 @@
-
 #ifndef _UTILS_H
 #define _UTILS_H
 
@@ -8,9 +7,7 @@ typedef enum {
 } bool;
 
 
-#endif
-
-
-
 #define NULL 0
 
+
+#endif /* _UTILS_H */
