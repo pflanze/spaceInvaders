@@ -142,7 +142,6 @@ void EnemyscanY(unsigned char laserNum);
 unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
 signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
-static unsigned Verify_lastLine(unsigned lastLine);
 
 unsigned int FirstLast(unsigned char row, unsigned char column);
 
