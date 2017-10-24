@@ -1,18 +1,19 @@
 #ifdef TEST_WITHOUT_IO
 
-#include <stdlib.h>
+#include "CMWC.h"
 
 
 void Random_Init(unsigned long seed) {
-	srand(seed);
+	CMWC_init();
+	CMWC_Q[0]=seed;
 }
 
 unsigned long Random(void) {
-	return rand();
+	return CMWC() & 255;
 }
 
 unsigned long Random32(void) {
-	return rand();
+	return CMWC();
 }
 
 #endif
