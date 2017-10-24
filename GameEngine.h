@@ -130,7 +130,7 @@ void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr);
 
-unsigned char FirstEPC(unsigned char mode);
+unsigned char * FirstEPC(unsigned char mode);
 
 void EnemyscanY(unsigned char laserNum);
 unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
