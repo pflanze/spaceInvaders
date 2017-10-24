@@ -25,22 +25,22 @@ void die_errno(const char* msg, const char* arg) {
 }
 
 
-// Write screen buffer format from Nokia5110.c to file in PGM
+// Write screen buffer format from Nokia5110.c to file in PBM
 // format. Take dimensions from Nokia5110.h
-static void screen_write_pgm(const char* screen, const char* basepath) {
+static void screen_write_pbm(const char* screen, const char* basepath) {
 	int w= SCREENW;
 	int h= SCREENH;
 
 	int pathsiz= strlen(basepath)+5;
 	char* path= malloc(pathsiz);
-	snprintf(path, pathsiz, "%s.pgm", basepath);
+	snprintf(path, pathsiz, "%s.pbm", basepath);
 	
 	FILE *fh= fopen(path, "w");
 	if (!fh) die_errno("open", path);
 
 #define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno("print", path)
 
-	PRINTF("P2\n");
+	PRINTF("P1\n");
 	PRINTF("# CREATOR: SpaceInvaders test\n");
 	PRINTF("%d %d\n", w, h);
 
@@ -48,8 +48,9 @@ static void screen_write_pgm(const char* screen, const char* basepath) {
 		for (int x=0; x<w; x++) {
 			int i= x + w*(y/8);
 			char v= screen[i];
-			PRINTF("%d\n", ((v >> (y%8)) & 1) ? 0 : 255);
+			PRINTF("%d ", ((v >> (y%8)) & 1) ? 1 : 0);
 		}
+		PRINTF("\n");
 	}
 	
 #undef PRINTF
@@ -57,6 +58,12 @@ static void screen_write_pgm(const char* screen, const char* basepath) {
 	if (fclose(fh)) die_errno("close", path);
 
 	free(path);
+}
+
+static void screen_write_numbered(int i) {
+	char basepath[10];
+	snprintf(basepath, 10, "t/%i", i);
+	screen_write_pbm(Screen, basepath);
 }
 
 
@@ -84,15 +91,15 @@ int main () {
 	Random_Init(1);
 
 	REPEAT(1, game_step());
-	screen_write_pgm(Screen, "t/1");
+	screen_write_numbered(1);
 	
 	GPIO_PORTE_DATA_R=1;
 	REPEAT(10-1, game_step());
-	screen_write_pgm(Screen, "t/10");
+	screen_write_numbered(10);
 	
 	GPIO_PORTE_DATA_R=1;
 	REPEAT(40-8-1, game_step());
-	screen_write_pgm(Screen, "t/40");
+	screen_write_numbered(40);
 
 	// look at Nokia buffer.
 	//trap();
