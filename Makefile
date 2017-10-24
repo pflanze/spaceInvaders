@@ -1,8 +1,8 @@
-SRCS=Buttons.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
+SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
 
 CFLAGS=-O1 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3
 
-OBJS=Buttons.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o test.o
+OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o test.o
 
 
 runtest: test t
