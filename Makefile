@@ -19,6 +19,15 @@ depend:
 /usr/include/alloca.h:
 /usr/include/signal.h:
 /usr/include/time.h:
+/usr/include/stdio.h:
+/usr/include/libio.h:
+/usr/include/_G_config.h:
+/usr/include/wchar.h:
+/usr/include/string.h:
+/usr/include/xlocale.h:
+/usr/include/errno.h:
+/usr/include/stdlib.h:
+/usr/include/alloca.h:
 
 # DO NOT DELETE
 
