@@ -75,7 +75,7 @@ static void game_step() {
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 }
 
-#define REPEAT(n, expr)  for(int i=0; i<n; i++) { expr; }
+#define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
 int main () {
 	init_Hw();
@@ -92,14 +92,16 @@ int main () {
 
 	REPEAT(1, game_step());
 	screen_write_numbered(1);
-	
-	GPIO_PORTE_DATA_R=1;
-	REPEAT(10-1, game_step());
-	screen_write_numbered(10);
-	
-	GPIO_PORTE_DATA_R=1;
-	REPEAT(40-8-1, game_step());
-	screen_write_numbered(40);
+
+	REPEAT(8,
+	       {
+		       GPIO_PORTE_DATA_R=1;
+		       REPEAT(10,
+			      {
+				      game_step();
+			      });
+		       screen_write_numbered((i+1)*10+1);
+	       });
 
 	// look at Nokia buffer.
 	//trap();
