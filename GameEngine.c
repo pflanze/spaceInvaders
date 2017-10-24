@@ -55,7 +55,7 @@ struct State Laser_ship[MAXLASERS];
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
 	static unsigned lastLine = MAXROWS-1;
-	static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
+	
 #endif
 //-----------------------------------------------------------INIT-----------------------------------------------------------------------
 //********EnemyInit*****************
@@ -136,15 +136,21 @@ void LaserInit_ship(void){
 }
 //********EnemyLaserInit*****************
 //Initializes the lasers fired by the enemy ship. It selects an enemy randomly to shoot.
-//Used by: Draw(LaserEnemyDraw)
 // changes: Laser_enemy[index].*
 // inputs: none
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
 	void EnemyLaserInit(void){	
-	unsigned char randN = (Random32()>>24)%(FirstEPC(RETURNVAL));		//generates number [0-aliveCols]
-	unsigned char columnNew	= AlColsMat[randN];					//matrix holds the valid Enemy firing positions
+	
+		
+	unsigned char *AliveColsLocal =  FirstEPC(RETURNVAL);
+	unsigned char randN = (Random32()>>24)%(*AliveColsLocal);		//generates number [0-aliveCols]
+	
+	unsigned char *AlColsMatLocal = 	FirstEPC(RETURNARR);
+		
+	
+	unsigned char columnNew	= AlColsMatLocal[randN];					//matrix holds the valid Enemy firing positions
 		
 		if(Estat_column[columnNew].Epc){
 			unsigned char row = Estat_column[columnNew].Fep;
@@ -191,16 +197,12 @@ void defaultValues(void){
 
 	//tracking defaults
 	#if DRAW_ENEMIES
-//		enemyTracking[0] = FIRST_E;
-//		enemyTracking[1] = LAST_E;
-	
 		lastLine = MAXROWS-1;
 	
 		//sets defaults column stats
 		for(i=0;i<MAX_ENEMY_PR;i++){
 			Estat_column[i].Epc = MAXROWS;
 			Estat_column[i].Fep = lastLine;
-			AlColsMat[i] = i;
 		}	
 
 		for(i=0;i<MAXLASERS;i++){											
@@ -712,7 +714,8 @@ void EnemyLaserCollisions(void){
 					Laser_enemy[i].JK = 0;
 					Ship.life = 0;
 					Ship.JK = 1;
-					return;
+					gameOverFlag = 0;
+					break;
 				}
 			}
 		}
@@ -783,7 +786,7 @@ void BonusLaserCollision(void){
 //					It is called by EnemyscanX to update Estat_row
 //					it is also used to update general game stats
 // changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, gameOverFlag, AliveRows[row]
-// inputs: row, column, mode(UPDATE|RETURNVAL)
+// inputs: row, column, mode
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
@@ -793,7 +796,7 @@ unsigned int FirstLast(unsigned char row, unsigned char column){
 	unsigned char lastCheck = 0;
 	
 	//setting defaults
-	if(gameOverFlag == WIN || gameOverFlag == WIN) {
+	if(gameOverFlag == LOOSE || gameOverFlag == WIN) {
 		enemyCount = MAXROWS*MAX_ENEMY_PR;
 		{	//liverows[] defaults
 			unsigned char i;
@@ -862,18 +865,33 @@ unsigned int FirstLast(unsigned char row, unsigned char column){
 //********FirstEPC*****************
 // Keep track of the first enemy per column
 // changes: Estat_column[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
-// inputs: mode = 0|1 (RETURNVAL|UPDATE)
+// Callers: EnemyLaserInit, EnemyscanX
+// inputs: mode = RETURNVAL|UPDATE|RETURNARR
 // outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
-	unsigned char FirstEPC(unsigned char mode){
+	unsigned char * FirstEPC(unsigned char mode){
 		static unsigned char LiveCols = MAX_ENEMY_PR;
+		static unsigned char AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 		unsigned char column = 0;
 		unsigned char aliveCol = 0;
 		
-		if(gameOverFlag == WIN || gameOverFlag == WIN) {LiveCols = MAX_ENEMY_PR;}
-		if(mode == RETURNVAL){return LiveCols;}
+		//sets defaults
+		if(gameOverFlag == LOOSE || gameOverFlag == WIN) {
+			unsigned char i;
+			LiveCols = MAX_ENEMY_PR;
+			for(i=0;i<MAX_ENEMY_PR;i++){
+				AlColsMat[i] = i;
+			}
+		}
 		
+		//RETURNVAL return the alive columns
+		if(mode == RETURNVAL){
+			unsigned char *p;
+			return p = &LiveCols;
+		}
+		
+		//RETURNARR will continue
 		//we are reading left>right, dowun>up
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			signed char row = Estat_column[column].Fep;		//start from last known position
@@ -897,7 +915,10 @@ unsigned int FirstLast(unsigned char row, unsigned char column){
 			}
 		}
 		LiveCols = aliveCol;
-		return LiveCols;
+		{//RETURNARR mode return the array
+			unsigned char *p;
+			return p = AlColsMat;
+		}
 	}
 #endif
 //--------------------------------------------------------------Miscelaneus----------------------------------------------------------
@@ -967,14 +988,6 @@ Functions:
 		EnemyLaserInit
 		>defaultValues
 		FirstEPC
-		
-Var: enemyTracking[]
-updated@:EnemyShiftTrack
-Functions:
-		>defaultValues
-		MoveObjects
-		EnemyShiftTrack
-
 
 status:Easy rescope, however difficult to set to a default value on restart
 
