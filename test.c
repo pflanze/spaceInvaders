@@ -59,6 +59,7 @@ static void screen_write_pgm(const char* screen, const char* path) {
 static void game_step() {
 	SysTick_Handler();
 	main_update_LCD();
+	GPIO_PORTE_DATA_R=0; // revert the push button to off
 }
 
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) { expr; }
