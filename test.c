@@ -27,10 +27,14 @@ void die_errno(const char* msg, const char* arg) {
 
 // Write screen buffer format from Nokia5110.c to file in PGM
 // format. Take dimensions from Nokia5110.h
-static void screen_write_pgm(const char* screen, const char* path) {
+static void screen_write_pgm(const char* screen, const char* basepath) {
 	int w= SCREENW;
 	int h= SCREENH;
 
+	int pathsiz= strlen(basepath)+5;
+	char* path= malloc(pathsiz);
+	snprintf(path, pathsiz, "%s.pgm", basepath);
+	
 	FILE *fh= fopen(path, "w");
 	if (!fh) die_errno("open", path);
 
@@ -51,6 +55,8 @@ static void screen_write_pgm(const char* screen, const char* path) {
 #undef PRINTF
 	
 	if (fclose(fh)) die_errno("close", path);
+
+	free(path);
 }
 
 
