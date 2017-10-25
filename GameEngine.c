@@ -261,8 +261,10 @@ void Player_Move(void){
 unsigned int Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){ 
 	signed char column = 0;
 	unsigned char row = 0;
-	unsigned int status;
-	
+	unsigned int status= -1;
+
+	assert(row<MAXROWS);
+
 	while(row<MAXROWS){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			//sets the switches to move down/left/right
