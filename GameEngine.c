@@ -640,6 +640,8 @@ unsigned int PlayerLaserCollisions(void){
 unsigned int EnemyscanY(unsigned char laserNum){
 	unsigned int status = INGAME;
 	signed char row = lastLine;
+	unsigned char found = 0;
+	unsigned char exit = 0;
 	
 	unsigned char ELL[MAXROWS];		//Enemy line low
 	unsigned char ELH[MAXROWS];		//Enemy line high
@@ -649,13 +651,14 @@ unsigned int EnemyscanY(unsigned char laserNum){
 		ELL[row] = Enemy[row][0].y + YOFFSET;
 		ELH[row] = Enemy[row][0].y;
 	}
-
-	for (row=lastLine; row>=0; row--) {
+	
+	row = lastLine;//temporal variable reset
+		
+	while((found == 0)&&(exit == 0)){
 		if(Laser_ship[laserNum].y > ELL[row]){
-			// exit
-			break;
+			exit = 1;
 		}
-		if(Laser_ship[laserNum].y < ELH[row]){
+		else if(Laser_ship[laserNum].y < ELH[row]){
 		 row--;
 		}
 		else{
@@ -665,12 +668,10 @@ unsigned int EnemyscanY(unsigned char laserNum){
 				return status;
 			}
 			if(result[1]){//enemyDestroyed
-				// found
-				break;
+				found = 1;
 			}
 			else{							//temporal testing
-				// exit
-				break;
+				exit = 1;
 			}
 		}
 	}	
