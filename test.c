@@ -68,11 +68,15 @@ static void screen_write_numbered(int i) {
 
 
 
+struct Game {
+	int frame_number;
+};
 
-static void game_step() {
+static void game_step(struct Game *game) {
 	SysTick_Handler();
 	main_update_LCD();
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
+	game->frame_number++;
 }
 
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
@@ -90,17 +94,19 @@ int main () {
 	defaultValues();
 	Random_Init(223412);
 
-	REPEAT(1, game_step());
-	screen_write_numbered(1);
+	struct Game game;
+	game.frame_number=-1;
+
+	game_step(&game);
+	screen_write_numbered(game.frame_number);
 
 	REPEAT(8,
 	       {
 		       GPIO_PORTE_DATA_R=1;
-		       int j=i;
 		       REPEAT(10,
 			      {
-				      game_step();
-				      screen_write_numbered(1+j*10+i);
+				      game_step(&game);
+				      screen_write_numbered(game.frame_number);
 			      });
 	       });
 
