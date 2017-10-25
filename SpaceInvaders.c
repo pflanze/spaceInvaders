@@ -171,7 +171,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		}
 		case STANDBY:{
 			{//sets defaults
-				unsigned char rst = TRUE;
+				unsigned char rst = true;
 				if(rst){reset();rst=0;}
 			}
 			Player_Move();
@@ -248,7 +248,8 @@ void init_Hw(void){
 // outputs: none
 // assumes: na
 
-void main_update_LCD(unsigned int status) {
+void main_update_LCD(void) {
+	unsigned int status= gameOverFlag;
 	if((status == INGAME)||(status == STANDBY)){
 		Draw(status); // update the LCD
 	}
@@ -275,7 +276,7 @@ int main(void){
 	
   while(1){
 	 while(SysTickFlag == 0){};
-	 main_update_LCD(gameOverFlag);
+	 main_update_LCD();
 	}
 }
 #endif

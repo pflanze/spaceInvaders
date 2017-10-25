@@ -71,7 +71,7 @@ static void screen_write_numbered(int i) {
 
 static void game_step() {
 	SysTick_Handler();
-	main_update_LCD(gameOverFlag);
+	main_update_LCD();
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 }
 
