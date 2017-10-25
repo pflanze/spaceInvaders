@@ -110,6 +110,19 @@ int main () {
 			      });
 	       });
 
+	ADC0_SSFIFO3_R=2000;
+
+	REPEAT(8,
+	       {
+		       GPIO_PORTE_DATA_R=1;
+		       REPEAT(10,
+			      {
+				      game_step(&game);
+				      screen_write_numbered(game.frame_number);
+			      });
+	       });
+
+
 	/* verify that there are no differences to the committed
 	   versions of the frames */
 
