@@ -623,6 +623,7 @@ void EnemyscanY(unsigned int laserNum){
 	row = lastLine;//temporal variable reset
 		
 	while((found == 0)&&(exit == 0)){
+		assert(row >= 0);
 		if(Laser_ship[laserNum].y > ELL[row]){
 			exit = 1;
 		}
