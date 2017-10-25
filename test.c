@@ -88,7 +88,7 @@ int main () {
 	#endif
 	ShipInit();
 	defaultValues();
-	Random_Init(1);
+	Random_Init(223412);
 
 	REPEAT(1, game_step());
 	screen_write_numbered(1);
