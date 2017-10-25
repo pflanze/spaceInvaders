@@ -62,7 +62,7 @@ static void screen_write_pbm(const char* screen, const char* basepath) {
 
 static void screen_write_numbered(int i) {
 	char basepath[10];
-	snprintf(basepath, 10, "t/%i", i);
+	snprintf(basepath, 10, "t/%04i", i);
 	screen_write_pbm(Screen, basepath);
 }
 
@@ -96,11 +96,12 @@ int main () {
 	REPEAT(8,
 	       {
 		       GPIO_PORTE_DATA_R=1;
+		       int j=i;
 		       REPEAT(10,
 			      {
 				      game_step();
+				      screen_write_numbered(1+j*10+i);
 			      });
-		       screen_write_numbered((i+1)*10+1);
 	       });
 
 	// look at Nokia buffer.
