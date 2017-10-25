@@ -9,6 +9,7 @@
 //debugging code
 #define DRAW_ENEMIES	1
 #define DRAW_ENEMYBONUS 1
+#define GODMODE 1
 
 //game max
 #define MAXLASERS 5
@@ -55,6 +56,8 @@
 #define LOOSE			1
 #define WIN				2
 #define STANDBY		3
+#define RESET			4
+
 
 //Objecdt IDs
 #define ID_SHIP			0
@@ -76,9 +79,6 @@
 //Miselaneus
 #define NA 1
 
-extern volatile unsigned char gameOverFlag;		
-
-
 //----------------------------------------------------------Structs------------------------------------------------
 
 
@@ -98,7 +98,7 @@ struct State {
 void Player_Move(void);
 void LaserInit_ship(void);
 void ShipInit(void);
-void Draw(void);
+void Draw(unsigned int status);
 unsigned long ADC0_In(void);
 
 #ifdef TEST_WITHOUT_IO
@@ -108,21 +108,20 @@ extern unsigned long ADC0_SSFIFO3_R;
 
 #if DRAW_ENEMIES
 	void EnemyInit(void);
-	void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn);
-
-	void EnemyLaserCollisions(void);
 	void LaserCollision(void);
 	void LaserEnemy_Move(void);
-	void PlayerLaserCollisions(void);
+	unsigned int PlayerLaserCollisions(void);
+	unsigned int EnemyLaserCollisions(void);
+	unsigned int Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn);
 #endif
 
 #if DRAW_ENEMYBONUS
 	void BonusEnemyInit(void);
-	void BonusEnemy_Move(void);
+	void BonusEnemy_Move(unsigned int mode);
 	void enemyBonusCreate(void);
 #endif
 
-void CheckingCollisions(void);
+
 void BonusLaserCollision(void);
 void LaserShip_Move(void);
 void EnemyDraw(void);
@@ -130,18 +129,25 @@ void LaserShipDraw(void);
 void defaultValues(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
-void MasterDraw(struct State *st_ptr);
+unsigned int MasterDraw(struct State *st_ptr);
 
-unsigned char * FirstEPC(unsigned char mode);
 
-void EnemyscanY(unsigned char laserNum);
-unsigned char EnemyscanX(unsigned char row, unsigned char laserNum);
+
+unsigned int EnemyscanY(unsigned char laserNum);
+
 signed char absValue(signed char value);
 unsigned long Convert2Distance(unsigned long sample);
 
-unsigned int FirstLast(unsigned char row, unsigned char column);
-void MoveObjects(unsigned char mode);
+
+unsigned int MoveObjects(unsigned char mode);
+
+unsigned int Collisions(void);
+void reset(void);
+
 unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned char mode);
+unsigned int * FirstLast(unsigned char row, unsigned char column, unsigned char mode);
+unsigned int * FirstEPC(unsigned char mode);
+unsigned int * EnemyscanX(unsigned char row, unsigned char laserNum);
 
 
 #endif

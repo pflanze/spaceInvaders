@@ -93,11 +93,10 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #include "GameEngine.h"
 #include "random.h"
 #include "Message.h"
-
 //Global variables
 unsigned long TimerCount;
 unsigned long Semaphore;
-unsigned char SysTickFlag=0;
+volatile unsigned char SysTickFlag = 0;
 
 volatile unsigned char gameOverFlag = STANDBY;
 																//0: In game
@@ -133,9 +132,9 @@ void Timer2A_Handler(void){
 void SysTick_Handler(void){			// runs at 30 Hz
 	volatile static unsigned clickCounter = 0;			//keeps track of clicks
 	
-	#if PORTF1
-		GPIO_PORTF_DATA_R ^= 0x02;	//test only
-	#endif
+#if PORTF1
+	GPIO_PORTF_DATA_R ^= 0x02;	//test only
+#endif
 	
 	if(Pressfire_B1()){
 		clickCounter++;
@@ -143,12 +142,13 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	switch(gameOverFlag){
 		case INGAME:{
+			unsigned int status;
 			if(clickCounter){
 				LaserInit_ship();
 				//Fire1_Sound();
 				clickCounter = 0;
 			}	
-			#if DRAW_ENEMIES
+#if DRAW_ENEMIES
 			{static unsigned char EFcounter = 0;
 				EFcounter++;
 				if(EFcounter > 6){			//enemy shooting frequency
@@ -156,16 +156,24 @@ void SysTick_Handler(void){			// runs at 30 Hz
 					EFcounter = 0;
 				}
 			}
-			#endif
+#endif
 			
-			#if DRAW_ENEMYBONUS	
-				enemyBonusCreate();
-			#endif	
-			CheckingCollisions();
-			MoveObjects(UPDATE);				//game engine
+#if DRAW_ENEMYBONUS	
+			enemyBonusCreate();
+#endif	
+			status = Collisions();
+			if(status){
+				gameOverFlag = status;
+				break;
+			}
+			status = MoveObjects(INGAME);				//game engine
 			break;
 		}
 		case STANDBY:{
+			{//sets defaults
+				unsigned char rst = TRUE;
+				if(rst){reset();rst=0;}
+			}
 			Player_Move();
 			if(clickCounter == 1){
 				LaserInit_ship();
@@ -192,11 +200,12 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			}
 			swapMessage++;
 			if(clickCounter){
-				#if DRAW_ENEMIES
+#if DRAW_ENEMIES
 					EnemyInit();
-				#endif
+#endif
 				Random_Init(1);
 				ShipInit();
+				BonusEnemy_Move(RESET);
 				defaultValues();
 				clickCounter = 0;
 				gameOverFlag = STANDBY;
@@ -214,15 +223,15 @@ void init_Hw(void){
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	
-	#if PORTF1
+#if PORTF1
 		PortF_init();								//test only
-	#endif
+#endif
   
   Nokia5110_Init();
 	
-	#if AUDIO
+#if AUDIO
 		Timer2_Init(7272);					//initialized @11kHz
-	#endif
+#endif
 	
 	Systick_Init(2666666);			//initialized @30Hz
 	
@@ -239,9 +248,9 @@ void init_Hw(void){
 // outputs: none
 // assumes: na
 
-void main_update_LCD(void) {
-	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-		Draw(); // update the LCD
+void main_update_LCD(unsigned int status) {
+	if((status == INGAME)||(status == STANDBY)){
+		Draw(status); // update the LCD
 	}
 	SysTickFlag = 0;
 }
@@ -249,17 +258,15 @@ void main_update_LCD(void) {
 
 #ifndef TEST_WITHOUT_IO
 int main(void){	
-	
-	init_Hw();											//call all initializing functions
+		init_Hw();											//call all initializing functions
 	//Create initial message
-	#if IMESSAGE
+#if IMESSAGE
 		InitMessage();
-	#endif
+#endif
 	
-	//Initializing game
-	#if DRAW_ENEMIES
+#if DRAW_ENEMIES
 		EnemyInit();
-	#endif
+#endif
 	
 	ShipInit();
 
@@ -268,7 +275,7 @@ int main(void){
 	
   while(1){
 	 while(SysTickFlag == 0){};
-	 main_update_LCD();
+	 main_update_LCD(gameOverFlag);
 	}
 }
 #endif
