@@ -1,4 +1,4 @@
-#include "trap.h"
+// #include "trap.h"
 
 #include "Buttons.h"
 #include "GameEngine.h"
@@ -104,8 +104,25 @@ int main () {
 			      });
 	       });
 
-	// look at Nokia buffer.
-	//trap();
-	
-	return 0;
+	/* verify that there are no differences to the committed
+	   versions of the frames */
+
+	// assume that MingW's shell can do redirection
+	system("git status --porcelain t > t.out");
+
+	const char* path= "t.out";
+	FILE *fh= fopen(path, "r");
+	if (!fh) die_errno("open", path);
+	char buf[1024];
+	int got= fread(buf, 1, 1014, fh);
+	if (ferror(fh)) die_errno("fread", path);
+	if (fclose(fh)) die_errno("close", path);
+
+	if (got==0) {
+		return 0;
+	} else {
+		printf("test failures:\n");
+		system("cat t.out");
+		return 1;
+	}
 }
