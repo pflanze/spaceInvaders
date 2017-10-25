@@ -6,8 +6,10 @@
 
 unsigned long CMWC_Q[4096], CMWC_c=123, CMWC_i=4095;
 
-void CMWC_init(void) {
-	memset(CMWC_Q, 0, 4096);
+void CMWC_init(unsigned long seed) {
+	for (int i=0; i<4096; i++) {
+		CMWC_Q[i]= seed;
+	}
 	CMWC_c=123;
 	CMWC_i=4095;
 }

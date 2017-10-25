@@ -4,8 +4,7 @@
 
 
 void Random_Init(unsigned long seed) {
-	CMWC_init();
-	CMWC_Q[0]=seed;
+	CMWC_init(seed);
 }
 
 unsigned long Random(void) {
