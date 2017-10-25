@@ -36,6 +36,8 @@ depend:
 /usr/include/errno.h:
 /usr/include/stdlib.h:
 /usr/include/alloca.h:
+/usr/include/assert.h:
+
 
 # DO NOT DELETE
 
