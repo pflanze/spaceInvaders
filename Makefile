@@ -1,6 +1,6 @@
 SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
 
-SAN=-fsanitize=address -fsanitize=undefined
+SAN=`./sanflags`
 
 CFLAGS=-O1 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 
