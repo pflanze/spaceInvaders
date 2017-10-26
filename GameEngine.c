@@ -12,11 +12,14 @@ rows/columns with enemies alive,
 #include "Random.h"
 #include "utils.h"
 
-
 //local variables
-unsigned char FrameCount = 0;
-unsigned char right = TRUE;			//moves the enemies, 0: moves left
-unsigned char down = FALSE;			//moves the enemies, 1: moves down
+static unsigned char FrameCount = 0;
+static unsigned char right = TRUE;			//moves the enemies, 0: moves left
+static unsigned char down = FALSE;			//moves the enemies, 1: moves down
+#if DRAW_ENEMIES
+	//use to keep the statistics from the game
+	static unsigned lastLine = MAXROWS-1;
+#endif
 
 //----------------------------------------------------------Structs------------------------------------------------
 //game stats per column
@@ -26,7 +29,7 @@ struct GameStatColumn {
 	unsigned char Epc;		//"Enemies per column"
 };
 
-struct GameStatColumn Estat_column[MAX_ENEMY_PR];
+static struct GameStatColumn Estat_column[MAX_ENEMY_PR];
 
 //game stats per row
 struct GameStatRow {
@@ -35,25 +38,17 @@ struct GameStatRow {
 	unsigned char Epr;		//"Enemies per row"
 };
 
-struct GameStatRow Estat_row[MAXROWS];
-
-struct State Enemy[MAXROWS][MAX_ENEMY_PR];
-struct State Laser_enemy[MAXLASERS];
-struct State Ship;
-struct State Laser_ship[MAXLASERS];
+static struct GameStatRow Estat_row[MAXROWS];
+static struct State Enemy[MAXROWS][MAX_ENEMY_PR];
+static struct State Laser_enemy[MAXLASERS];
+static struct State Ship;
+static struct State Laser_ship[MAXLASERS];
 #endif
-
-
 
 #if DRAW_ENEMYBONUS
-	struct State  EnemyBonus;
+	static struct State  EnemyBonus;
 #endif	
 
-
-#if DRAW_ENEMIES
-	//use to keep the statistics from the game
-	static unsigned lastLine = MAXROWS-1;
-#endif
 //-----------------------------------------------------------INIT-----------------------------------------------------------------------
 //********EnemyInit*****************
 //Initialize enemies
@@ -1009,6 +1004,8 @@ Improve firing: adding firing secuences
 I created this section to identify the needs to re-scoping.
 >: Static value modified to default(Special care or consideration)
 
+Reason to remain: There are several function that need this variable (a entire branch Collision), then it updates at the end of the branch 
+(Verify_lastLine), and it is also used on a separate branch that needs the value already updated.
 Var: lastLine
 updated@:Verify_lastLine
 Functions:
@@ -1019,6 +1016,8 @@ Functions:
 		Enemy_Move
 		EnemyShiftTrack
 		PlayerLaserCollisions
+		
+		notes:
+		End game@: FirstLast, EnemyLaserCollisions
 
-i have to go back and see if I can scopeConstrain variable declarations
 */
