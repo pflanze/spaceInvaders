@@ -14,8 +14,7 @@ rows/columns with enemies alive,
 
 //local variables
 static unsigned char FrameCount = 0;
-static unsigned char right = TRUE;			//moves the enemies, 0: moves left
-static unsigned char down = FALSE;			//moves the enemies, 1: moves down
+
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
 	static unsigned lastLine = MAXROWS-1;
@@ -257,6 +256,8 @@ unsigned int Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftC
 	
 	while(row<MAXROWS){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
+			static unsigned char right = TRUE;			//moves the enemies, 0: moves left
+			static unsigned char down = FALSE;			//moves the enemies, 1: moves down
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
 				right = FALSE;	//moves left
