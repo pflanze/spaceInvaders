@@ -78,7 +78,6 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 //testing & preprocessing directives
 #define IMESSAGE			0		//Enables/disables inittial message
 
-
 //messages
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
@@ -91,12 +90,15 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #include "GameEngine.h"
 #include "Random.h"
 #include "Message.h"
-//Global variables
-unsigned long TimerCount;
-unsigned long Semaphore;
-volatile unsigned char SysTickFlag = 0;
 
-volatile unsigned char gameOverFlag = STANDBY;
+//Global variables
+#if AUDIO
+	unsigned long TimerCount;
+	unsigned long Semaphore;
+#endif
+
+volatile unsigned char SysTickFlag = 0;
+volatile unsigned int gameOverFlag = STANDBY;
 																//0: In game
 																//1: Game Over (you loose)
 																//2: Just Won
@@ -105,7 +107,6 @@ volatile unsigned char gameOverFlag = STANDBY;
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 //static void GameReset(void);	//resets the game
-
 
 //********Timer2A_Handler*****************
 //Multiline description
@@ -138,7 +139,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	switch(gameOverFlag){
 		case INGAME:{
-			unsigned int status;
+			volatile unsigned int *status = 0;
 			if(clickCounter){
 				LaserInit_ship();
 				//Fire1_Sound();
@@ -157,24 +158,28 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #if DRAW_ENEMYBONUS	
 			enemyBonusCreate();
 #endif	
-			status = Collisions();
-			if(status){
-				gameOverFlag = status;
-				break;
-			}
-			status = MoveObjects(INGAME);				//game engine
+			Collisions();
+			status = whatStatus();
+			//update gameOverFlag only if different
+			if(gameOverFlag != *status){gameOverFlag = *status;}			//it seems that there is need of a loop here
+			MoveObjects(INGAME);				//game engine
 			break;
 		}
 		case STANDBY:{
 			{//sets defaults
 				unsigned char rst = TRUE;
-				if(rst){reset();rst=0;}
+				gameStatus(&gameOverFlag);
+				if(rst){reset();rst=FALSE;}
 			}
 			Player_Move();
 			if(clickCounter == 1){
 				LaserInit_ship();
 				clickCounter = 0;
 				gameOverFlag = INGAME;
+				{//updates gameEngine with a new default value
+					unsigned char done = TRUE;
+					if(done){gameStatus(&gameOverFlag);done = FALSE;}
+				}
 			}
 			break;
 		}	
@@ -199,7 +204,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #if DRAW_ENEMIES
 					EnemyInit();
 #endif
-				Random_Init(1);
+				Random_Init(NVIC_ST_CURRENT_R);
 				ShipInit();
 				BonusEnemy_Move(RESET);
 				defaultValues();
@@ -219,13 +224,13 @@ void init_Hw(void){
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 	
 #if PORTF1
-		PortF_init();								//test only
+	PortF_init();								//test only
 #endif
   
   Nokia5110_Init();
 	
 #if AUDIO
-		Timer2_Init(7272);					//initialized @11kHz
+	Timer2_Init(7272);					//initialized @11kHz
 #endif
 	
 	Systick_Init(2666666);			//initialized @30Hz
@@ -242,25 +247,23 @@ void init_Hw(void){
 // outputs: none
 // assumes: na
 int main(void){	
-		init_Hw();											//call all initializing functions
+	init_Hw();											//call all initializing functions
 	//Create initial message
 #if IMESSAGE
-		InitMessage();
+	InitMessage();
 #endif
 	
 #if DRAW_ENEMIES
-		EnemyInit();
+	EnemyInit();
 #endif
-	
 	ShipInit();
-
 	defaultValues();
 	Random_Init(1);
 	
   while(1){
 	 while(SysTickFlag == 0){};
 		if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-			Draw(gameOverFlag); // update the LCD
+			Draw(); // update the LCD
 		}
     SysTickFlag = 0;
 	}
