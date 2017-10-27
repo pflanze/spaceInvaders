@@ -79,9 +79,10 @@
 //Miselaneus
 #define NA 1
 
+//firing delay
+#define FIREDEL 		7
+
 //----------------------------------------------------------Structs------------------------------------------------
-
-
 
 struct State {
 	unsigned char x;      // x coordinate
@@ -91,8 +92,6 @@ struct State {
 	unsigned char JK;	//status for image replacement, represents "Just Killed"				, needs updating
 	unsigned char id;
 };         
-
-
 
 //----------------------------------------------------------Function definition------------------------------------------------
 void Player_Move(void);
@@ -121,7 +120,6 @@ extern unsigned long ADC0_SSFIFO3_R;
 	void enemyBonusCreate(void);
 #endif
 
-
 void BonusLaserCollision(void);
 void LaserShip_Move(void);
 void EnemyDraw(void);
@@ -131,14 +129,11 @@ void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr, unsigned int FrameCount);
 
-
-
 void EnemyscanY(unsigned int laserNum);
 
 signed int absValue(signed int value);
 unsigned long Convert2Distance(unsigned long sample);
 unsigned Verify_lastLine(unsigned int lastLine);
-
 
 void MoveObjects(void);
 

@@ -250,9 +250,9 @@ void Player_Move(void){
 // assumes: na
 #if DRAW_ENEMIES
 void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){ 
-	unsigned char row = 0;
+	unsigned char row;
 	
-	while(row<MAXROWS){
+	for(row=0;row<MAXROWS;row++){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			signed char column;
 			static unsigned char right = true;			//moves the enemies, 0: moves left
@@ -286,7 +286,6 @@ void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){
 		else{										//Enemies have reached the earth
 			gStatus = LOOSE;
 		}
-		row++;
 	}
 }
 #endif
@@ -386,16 +385,15 @@ LaserShipDraw();		//uses MasterDraw
 // assumes: na
 #if DRAW_ENEMIES
 void EnemyDraw(void){
-	signed char row=0;
+	signed char row;
 
-	while(row<MAXROWS){
+	for(row=0;row<MAXROWS;row++){
 		unsigned char column;
 		static unsigned char FrameCount = 0;
 		if(gStatus == INGAME){FrameCount = (FrameCount+1)&0x01;}	// 0,1,0,1,...
 		for(column=0;column<4;column++){	
 			MasterDraw(&Enemy[row][column], FrameCount);
 		}
-		row++;
 	}
 }
 #endif
@@ -663,10 +661,9 @@ unsigned Verify_lastLine(unsigned lastLine){
 // assumes: na
 #if DRAW_ENEMIES
 void EnemyscanX(unsigned int row, unsigned int laserNum){
-	unsigned char column = 0; 
-	unsigned char enemyDestroyed = 0;
+	unsigned char column; 
 	
-	while((enemyDestroyed == 0)&&(column <= Estat_row[row].Lep)){
+	for(column=0;column <= Estat_row[row].Lep;column++){
 		if(Enemy[row][column].life){
 			//checking x coordinate of each active laser against each enemy
 			signed char enemyInRange = (Enemy[row][column].x + E_LASER_OFFX - Laser_ship[laserNum].x);
@@ -682,11 +679,10 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 					//updates 
 					EnemyShiftTrack(alive_rows, UPDATE);
 #endif
-				FirstEPC(UPDATE);																					//update point
-				enemyDestroyed = 1;
+				FirstEPC(UPDATE);														//update point
+				break;																			//return????
 			}
 		}
-		column++;
 	}	
 }
 #endif
@@ -891,7 +887,6 @@ unsigned int * FirstEPC(unsigned int mode){
 	//we are reading left>right, dowun>up
 	for(column=0;column<MAX_ENEMY_PR;column++){
 		signed char row = Estat_column[column].Fep;		//start from last known position
-		unsigned char quit = 0;
 		if(Estat_column[column].Epc == 0){
 			continue;
 		}
@@ -900,10 +895,10 @@ unsigned int * FirstEPC(unsigned int mode){
 		aliveCol++;
 		
 		//finds the first enemy on a column
-		while(quit==0 && row>=0){
+		while(row>=0){
 			if(Enemy[row][column].life){
 				Estat_column[column].Fep = row;
-				quit= 1;
+				break;
 			}
 			else{
 				row--;
@@ -946,10 +941,7 @@ unsigned int * FirstEPC(unsigned int mode){
 // outputs: value
 // assumes: na
 signed int absValue(signed int value){
-	if(value<0){
-		value = -value;
-	}
-	return value;
+	return ((value<0) ? -value:value);
 }
 //********gameStatus*****************
 // Systick sets the game status on the Engine
@@ -1006,4 +998,7 @@ Functions:
 		1.- not bit padding, it is not worth it for now...unless perhaps tested with the optimization. In any case leave it for the end.
 		2.- I was not able to determine what frunction definitions can be elinated
 		3.- NO inline functions"_inline"
+		
+		Changes!!!!
+		missing some passing by reference
 */
