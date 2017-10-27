@@ -90,6 +90,7 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #include "GameEngine.h"
 #include "Random.h"
 #include "Message.h"
+#include "utils.h"
 
 //Global variables
 #if AUDIO
@@ -138,7 +139,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	switch(gameOverFlag){
 		case INGAME:{
-			volatile unsigned int *status = 0;
+			volatile unsigned int *status = NULL;
 			if(clickCounter){
 				LaserInit_ship();
 				//Fire1_Sound();
@@ -161,7 +162,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			status = whatStatus();
 			//update gameOverFlag only if different
 			if(gameOverFlag != *status){gameOverFlag = *status;}			//it seems that there is need of a loop here
-			MoveObjects(INGAME);				//game engine
+			MoveObjects();				//game engine
 			break;
 		}
 		case STANDBY:{
@@ -267,4 +268,8 @@ int main(void){
 fix:
 swapMessage: replace for current... mask current to get a smaller timing
 create a led.h
+
+volatile unsigned int *status
+	make bigger scope and make calls only when differet to gameOverflag
+	SpaceInvaders.c(141): warning:  #185-D: dynamic initialization in unreachable code
 */

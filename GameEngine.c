@@ -53,7 +53,7 @@ static struct State Laser_ship[MAXLASERS];
 //********EnemyInit*****************
 //Initialize enemies
 //Enemies are counted normaly, top left 00
-// changes: Enemy[row][column].*, Estat_row[row].*
+// changes: Enemy[row|column].*, Estat_row[row].*
 // inputs: none
 // outputs: none
 // assumes: na
@@ -131,16 +131,17 @@ void LaserInit_ship(void){
 // assumes: na
 #if DRAW_ENEMIES
 	void EnemyLaserInit(void){	
+		//modifiction may be needed function called twice, please explore
 		unsigned int *AliveColsLocal =  FirstEPC(RETURNVAL);
 		unsigned char randN = (Random32()>>24)%(*AliveColsLocal);		//generates number [0-aliveCols]
 		unsigned int *AlColsMatLocal = 	FirstEPC(RETURNARR);
 		unsigned char columnNew	= AlColsMatLocal[randN];					//matrix holds the valid Enemy firing positions
 		
 		if(Estat_column[columnNew].Epc){
-			unsigned char row = Estat_column[columnNew].Fep;
 			unsigned char i;
 			for(i=0;i<MAXLASERS;i++){
 				if(Laser_enemy[i].life == 0){
+					unsigned char row = Estat_column[columnNew].Fep;
 					Laser_enemy[i].x = Enemy[row][columnNew].x + E_LASER_OFFX;
 					Laser_enemy[i].y = Enemy[row][columnNew].y + E_LASER_OFFY;
 					Laser_enemy[i].image[0] = Laser0;
@@ -153,8 +154,8 @@ void LaserInit_ship(void){
 	}
 #endif
 //********BonusEnemyInit*****************
-// Multiline description
-// changes: variablesChanged
+// Initializes Enemy bonus
+// changes: EnemyBonus.*
 // inputs: none
 // outputs: none
 // assumes: na
@@ -175,25 +176,24 @@ void BonusEnemyInit(void){
 // inputs: none
 // outputs: none
 // assumes: na
+#if DRAW_ENEMIES
 void defaultValues(void){
 	unsigned char i;
 	//tracking defaults
-#if DRAW_ENEMIES
 	lastLine = MAXROWS-1;
 	//sets defaults column stats
 	for(i=0;i<MAX_ENEMY_PR;i++){
 		Estat_column[i].Epc = MAXROWS;
 		Estat_column[i].Fep = lastLine;
 	}	
-
 	for(i=0;i<MAXLASERS;i++){											
 		Laser_enemy[i].life = 0;
 	}
-#endif
 }
+#endif
 //********reset*****************
 // Set values to default using "mode" switch
-// changes: variablesChanged
+// changes: Ship.(image|JK), functions: EnemyShiftTrack, FirstLast, FirstEPC
 // Callers: 
 // inputs: none
 // outputs: none
@@ -213,10 +213,10 @@ void reset(void){
 // inputs: INGAME
 // outputs: none
 // assumes: na
-void MoveObjects(unsigned char mode){
+void MoveObjects(void){
 	unsigned int *ETracking = EnemyShiftTrack(NA,RETURNARR);
 	Player_Move();						//calls ADC0_in, Convert2Distance
-	if(mode == INGAME){
+	if(gStatus == INGAME){
 #if DRAW_ENEMIES
 	Enemy_Move(ETracking[0], ETracking[1]);					//updates enemy coordinate
 	LaserEnemy_Move();
@@ -247,11 +247,11 @@ void Player_Move(void){
 // assumes: na
 #if DRAW_ENEMIES
 void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){ 
-	signed char column = 0;
 	unsigned char row = 0;
 	
 	while(row<MAXROWS){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
+			signed char column;
 			static unsigned char right = TRUE;			//moves the enemies, 0: moves left
 			static unsigned char down = FALSE;			//moves the enemies, 1: moves down
 			//sets the switches to move down/left/right
@@ -383,14 +383,12 @@ LaserShipDraw();		//uses MasterDraw
 // assumes: na
 #if DRAW_ENEMIES
 void EnemyDraw(void){
-	unsigned char column=0;
 	signed char row=0;
-	static unsigned char FrameCount = 0;
-	
-	// 0,1,0,1,...
-	if(gStatus == INGAME){FrameCount = (FrameCount+1)&0x01;}
 
 	while(row<MAXROWS){
+		unsigned char column;
+		static unsigned char FrameCount = 0;
+		if(gStatus == INGAME){FrameCount = (FrameCount+1)&0x01;}	// 0,1,0,1,...
 		for(column=0;column<4;column++){	
 			MasterDraw(&Enemy[row][column], FrameCount);
 		}
@@ -455,7 +453,7 @@ void MasterDraw(struct State *s, unsigned char FrameCount){
 // outputs: none
 // assumes: na
 void LaserShipDraw(void){
-	unsigned char laserNum = 0;
+	unsigned char laserNum;
 	for(laserNum=0;laserNum<MAXLASERS;laserNum++){
 		if(Laser_ship[laserNum].life){
 			MasterDraw(&Laser_ship[laserNum], NULL);
@@ -469,7 +467,7 @@ void LaserShipDraw(void){
 // assumes: na
 #if DRAW_ENEMIES
 void LaserEnemyDraw(void){
-	unsigned char laserNum = 0;
+	unsigned char laserNum;
 	for(laserNum=0;laserNum<MAXLASERS;laserNum++){
 				MasterDraw(&Laser_enemy[laserNum], NULL);
 	}
@@ -563,7 +561,6 @@ unsigned long ADC0_In(void){
 // assumes: na
 // Note: the result pointer must be array to make the collision result homogeneous
 void Collisions(void){
-	
 #if DRAW_ENEMYBONUS
 	BonusLaserCollision();			//does not retuen value
 #endif
@@ -699,7 +696,7 @@ void EnemyLaserCollisions(void){
 // assumes: na
 #if DRAW_ENEMIES
 void LaserCollision(void){
-	unsigned char lasernumEnemy = 0;
+	unsigned char lasernumEnemy;
 	//checks collision course
 	for(lasernumEnemy=0;lasernumEnemy<MAXLASERS;lasernumEnemy++){
 		if(Laser_enemy[lasernumEnemy].life){
@@ -958,7 +955,7 @@ void gameStatus(volatile unsigned int *p){
 // outputs: none
 // assumes: na
 volatile unsigned int * whatStatus(void){
-	volatile static  unsigned int *p = 0;
+	volatile static  unsigned int *p = NULL;
 	return p = &gStatus;
 }
 //---------------------------------------------------------------TODOS--------------------------------------------------

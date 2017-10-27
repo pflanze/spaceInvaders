@@ -138,7 +138,7 @@ unsigned long Convert2Distance(unsigned long sample);
 static unsigned Verify_lastLine(unsigned lastLine);
 
 
-void MoveObjects(unsigned char mode);
+void MoveObjects(void);
 
 void Collisions(void);
 void reset(void);
