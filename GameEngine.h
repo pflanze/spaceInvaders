@@ -139,7 +139,7 @@ void Collisions(void);
 void reset(void);
 
 unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode);
-unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mode);
+unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode);
 unsigned int * FirstEPC(unsigned int mode);
 void EnemyscanX(unsigned int row, unsigned int laserNum);
 void setStatus(volatile unsigned int *p);
