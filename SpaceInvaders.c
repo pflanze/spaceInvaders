@@ -208,7 +208,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #if DRAW_ENEMIES
 					EnemyInit();
 #endif
+#ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
+#endif
 				ShipInit();
 				BonusEnemy_Move(RESET);
 				defaultValues();
