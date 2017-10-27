@@ -511,7 +511,7 @@ unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
 			lowest 	= Estat_row[row].Fep;
 			highest	= Estat_row[row].Lep;
 			row = 1;
-			while(row <= MAXROWS-1){
+			while(row <= MAXROWS-1){//change
 				if(Estat_row[row].Fep < lowest){
 					lowest = Estat_row[row].Fep;
 				}
@@ -987,4 +987,9 @@ Functions:
 		
 		Changes!!!!
 		missing some passing by reference
+		
+		find sounds@
+		C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab13_DAC
+		C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
+		
 */
