@@ -1,7 +1,6 @@
 //Utils.h
-
-#ifndef __DIV_H
-#define __DIV_H
+#ifndef _UTILS_H
+#define _UTILS_H
 
 typedef enum {
     false = 0,
@@ -9,7 +8,8 @@ typedef enum {
 } bool;
 
 
+#ifndef NULL
+#  define NULL 0
 #endif
 
-#define NULL 0
-
+#endif /* _UTILS_H */
