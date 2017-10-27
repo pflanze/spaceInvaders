@@ -390,7 +390,7 @@ void EnemyDraw(void){
 	for(row=0;row<MAXROWS;row++){
 		unsigned char column;
 		static unsigned char FrameCount = 0;
-		if(gStatus == INGAME){FrameCount = (FrameCount+1)&0x01;}	// 0,1,0,1,...
+		if(gStatus == INGAME){FrameCount ^= 0x01;}	// 0,1,0,1,...
 		for(column=0;column<4;column++){	
 			MasterDraw(&Enemy[row][column], FrameCount);
 		}
