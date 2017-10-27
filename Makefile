@@ -22,7 +22,7 @@ test: $(OBJS)
 	gcc $(SAN) -o test $(OBJS)
 
 clean:
-	rm *.o
+	rm *.o test
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
