@@ -252,7 +252,7 @@ void init_Hw(void){
 
 void main_update_LCD(void) {
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-		Draw(gameOverFlag); // update the LCD
+		Draw(); // update the LCD
 	}
 	SysTickFlag = 0;
 }
