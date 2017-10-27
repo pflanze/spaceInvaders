@@ -842,7 +842,7 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 		}
 	}
 
-	{unsigned int alr_counter;
+	{unsigned int alr_counter=0;
 		{unsigned char i;
 			for(i=0;i<=MAXROWS-1;i++){
 				if(AliveRows[i]){
