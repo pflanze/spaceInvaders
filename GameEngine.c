@@ -59,10 +59,9 @@ static struct State Laser_ship[MAXLASERS];
 // assumes: na
 #if DRAW_ENEMIES
 void EnemyInit(void){
-	unsigned int column=0;
-	unsigned char row=0;
-	
-	while(row<MAXROWS){
+	unsigned char row;
+	for(row=0;row<MAXROWS;row++){
+		unsigned int column;
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			Enemy[row][column].x = 20*column;
 			Enemy[row][column].y = 10 + row*10;
@@ -88,7 +87,6 @@ void EnemyInit(void){
 		Estat_row[row].Epr = MAX_ENEMY_PR;	//keeps track od the amount of enemies per row
 		Estat_row[row].Fep = 0;							//first end position
 		Estat_row[row].Lep = 3;							//last end position
-		row++;
 	}
 }
 #endif
