@@ -927,11 +927,7 @@ unsigned int * FirstEPC(unsigned int mode){
 // outputs: value
 // assumes: na
 signed int absValue(signed int value){
-	if(value<0){
-		value = -value;
-	}
-	return value;
-//	return (value<0) ? -value:value;
+	return ((value<0) ? -value:value);
 }
 //********gameStatus*****************
 // Systick sets the game status on the Engine
