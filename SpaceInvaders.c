@@ -106,7 +106,6 @@ volatile unsigned int gameOverFlag = STANDBY;
 //function Prototypes
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
-//static void GameReset(void);	//resets the game
 
 //********Timer2A_Handler*****************
 //Multiline description
@@ -122,12 +121,12 @@ void Timer2A_Handler(void){
 }
 #endif
 //********SysTick_Handler*****************
-//Game sequency: STANDBY>INGAME>LOOSE|WIN
+//Game sequence: STANDBY>INGAME>LOOSE|WIN
 // inputs: none
 // outputs: none
 // assumes: na
 void SysTick_Handler(void){			// runs at 30 Hz
-	volatile static unsigned clickCounter = 0;			//keeps track of clicks
+	volatile static unsigned char clickCounter = 0;			//keeps track of clicks
 	
 #if PORTF1
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
@@ -222,19 +221,14 @@ void SysTick_Handler(void){			// runs at 30 Hz
 // assumes: na
 void init_Hw(void){
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
-	
 #if PORTF1
 	PortF_init();								//test only
 #endif
-  
   Nokia5110_Init();
-	
 #if AUDIO
 	Timer2_Init(7272);					//initialized @11kHz
 #endif
-	
 	Systick_Init(2666666);			//initialized @30Hz
-	
 	ADC0_Init();
 	Buttons_Init();
 	DAC_Init();
