@@ -648,7 +648,8 @@ void EnemyscanY(unsigned int laserNum){
 #if DRAW_ENEMIES
 unsigned Verify_lastLine(unsigned lastLine){
 	while(Estat_row[lastLine].Epr == 0){
-		// assert(lastLine>0);
+		if (lastLine == 0)
+			break; // correct?
 		lastLine--;
 	}
 	return lastLine;
