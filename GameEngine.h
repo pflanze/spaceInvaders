@@ -137,7 +137,7 @@ void EnemyscanY(unsigned int laserNum);
 
 signed int absValue(signed int value);
 unsigned long Convert2Distance(unsigned long sample);
-static unsigned Verify_lastLine(unsigned int lastLine);
+unsigned Verify_lastLine(unsigned int lastLine);
 
 
 void MoveObjects(void);
