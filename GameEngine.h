@@ -81,6 +81,9 @@
 //Miselaneus
 #define NA 1
 
+//firing delay
+#define FIREDEL 		7
+
 //----------------------------------------------------------Structs------------------------------------------------
 
 struct State {

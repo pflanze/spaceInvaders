@@ -984,4 +984,7 @@ Functions:
 		1.- not bit padding, it is not worth it for now...unless perhaps tested with the optimization. In any case leave it for the end.
 		2.- I was not able to determine what frunction definitions can be elinated
 		3.- NO inline functions"_inline"
+		
+		Changes!!!!
+		missing some passing by reference
 */

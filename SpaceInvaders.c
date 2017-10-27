@@ -146,11 +146,10 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				clickCounter = 0;
 			}	
 #if DRAW_ENEMIES
-			{static unsigned char EFcounter = 0;
-				EFcounter++;
-				if(EFcounter > 6){			//enemy shooting frequency
+			{static unsigned char EFcounter;
+				EFcounter = (EFcounter+1)&FIREDEL;
+				if(EFcounter >= FIREDEL){			//enemy shooting frequency
 					EnemyLaserInit();
-					EFcounter = 0;
 				}
 			}
 #endif
