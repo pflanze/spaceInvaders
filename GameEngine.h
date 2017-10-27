@@ -110,11 +110,11 @@ unsigned long ADC0_In(void);
 	void LaserEnemy_Move(void);
 	void PlayerLaserCollisions(void);
 	void EnemyLaserCollisions(void);
-	void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn);
+	void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn);
 #endif
 
 #if DRAW_ENEMYBONUS
-	void BonusEnemyInit(void);
+//	void BonusEnemyInit(void);
 	void BonusEnemy_Move(unsigned int mode);
 	void enemyBonusCreate(void);
 #endif
@@ -127,15 +127,15 @@ void LaserShipDraw(void);
 void defaultValues(void);
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
-void MasterDraw(struct State *st_ptr, unsigned char FrameCount);
+void MasterDraw(struct State *st_ptr, unsigned int FrameCount);
 
 
 
-void EnemyscanY(unsigned char laserNum);
+void EnemyscanY(unsigned int laserNum);
 
-signed char absValue(signed char value);
+signed int absValue(signed int value);
 unsigned long Convert2Distance(unsigned long sample);
-static unsigned Verify_lastLine(unsigned lastLine);
+static unsigned Verify_lastLine(unsigned int lastLine);
 
 
 void MoveObjects(void);
@@ -143,10 +143,10 @@ void MoveObjects(void);
 void Collisions(void);
 void reset(void);
 
-unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned char mode);
-unsigned int * FirstLast(unsigned char row, unsigned char column, unsigned char mode);
-unsigned int * FirstEPC(unsigned char mode);
-void EnemyscanX(unsigned char row, unsigned char laserNum);
+unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode);
+unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mode);
+unsigned int * FirstEPC(unsigned int mode);
+void EnemyscanX(unsigned int row, unsigned int laserNum);
 void gameStatus(volatile unsigned int *p);
 volatile unsigned int * whatStatus(void);
 

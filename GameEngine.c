@@ -246,7 +246,7 @@ void Player_Move(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void Enemy_Move(unsigned char LeftShiftColumn, unsigned char RightShiftColumn){ 
+void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){ 
 	unsigned char row = 0;
 	
 	while(row<MAXROWS){
@@ -402,7 +402,7 @@ void EnemyDraw(void){
 // inputs: &EnemyBonus, 
 // outputs: none
 // assumes: na
-void MasterDraw(struct State *s, unsigned char FrameCount){
+void MasterDraw(struct State *s, unsigned int FrameCount){
 	static unsigned char frame = 0;
 	signed char offsetX = 0;
 	signed char offsetY = 0;
@@ -480,7 +480,7 @@ void LaserEnemyDraw(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned char mode){
+unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
 	static unsigned int enemyTracking[] = {FIRST_E,LAST_E};	//keeps track of the first and last enemy across diferrent rows
 	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
 	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
@@ -596,7 +596,7 @@ void PlayerLaserCollisions(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void EnemyscanY(unsigned char laserNum){
+void EnemyscanY(unsigned int laserNum){
 	signed char row = lastLine;
 	unsigned char found = 0;
 	unsigned char exit = 0;
@@ -634,7 +634,7 @@ void EnemyscanY(unsigned char laserNum){
 // outputs: enemyDestroyed(0:1)
 // assumes: na
 #if DRAW_ENEMIES
-void EnemyscanX(unsigned char row, unsigned char laserNum){
+void EnemyscanX(unsigned int row, unsigned int laserNum){
 	unsigned char column = 0; 
 	unsigned char enemyDestroyed = 0;
 	
@@ -757,7 +757,7 @@ void BonusLaserCollision(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-unsigned int * FirstLast(unsigned char row, unsigned char column, unsigned char mode){
+unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mode){
 	unsigned char lastCheck = 0;
 	static unsigned char enemyCount = MAXROWS * MAX_ENEMY_PR;
 	static unsigned char AliveRows[MAXROWS];
@@ -849,7 +849,7 @@ static unsigned Verify_lastLine(unsigned lastLine){
 // outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
-unsigned int * FirstEPC(unsigned char mode){
+unsigned int * FirstEPC(unsigned int mode){
 	static unsigned int LiveCols = MAX_ENEMY_PR;
 	static unsigned int AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 	unsigned char column = 0;
@@ -931,7 +931,7 @@ unsigned int * FirstEPC(unsigned char mode){
 // inputs: value
 // outputs: value
 // assumes: na
-signed char absValue(signed char value){
+signed int absValue(signed int value){
 	if(value<0){
 		value = -value;
 	}
@@ -965,11 +965,6 @@ changes:
 		-lab13
 Improve firing: adding firing secuences
 
-*/
-
-
-
-/*
 -------------------------------------------------------------Var Map Globals---------------------------------------------
 I created this section to identify the needs to re-scoping.
 >: Static value modified to default(Special care or consideration)
@@ -990,6 +985,11 @@ Functions:
 		notes:
 		End game@: FirstLast, EnemyLaserCollisions@MasterDraw
 		
+		compiler:
 		http://www.keil.com/support/man/docs/armcc/armcc_chr1359124211145.htm
-
+		
+		changes?
+		1.- not bit padding, it is not worth it for now...unless perhaps tested with the optimization. In any case leave it for the end.
+		2.- I was not able to determine what frunction definitions can be elinated
+		3.- NO inline functions"_inline"
 */
