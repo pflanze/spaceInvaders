@@ -671,7 +671,7 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 			signed char enemyInRange = (Enemy[row][column].x + E_LASER_OFFX - Laser_ship[laserNum].x);
 			enemyInRange = absValue(enemyInRange);
 			if (enemyInRange <= E_LASER_OFFX){	
-				unsigned int *alive_rows;
+				unsigned int alive_rows;
 				Laser_ship[laserNum].life = 0;
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
@@ -679,7 +679,7 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 				lastLine = Verify_lastLine(lastLine);								//updates last line value
 #if DRAW_ENEMIES
 					//updates 
-					EnemyShiftTrack(*alive_rows, UPDATE);
+					EnemyShiftTrack(alive_rows, UPDATE);
 #endif
 				FirstEPC(UPDATE);																					//update point
 				enemyDestroyed = 1;
@@ -784,7 +784,7 @@ void BonusLaserCollision(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mode){
+unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode){
 	unsigned char lastCheck = 0;
 	static unsigned char enemyCount = MAXROWS * MAX_ENEMY_PR;
 	static unsigned char AliveRows[MAXROWS];
@@ -798,7 +798,7 @@ unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mod
 				AliveRows[i] = 1;
 			}
 		}
-		return NULL;
+		return 0;
 	}
 	
 	Estat_row[row].Epr--;
@@ -842,7 +842,7 @@ unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mod
 		}
 	}
 
-	{unsigned int *alr_counter;
+	{unsigned int alr_counter;
 		{unsigned char i;
 			for(i=0;i<=MAXROWS-1;i++){
 				if(AliveRows[i]){
