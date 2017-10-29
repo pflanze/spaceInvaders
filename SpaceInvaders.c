@@ -116,6 +116,7 @@ void EnableInterrupts(void);  // Enable interrupts
 #if AUDIO
 void Timer2A_Handler(void){ 
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
+	
 	//GPIO_PORTF_DATA_R ^= 0x02;
 	TimerCount++;
   Semaphore = 1; // trigger
@@ -271,4 +272,7 @@ create a led.h
 volatile unsigned int *status
 	make bigger scope and make calls only when differet to gameOverflag
 	SpaceInvaders.c(141): warning:  #185-D: dynamic initialization in unreachable code
+
+sound:
+C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
 */
