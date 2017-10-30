@@ -37,8 +37,8 @@ Init.o: Init.h
 LED.o: LED.h
 Message.o: Message.h Nokia5110.h
 Nokia5110.o: Nokia5110.h Nokia5110_font.h
-SpaceInvaders.o: Nokia5110.h Init.h Buttons.h utils.h GameEngine.h random.h
-SpaceInvaders.o: Message.h
-random.o: CMWC.h
+SpaceInvaders.o: SpaceInvaders.h Nokia5110.h Init.h Buttons.h utils.h
+SpaceInvaders.o: GameEngine.h random.h Message.h
+random.o: random.h CMWC.h
 test.o: Buttons.h utils.h GameEngine.h Init.h LED.h Message.h
 test.o: Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h

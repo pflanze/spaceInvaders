@@ -32,6 +32,19 @@
  http://users.ece.utexas.edu/~valvano/
  */
 
+#include "SpaceInvaders.h"
+#ifndef TEST_WITHOUT_IO
+#  include "..//tm4c123gh6pm.h"
+#  include "TExaS.h"
+#endif
+#include "Nokia5110.h"
+#include "Init.h"
+#include "Buttons.h"
+#include "GameEngine.h"
+#include "random.h"
+#include "Message.h"
+#include "utils.h"
+
 
 /*	Required Hardware I/O connections
 Slide pot pin 1 connected to ground
@@ -81,18 +94,6 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 //messages
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
-
-#ifndef TEST_WITHOUT_IO
-#  include "..//tm4c123gh6pm.h"
-#  include "TExaS.h"
-#endif
-#include "Nokia5110.h"
-#include "Init.h"
-#include "Buttons.h"
-#include "GameEngine.h"
-#include "random.h"
-#include "Message.h"
-#include "utils.h"
 
 //Global variables
 #if AUDIO

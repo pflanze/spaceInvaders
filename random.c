@@ -1,5 +1,6 @@
 #ifdef TEST_WITHOUT_IO
 
+#include "random.h"
 #include "CMWC.h"
 
 
