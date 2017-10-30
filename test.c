@@ -24,6 +24,12 @@ void die_errno(const char* msg, const char* arg) {
 	exit(1);
 }
 
+#if __CYGWIN__
+#  define NL "\r\n"
+#else 
+#  define NL "\n"
+#endif
+
 
 // Write screen buffer format from Nokia5110.c to file in PBM
 // format. Take dimensions from Nokia5110.h
@@ -40,9 +46,9 @@ static void screen_write_pbm(const char* screen, const char* basepath) {
 
 #define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno("print", path)
 
-	PRINTF("P1\n");
-	PRINTF("# CREATOR: SpaceInvaders test\n");
-	PRINTF("%d %d\n", w, h);
+	PRINTF("P1"NL);
+	PRINTF("# CREATOR: SpaceInvaders test"NL);
+	PRINTF("%d %d"NL, w, h);
 
 	for (int y=0; y<h; y++) {
 		for (int x=0; x<w; x++) {
@@ -50,7 +56,7 @@ static void screen_write_pbm(const char* screen, const char* basepath) {
 			char v= screen[i];
 			PRINTF("%d ", ((v >> (y%8)) & 1) ? 1 : 0);
 		}
-		PRINTF("\n");
+		PRINTF(""NL);
 	}
 	
 #undef PRINTF

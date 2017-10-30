@@ -23,5 +23,6 @@ Doxygen/
 *.uvgui
 TExaS.*
 test
+*.exe
 t.out
 .nosan
