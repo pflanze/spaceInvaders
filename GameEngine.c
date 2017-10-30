@@ -777,7 +777,7 @@ unsigned int * FirstLast(unsigned int row, unsigned int column, unsigned int mod
 	if(enemyCount == 0){
 		AliveRows[row] = 0;					//needed only to update stats before quiting, good for debugging
 		gStatus = WIN;
-		gameStatus(&gStatus);
+		setStatus(&gStatus);
 	}
 	else{
 		if(Estat_row[row].Epr == 1){
@@ -929,24 +929,24 @@ unsigned int * FirstEPC(unsigned int mode){
 signed int absValue(signed int value){
 	return ((value<0) ? -value:value);
 }
-//********gameStatus*****************
+//********setStatus*****************
 // Systick sets the game status on the Engine
 // changes: na
 // Callers: systick, FirstLast, EnemyLaserCollisions
 // inputs: none
 // outputs: none
 // assumes: na
-void gameStatus(volatile unsigned int *p){
+void setStatus(volatile unsigned int *p){
 	gStatus = *p;
 }
-//********whatStatus*****************
+//********getStatus*****************
 // Returns the current game status
 // changes: na
 // Callers: systick
 // inputs: none
 // outputs: none
 // assumes: na
-volatile unsigned int * whatStatus(void){
+volatile unsigned int * getStatus(void){
 	volatile static  unsigned int *p = NULL;
 	return p = &gStatus;
 }

@@ -140,7 +140,6 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	switch(gameOverFlag){
 		case INGAME:{
-			volatile unsigned int *status = NULL;
 			if(clickCounter){
 				LaserInit_ship();
 				//Fire1_Sound();
@@ -159,16 +158,19 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			enemyBonusCreate();
 #endif	
 			Collisions();
-			status = whatStatus();
-			//update gameOverFlag only if different
-			if(gameOverFlag != *status){gameOverFlag = *status;}			//it seems that there is need of a loop here
+			{
+					volatile unsigned int* statusp = getStatus();
+					//update gameOverFlag only if different
+					unsigned int status= *statusp;
+					if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
+			}
 			MoveObjects();				//game engine
 			break;
 		}
 		case STANDBY:{
 			{//sets defaults
 				unsigned char rst = TRUE;
-				gameStatus(&gameOverFlag);
+				setStatus(&gameOverFlag);
 				if(rst){reset();rst=FALSE;}
 			}
 			Player_Move();
@@ -178,7 +180,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = TRUE;
-					if(done){gameStatus(&gameOverFlag);done = FALSE;}
+					if(done){setStatus(&gameOverFlag);done = FALSE;}
 				}
 			}
 			break;
