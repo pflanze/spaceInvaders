@@ -32,7 +32,6 @@ depend:
 # DO NOT DELETE
 
 Buttons.o: Buttons.h utils.h
-CMWC.o: /usr/include/string.h /usr/include/features.h /usr/include/xlocale.h
 GameEngine.o: GameEngine.h sprites.h Nokia5110.h random.h utils.h assert.h
 Init.o: Init.h
 LED.o: LED.h
@@ -43,7 +42,3 @@ SpaceInvaders.o: Message.h
 random.o: CMWC.h
 test.o: Buttons.h utils.h GameEngine.h Init.h LED.h Message.h
 test.o: Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h
-test.o: /usr/include/stdio.h /usr/include/features.h /usr/include/libio.h
-test.o: /usr/include/_G_config.h /usr/include/wchar.h /usr/include/string.h
-test.o: /usr/include/xlocale.h /usr/include/errno.h /usr/include/stdlib.h
-test.o: /usr/include/alloca.h
