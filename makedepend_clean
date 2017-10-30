@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+
+# Mon Oct 30 16:15:44 GMT 2017
+(my $email='ch%christianjaeger,ch')=~ tr/%,/@./;
+
+use strict; use warnings FATAL => 'uninitialized';
+
+$0=~ /(.*?)([^\/]+)\z/s or die "?";
+my ($mydir, $myname)=($1,$2);
+sub usage {
+    print STDERR map{"$_\n"} @_ if @_;
+    print "$myname Makefile
+
+  Remove system headers from the section that was added by
+  'makedepend' in the given make file. Reason: those header files are
+  different on each machine, and if not present break the build, hence
+  everybody would need to have 'makedepend' installed to be able to
+  build. They also clutter up the Git history.
+
+  (Christian Jaeger <$email>)
+";
+exit (@_ ? 1 : 0);
+}
+
+use Getopt::Long;
+our $verbose=0;
+#our $opt_dry;
+GetOptions("verbose"=> \$verbose,
+	   "help"=> sub{usage},
+	   #"dry-run"=> \$opt_dry,
+	   ) or exit 1;
+usage unless @ARGV;
+
+sub clean {
+    my ($path)= @_;
+
+    my $s= do {
+	open my $f, "<", $path
+	  or die "open '$path': $!";
+	local $/;
+	my $s= <$f>;
+	close $f
+	  or die "close '$path': $!";
+	$s
+    };
+
+    my ($pre,$post)= $s=~ m/(.*# DO NOT DELETE)(.*)/s
+      or die "'$path': missing marker";
+
+    # remove non-local header files
+    $post=~ s{ /\S+}{}sg;
+    # remove now empty directives:
+    $post=~ s{^\S+:\s*\n}{}mg;
+
+    open my $o, ">", $path
+      or die "open '$path': $!";
+    print $o $pre,$post
+      or die "print to '$path': $!";
+    close $o
+      or die "close '$path': $!";
+}
+
+
+for (@ARGV) {
+    clean $_
+}
+
