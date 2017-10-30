@@ -82,13 +82,15 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
 
-#include "..//tm4c123gh6pm.h"
+#ifndef TEST_WITHOUT_IO
+#  include "..//tm4c123gh6pm.h"
+#  include "TExaS.h"
+#endif
 #include "Nokia5110.h"
-#include "TExaS.h"
 #include "Init.h"
 #include "Buttons.h"
 #include "GameEngine.h"
-#include "Random.h"
+#include "random.h"
 #include "Message.h"
 #include "utils.h"
 
@@ -115,11 +117,13 @@ void EnableInterrupts(void);  // Enable interrupts
 // assumes: na
 #if AUDIO
 void Timer2A_Handler(void){ 
+#ifndef TEST_WITHOUT_IO
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
 	
 	//GPIO_PORTF_DATA_R ^= 0x02;
 	TimerCount++;
   Semaphore = 1; // trigger
+#endif
 }
 #endif
 //********SysTick_Handler*****************
@@ -168,9 +172,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		}
 		case STANDBY:{
 			{//sets defaults
-				unsigned char rst = TRUE;
+				unsigned char rst = true;
 				setStatus(gameOverFlag);
-				if(rst){reset();rst=FALSE;}
+				if(rst){reset();rst=false;}
 			}
 			Player_Move();
 			if(clickCounter == 1){
@@ -178,8 +182,8 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				clickCounter = 0;
 				gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
-					unsigned char done = TRUE;
-					if(done){setStatus(gameOverFlag);done = FALSE;}
+					unsigned char done = true;
+					if(done){setStatus(gameOverFlag);done = false;}
 				}
 			}
 			break;
@@ -205,7 +209,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #if DRAW_ENEMIES
 					EnemyInit();
 #endif
+#ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
+#endif
 				ShipInit();
 				BonusEnemy_Move(RESET);
 				defaultValues();
@@ -222,6 +228,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 // outputs: none
 // assumes: na
 void init_Hw(void){
+#ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 #if PORTF1
 	PortF_init();								//test only
@@ -236,12 +243,23 @@ void init_Hw(void){
 	DAC_Init();
 	LED_Init();
 	EnableInterrupts();
+#endif
 }
 //********main*****************
 //Multiline description
 // inputs: none
 // outputs: none
 // assumes: na
+
+void main_update_LCD(void) {
+	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
+		Draw(); // update the LCD
+	}
+	SysTickFlag = 0;
+}
+
+
+#ifndef TEST_WITHOUT_IO
 int main(void){	
 	init_Hw();											//call all initializing functions
 	//Create initial message
@@ -258,12 +276,10 @@ int main(void){
 	
   while(1){
 	 while(SysTickFlag == 0){};
-		if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-			Draw(); // update the LCD
-		}
-    SysTickFlag = 0;
+	 main_update_LCD();
 	}
 }
+#endif
 
 /*
 fix:

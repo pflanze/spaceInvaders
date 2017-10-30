@@ -2,7 +2,12 @@
 
 
 #include "LED.h"
-#include "..//tm4c123gh6pm.h"
+
+#ifndef TEST_WITHOUT_IO
+#  include "../tm4c123gh6pm.h"
+#else
+unsigned char GPIO_PORTB_DATA_R=0;
+#endif
 
 static unsigned char n;
 

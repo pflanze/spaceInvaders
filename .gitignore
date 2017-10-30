@@ -22,3 +22,5 @@ Doxygen/
 *.axf
 *.uvgui
 TExaS.*
+test
+t.out

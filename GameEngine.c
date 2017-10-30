@@ -8,9 +8,12 @@ rows/columns with enemies alive,
 #include "GameEngine.h"
 #include "sprites.h"
 #include "Nokia5110.h"
-#include "..//tm4c123gh6pm.h"
-#include "Random.h"
+#ifndef TEST_WITHOUT_IO
+#  include "..//tm4c123gh6pm.h"
+#endif
+#include "random.h"
 #include "utils.h"
+#include <assert.h>
 
 //local variables
 //static unsigned gStatus = STANDBY;
@@ -252,16 +255,16 @@ void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){
 	for(row=0;row<MAXROWS;row++){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			signed char column;
-			static unsigned char right = TRUE;			//moves the enemies, 0: moves left
-			static unsigned char down = FALSE;			//moves the enemies, 1: moves down
+			static unsigned char right = true;			//moves the enemies, 0: moves left
+			static unsigned char down = false;			//moves the enemies, 1: moves down
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
-				right = FALSE;	//moves left
-				down = TRUE;
+				right = false;	//moves left
+				down = true;
 			}
 			else if(Enemy[row][LeftShiftColumn].x <= LEFTLIMIT){
-				right = TRUE;
-				down = TRUE;
+				right = true;
+				down = true;
 			}	
 			//moves left/right using the switches
 			for(column=0;column<MAX_ENEMY_PR;column++){
@@ -277,7 +280,7 @@ void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){
 				for(column=0;column<4;column++){
 					Enemy[row][column].y += 1;
 				}
-				down = FALSE;
+				down = false;
 			}
 		}
 		else{										//Enemies have reached the earth
@@ -543,13 +546,22 @@ unsigned long Convert2Distance(unsigned long sample){
 // inputs: none
 // outputs: result (of the conversion)
 // assumes: na
-unsigned long ADC0_In(void){  
+
+#ifdef TEST_WITHOUT_IO
+unsigned long ADC0_SSFIFO3_R=0;
+#endif
+
+unsigned long ADC0_In(void){
+#ifndef TEST_WITHOUT_IO
   unsigned long result;
   ADC0_PSSI_R = 0x0008;            // 1) initiate SS3
   while((ADC0_RIS_R&0x08)==0){};   // 2) wait for conversion done
-  result = ADC0_SSFIFO3_R&0xFFF;   // 3) read result
+  result = ADC0_SSFIFO3_R & 0xFFF; // 3) read result
   ADC0_ISC_R = 0x0008;             // 4) acknowledge completion
   return result;
+#else
+  return ADC0_SSFIFO3_R;
+#endif
 }
 //------------------------------------------------------------------COLLISIONS------------------------------------------------
 //********Collisions*****************
@@ -611,6 +623,7 @@ void EnemyscanY(unsigned int laserNum){
 	row = lastLine;//temporal variable reset
 		
 	while((found == 0)&&(exit == 0)){
+		assert(row >= 0);
 		if(Laser_ship[laserNum].y > ELL[row]){
 			exit = 1;
 		}
@@ -624,6 +637,22 @@ void EnemyscanY(unsigned int laserNum){
 		exit = 1;
 	}
 }	
+#endif
+//********Verify_lastLine*****************
+//Keeps track of the last enemy line
+// changes: lastLine
+// inputs: none
+// outputs: lastLine
+// assumes: na
+#if DRAW_ENEMIES
+unsigned Verify_lastLine(unsigned lastLine){
+	while(Estat_row[lastLine].Epr == 0){
+		if (lastLine == 0)
+			break; // correct?
+		lastLine--;
+	}
+	return lastLine;
+}
 #endif
 //********EnemyscanX*****************
 // Scans for a enemy collition on a single row (x axis)
@@ -820,20 +849,6 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 		}
 		return alr_counter;
 	}
-}
-#endif
-//********Verify_lastLine*****************
-//Keeps track of the last enemy line
-// changes: lastLine
-// inputs: none
-// outputs: lastLine
-// assumes: na
-#if DRAW_ENEMIES
-static unsigned Verify_lastLine(unsigned lastLine){
-	while(Estat_row[lastLine].Epr == 0){
-		lastLine--;
-	}
-	return lastLine;
 }
 #endif
 //********FirstEPC*****************

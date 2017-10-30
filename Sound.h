@@ -1,3 +1,6 @@
+#ifndef _SOUND_H
+#define _SOUND_H
+
 // Sound.h
 // Runs on TM4C123 or LM4F120
 // Prototypes for basic functions to play sounds from the
@@ -18,3 +21,5 @@ void Sound_Fastinvader3(void);
 void Sound_Fastinvader4(void);
 void Sound_Highpitch(void);
 
+
+#endif

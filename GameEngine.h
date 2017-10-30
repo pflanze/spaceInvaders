@@ -1,4 +1,6 @@
 //GameEngine.h
+#ifndef _GAMEENGINE_H
+#define _GAMEENGINE_H
 
 
 
@@ -69,10 +71,6 @@
 #define	FIRST_E	0
 #define	LAST_E	3
 
-//Boolean
-#define	TRUE	1
-#define	FALSE 0
-
 //Return vs update (mode)
 #define RETURNVAL	0
 #define UPDATE		1
@@ -101,6 +99,10 @@ void LaserInit_ship(void);
 void ShipInit(void);
 void Draw(void);
 unsigned long ADC0_In(void);
+
+#ifdef TEST_WITHOUT_IO
+extern unsigned long ADC0_SSFIFO3_R;
+#endif
 
 
 #if DRAW_ENEMIES
@@ -131,7 +133,7 @@ void EnemyscanY(unsigned int laserNum);
 
 signed int absValue(signed int value);
 unsigned long Convert2Distance(unsigned long sample);
-static unsigned Verify_lastLine(unsigned int lastLine);
+unsigned Verify_lastLine(unsigned int lastLine);
 
 void MoveObjects(void);
 
@@ -147,3 +149,4 @@ unsigned int getStatus(void);
 
 
 
+#endif /* _GAMEENGINE_H */
