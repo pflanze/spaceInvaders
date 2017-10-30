@@ -15,6 +15,9 @@ rows/columns with enemies alive,
 #include "utils.h"
 #include "assert.h"
 
+
+static void EnemyLaserCollisions(void);
+
 //local variables
 //static unsigned gStatus = STANDBY;
 volatile static unsigned int gStatus = STANDBY;
@@ -694,7 +697,7 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void EnemyLaserCollisions(void){
+static void EnemyLaserCollisions(void){
 	if(Ship.life){
 		unsigned char i = 0;
 		for(i=0;i<MAXLASERS;i++){

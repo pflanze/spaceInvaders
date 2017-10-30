@@ -110,7 +110,6 @@ extern unsigned long ADC0_SSFIFO3_R;
 	void LaserCollision(void);
 	void LaserEnemy_Move(void);
 	void PlayerLaserCollisions(void);
-	void EnemyLaserCollisions(void);
 	void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn);
 #endif
 
