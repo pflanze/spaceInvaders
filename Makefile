@@ -49,8 +49,7 @@ depend:
 
 Buttons.o: Buttons.h utils.h
 CMWC.o: /usr/include/string.h /usr/include/features.h /usr/include/xlocale.h
-GameEngine.o: GameEngine.h sprites.h Nokia5110.h random.h utils.h
-GameEngine.o: /usr/include/assert.h /usr/include/features.h
+GameEngine.o: GameEngine.h sprites.h Nokia5110.h random.h utils.h assert.h
 Init.o: Init.h
 LED.o: LED.h
 Message.o: Message.h Nokia5110.h
