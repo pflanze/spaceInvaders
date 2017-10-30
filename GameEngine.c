@@ -645,7 +645,7 @@ void EnemyscanY(unsigned int laserNum){
 // outputs: lastLine
 // assumes: na
 #if DRAW_ENEMIES
-unsigned Verify_lastLine(unsigned lastLine){
+static unsigned Verify_lastLine(unsigned lastLine){
 	while(Estat_row[lastLine].Epr == 0){
 		if (lastLine == 0)
 			break; // correct?
