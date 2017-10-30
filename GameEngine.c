@@ -13,7 +13,7 @@ rows/columns with enemies alive,
 #endif
 #include "random.h"
 #include "utils.h"
-#include <assert.h>
+#include "assert.h"
 
 //local variables
 //static unsigned gStatus = STANDBY;

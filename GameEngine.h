@@ -9,7 +9,7 @@
 //debugging code
 #define DRAW_ENEMIES	1
 #define DRAW_ENEMYBONUS 1
-#define GODMODE 0
+#define GODMODE 1
 
 //game max
 #define MAXLASERS 5
