@@ -776,8 +776,7 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 	
 	if(enemyCount == 0){
 		AliveRows[row] = 0;					//needed only to update stats before quiting, good for debugging
-		gStatus = WIN;
-		setStatus(&gStatus);
+		setStatus(WIN);
 	}
 	else{
 		if(Estat_row[row].Epr == 1){
@@ -936,8 +935,8 @@ signed int absValue(signed int value){
 // inputs: none
 // outputs: none
 // assumes: na
-void setStatus(volatile unsigned int *p){
-	gStatus = *p;
+void setStatus(const unsigned int v){
+	gStatus = v;
 }
 //********getStatus*****************
 // Returns the current game status
@@ -946,9 +945,8 @@ void setStatus(volatile unsigned int *p){
 // inputs: none
 // outputs: none
 // assumes: na
-volatile unsigned int * getStatus(void){
-	volatile static  unsigned int *p = NULL;
-	return p = &gStatus;
+ unsigned int getStatus(void){
+	return gStatus;
 }
 //---------------------------------------------------------------TODOS--------------------------------------------------
 /*

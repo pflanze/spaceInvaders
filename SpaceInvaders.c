@@ -159,9 +159,8 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #endif	
 			Collisions();
 			{
-					volatile unsigned int* statusp = getStatus();
 					//update gameOverFlag only if different
-					unsigned int status= *statusp;
+					unsigned int status= getStatus();
 					if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
 			}
 			MoveObjects();				//game engine
@@ -170,7 +169,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		case STANDBY:{
 			{//sets defaults
 				unsigned char rst = TRUE;
-				setStatus(&gameOverFlag);
+				setStatus(gameOverFlag);
 				if(rst){reset();rst=FALSE;}
 			}
 			Player_Move();
@@ -180,7 +179,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = TRUE;
-					if(done){setStatus(&gameOverFlag);done = FALSE;}
+					if(done){setStatus(gameOverFlag);done = FALSE;}
 				}
 			}
 			break;
