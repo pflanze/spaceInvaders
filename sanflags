@@ -2,6 +2,10 @@
 
 SAN="-fsanitize=address -fsanitize=undefined"
 
+if [ -e .nosan ]; then 
+	exit 0
+fi
+
 errs=`cc $SAN --help 2>&1 | grep sanitize | wc -l`
 
 if [ "$errs" = "0" ]; then
