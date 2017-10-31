@@ -150,6 +150,7 @@ int main () {
 	if (fclose(fh)) die_errno("close", path);
 
 	if (got==0) {
+		printf("all tests OK.\n");
 		return 0;
 	} else {
 		printf("test failures:\n");
