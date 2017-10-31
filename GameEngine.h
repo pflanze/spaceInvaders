@@ -7,7 +7,7 @@
 
 //----------------------------------------------------------Definition------------------------------------------------
 //debugging code
-#define DRAW_ENEMIES	1
+#define DRAW_ENEMIES	0
 #define DRAW_ENEMYBONUS 1
 #define GODMODE 1
 
@@ -111,6 +111,7 @@ extern unsigned long ADC0_SSFIFO3_R;
 	void LaserEnemy_Move(void);
 	void PlayerLaserCollisions(void);
 	void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn);
+`	void defaultValues(void);
 #endif
 
 #if DRAW_ENEMYBONUS
@@ -123,7 +124,7 @@ void BonusLaserCollision(void);
 void LaserShip_Move(void);
 void EnemyDraw(void);
 void LaserShipDraw(void);
-void defaultValues(void);
+
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr, unsigned int FrameCount);

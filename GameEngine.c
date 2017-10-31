@@ -16,7 +16,7 @@ rows/columns with enemies alive,
 #include "assert.h"
 
 
-static void EnemyLaserCollisions(void);
+
 
 //local variables
 //static unsigned gStatus = STANDBY;
@@ -30,6 +30,8 @@ volatile static unsigned int gStatus = STANDBY;
 //----------------------------------------------------------Structs------------------------------------------------
 //game stats per column
 #if DRAW_ENEMIES
+static void EnemyLaserCollisions(void);
+
 struct GameStatColumn {
 	unsigned char Fep;		//"First enemy position"
 	unsigned char Epc;		//"Enemies per column"
@@ -47,9 +49,10 @@ struct GameStatRow {
 static struct GameStatRow Estat_row[MAXROWS];
 static struct State Enemy[MAXROWS][MAX_ENEMY_PR];
 static struct State Laser_enemy[MAXLASERS];
+
+#endif
 static struct State Ship;
 static struct State Laser_ship[MAXLASERS];
-#endif
 
 #if DRAW_ENEMYBONUS
 	static struct State  EnemyBonus;
@@ -209,9 +212,11 @@ void reset(void){
 	Ship.image[0] = PlayerShip0;
 	Ship.image[1] = PlayerShip0;
 	Ship.JK = 0;
+#if DRAW_ENEMIES
 	EnemyShiftTrack(NULL, RESET);
-	FirstLast(NULL, NULL, RESET);
 	FirstEPC(RESET);
+	FirstLast(NULL, NULL, RESET);
+#endif
 }
 //--------------------------------------------------------------MOVE OBJECTS-------------------------------------------------------------------------
 //********MoveObjects*****************
@@ -220,7 +225,9 @@ void reset(void){
 // outputs: none
 // assumes: na
 void MoveObjects(void){
+#if DRAW_ENEMIES
 	unsigned int *ETracking = EnemyShiftTrack(NA,RETURNARR);
+#endif
 	Player_Move();						//calls ADC0_in, Convert2Distance
 	if(gStatus == INGAME){
 #if DRAW_ENEMIES
@@ -679,10 +686,8 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 				Enemy[row][column].JK = 1;
 				alive_rows = FirstLast(row, column, UPDATE);
 				lastLine = Verify_lastLine(lastLine);								//updates last line value
-#if DRAW_ENEMIES
-					//updates 
-					EnemyShiftTrack(alive_rows, UPDATE);
-#endif
+				//updates 
+				EnemyShiftTrack(alive_rows, UPDATE);
 				FirstEPC(UPDATE);														//update point
 				break;																			//return????
 			}

@@ -75,6 +75,14 @@ SSI0Clk       (SCLK, pin 7) connected to PA2
 back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~80mA total
 */
 
+/*
+Notes:
+Handlers:
+Systick: @30hz: Bottons, ADC, Video calculations
+Timer2: @44100hz: Sound
+
+*/
+
 //testing & preprocessing directives
 #define IMESSAGE			0		//Enables/disables inittial message
 
@@ -120,8 +128,8 @@ void Timer2A_Handler(void){
 #ifndef TEST_WITHOUT_IO
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
 	
-	//GPIO_PORTF_DATA_R ^= 0x02;
-	TimerCount++;
+	GPIO_PORTF_DATA_R ^= 0x02;
+//	TimerCount++;
   Semaphore = 1; // trigger
 #endif
 }
@@ -208,13 +216,14 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			if(clickCounter){
 #if DRAW_ENEMIES
 					EnemyInit();
+					defaultValues();
 #endif
 #ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
 				ShipInit();
 				BonusEnemy_Move(RESET);
-				defaultValues();
+
 				clickCounter = 0;
 				gameOverFlag = STANDBY;
 			}
@@ -269,9 +278,9 @@ int main(void){
 	
 #if DRAW_ENEMIES
 	EnemyInit();
+	defaultValues();
 #endif
 	ShipInit();
-	defaultValues();
 	Random_Init(1);
 	
   while(1){
