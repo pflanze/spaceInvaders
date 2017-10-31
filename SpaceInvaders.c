@@ -81,6 +81,7 @@ Handlers:
 Systick: @30hz: Bottons, ADC, Video calculations
 Timer2: @44100hz: Sound
 
+gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
 */
 
 //testing & preprocessing directives
@@ -104,7 +105,7 @@ Timer2: @44100hz: Sound
 
 //Global variables
 #if AUDIO
-	unsigned long TimerCount;
+//	unsigned long TimerCount;
 	unsigned long Semaphore;
 #endif
 
@@ -244,7 +245,7 @@ void init_Hw(void){
 #endif
   Nokia5110_Init();
 #if AUDIO
-	Timer2_Init(7272);					//initialized @11kHz
+	Timer2_Init();					//initialized @11kHz
 #endif
 	Systick_Init(2666666);			//initialized @30Hz
 	ADC0_Init();
