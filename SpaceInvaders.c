@@ -265,7 +265,7 @@ void main_update_LCD(void) {
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
 		Draw(); // update the LCD
 	}
-	SysTickFlag = 0;
+	
 }
 
 
@@ -285,8 +285,9 @@ int main(void){
 	Random_Init(1);
 	
   while(1){
-	 while(SysTickFlag == 0){};
-	 main_update_LCD();
+		while(SysTickFlag == 0){};
+		main_update_LCD();
+		SysTickFlag = 0;
 	}
 }
 #endif
