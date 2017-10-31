@@ -2,14 +2,10 @@
 
 #ifndef _INIT_H
 #define _INIT_H
-
-//testing code
-#define AUDIO	1
-#define PORTF1_audio		1		//Enables/disables portF, Logic Analizer frequency test
-#define PORTF1_systick	1		//Enables/disables portF, Logic Analizer frequency test
+#include "debug.h"
 
 //Timer2a
-#define PERIOD 7272
+#define PERIOD 7273
 
 void init_Hw(void);							//Initializes the system (help to keep main clean)
 void Systick_Init(unsigned long periodSystick);

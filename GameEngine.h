@@ -1,16 +1,9 @@
 //GameEngine.h
 #ifndef _GAMEENGINE_H
 #define _GAMEENGINE_H
-
-
-
+#include "debug.h"
 
 //----------------------------------------------------------Definition------------------------------------------------
-//debugging code
-#define DRAW_ENEMIES	0
-#define DRAW_ENEMYBONUS 1
-#define GODMODE 1
-
 //game max
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
@@ -111,7 +104,7 @@ extern unsigned long ADC0_SSFIFO3_R;
 	void LaserEnemy_Move(void);
 	void PlayerLaserCollisions(void);
 	void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn);
-`	void defaultValues(void);
+	void defaultValues(void);
 #endif
 
 #if DRAW_ENEMYBONUS

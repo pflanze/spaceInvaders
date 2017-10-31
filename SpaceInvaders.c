@@ -102,12 +102,8 @@ gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
 #include "random.h"
 #include "Message.h"
 #include "utils.h"
-
-//Global variables
-#if AUDIO
-//	unsigned long TimerCount;
-	unsigned long Semaphore;
-#endif
+#include "sound.h"
+#include "debug.h"
 
 volatile unsigned char SysTickFlag = 0;
 volatile unsigned int gameOverFlag = STANDBY;
@@ -115,6 +111,7 @@ volatile unsigned int gameOverFlag = STANDBY;
 																//1: Game Over (you loose)
 																//2: Just Won
 																//3: Game on standBy
+volatile static unsigned char fireSound;
 //function Prototypes
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -125,13 +122,17 @@ void EnableInterrupts(void);  // Enable interrupts
 // outputs: none
 // assumes: na
 #if AUDIO
-void Timer2A_Handler(void){ 
+void Timer2A_Handler(void){
 #ifndef TEST_WITHOUT_IO
   TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
-	
+#if	PORTF1_audio
 	GPIO_PORTF_DATA_R ^= 0x02;
+#endif
+	if(gameOverFlag == INGAME && fireSound == 1){
+		shipFire();
+		fireSound = 0;
+	}
 //	TimerCount++;
-  Semaphore = 1; // trigger
 #endif
 }
 #endif
@@ -149,6 +150,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	if(Pressfire_B1()){
 		clickCounter++;
+		fireSound = 1;
 	}
 	
 	switch(gameOverFlag){
@@ -172,9 +174,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #endif	
 			Collisions();
 			{
-					//update gameOverFlag only if different
-					unsigned int status= getStatus();
-					if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
+				//update gameOverFlag only if different
+				unsigned int status= getStatus();
+				if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
 			}
 			MoveObjects();				//game engine
 			break;
@@ -260,15 +262,18 @@ void init_Hw(void){
 // inputs: none
 // outputs: none
 // assumes: na
-
 void main_update_LCD(void) {
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
 		Draw(); // update the LCD
 	}
-	
 }
-
-
+//********main*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
 #ifndef TEST_WITHOUT_IO
 int main(void){	
 	init_Hw();											//call all initializing functions
@@ -299,8 +304,10 @@ create a led.h
 
 volatile unsigned int *status
 	make bigger scope and make calls only when differet to gameOverflag
-	SpaceInvaders.c(141): warning:  #185-D: dynamic initialization in unreachable code
 
 sound:
 C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
+
+notes:
+???globals should be static
 */

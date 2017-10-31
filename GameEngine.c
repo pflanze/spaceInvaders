@@ -15,9 +15,6 @@ rows/columns with enemies alive,
 #include "utils.h"
 #include "assert.h"
 
-
-
-
 //local variables
 //static unsigned gStatus = STANDBY;
 volatile static unsigned int gStatus = STANDBY;

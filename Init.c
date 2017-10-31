@@ -101,7 +101,6 @@ void LED_Init(void){
 	GPIO_PORTB_DR8R_R |= 0x30;    // can drive up to 8mA out
 	GPIO_PORTB_AFSEL_R &= ~0x30;   // disable alt funct on PB3-0
 	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB3-0
-	
 	GPIO_PORTB_DATA_R &= ~0x30;		//LEDs off by default
 #endif
 }
