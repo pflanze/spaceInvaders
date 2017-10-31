@@ -142,7 +142,7 @@ void Timer2A_Handler(void){
 void SysTick_Handler(void){			// runs at 30 Hz
 	volatile static unsigned char clickCounter = 0;			//keeps track of clicks
 	
-#if PORTF1
+#if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
 #endif
 	
@@ -239,7 +239,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 void init_Hw(void){
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
-#if PORTF1
+#if PORTF1_systick || PORTF1_audio
 	PortF_init();								//test only
 #endif
   Nokia5110_Init();

@@ -108,7 +108,7 @@ void LED_Init(void){
 
 
 //initialize PortF !!!!testing Only!!!!
-#if PORTF1
+#if PORTF1_systick || PORTF1_audio
 void PortF_init(void){ volatile unsigned long delay;
 #ifndef TEST_WITHOUT_IO
 	SYSCTL_RCGC2_R |= 0x00000020;     // activate clock for Port F
