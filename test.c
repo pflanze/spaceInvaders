@@ -31,33 +31,39 @@ void die_errno(const char* msg, const char* arg) {
 #endif
 
 
-// Write screen buffer format from Nokia5110.c to file in PBM
+// Write screen buffer format from Nokia5110.c to file in XPM
 // format. Take dimensions from Nokia5110.h
-static void screen_write_pbm(const char* screen, const char* basepath) {
+static void screen_write_xpm(const char* screen, const char* basepath) {
 	int w= SCREENW;
 	int h= SCREENH;
 
 	int pathsiz= strlen(basepath)+5;
 	char* path= malloc(pathsiz);
-	snprintf(path, pathsiz, "%s.pbm", basepath);
+	snprintf(path, pathsiz, "%s.xpm", basepath);
 	
 	FILE *fh= fopen(path, "w");
 	if (!fh) die_errno("open", path);
 
 #define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno("print", path)
 
-	PRINTF("P1"NL);
-	PRINTF("# CREATOR: SpaceInvaders test"NL);
-	PRINTF("%d %d"NL, w, h);
-
+	PRINTF("%s",
+	       "/* XPM */"NL
+	       "static char *foo[] = {"NL);
+	/* columns rows colors chars-per-pixel */
+	PRINTF("\"%d %d %d %d\","NL, w, h, 2, 1);
+	PRINTF("%s",
+	       "\"X c black\","NL
+	       "\"  c white\","NL);
 	for (int y=0; y<h; y++) {
+		PRINTF("\"");
 		for (int x=0; x<w; x++) {
 			int i= x + w*(y/8);
 			char v= screen[i];
-			PRINTF("%d ", ((v >> (y%8)) & 1) ? 1 : 0);
+			PRINTF("%c", ((v >> (y%8)) & 1) ? 'X' : ' ');
 		}
-		PRINTF(""NL);
+		PRINTF("\","NL);
 	}
+	PRINTF("};"NL);
 	
 #undef PRINTF
 	
@@ -69,7 +75,7 @@ static void screen_write_pbm(const char* screen, const char* basepath) {
 static void screen_write_numbered(int i) {
 	char basepath[10];
 	snprintf(basepath, 10, "t/%04i", i);
-	screen_write_pbm(Screen, basepath);
+	screen_write_xpm(Screen, basepath);
 }
 
 
