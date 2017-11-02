@@ -101,9 +101,9 @@ int main () {
 	//Initializing game
 	#if DRAW_ENEMIES
 		EnemyInit();
+		defaultValues();
 	#endif
 	ShipInit();
-	defaultValues();
 	Random_Init(223412);
 
 	struct Game game;
