@@ -1,3 +1,8 @@
+# Where to find the files:
+VPATH=..
+# From here on do not use the "../" prefix, relative paths are assumed
+# to be found in ".." already.
+
 SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
 
 SAN=`./sanflags`
@@ -25,7 +30,9 @@ clean:
 	rm *.o test
 
 depend:
-	makedepend -- $(CFLAGS) -- $(SRCS)
+	cp Makefile ..
+	(cd .. && makedepend -- $(CFLAGS) -- $(SRCS))
+	mv ../Makefile .
 	./makedepend_clean Makefile
 
 
