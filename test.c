@@ -94,6 +94,7 @@ static void game_step(struct Game *game) {
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
 int main () {
+	GameEngine_init(2 /* max_number_of_enemy_rows */);
 	init_Hw();
 	#if IMESSAGE
 		InitMessage();

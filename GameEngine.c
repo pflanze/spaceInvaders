@@ -16,13 +16,15 @@ rows/columns with enemies alive,
 #include "assert.h"
 #include "Sound.h"
 
+
 //local variables
 //static unsigned gStatus = STANDBY;
 volatile static unsigned int gStatus = STANDBY;
+static unsigned int maxrows;
 
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
-	static unsigned lastLine = MAXROWS-1;
+	static unsigned lastLine;
 #endif
 
 //----------------------------------------------------------Structs------------------------------------------------
@@ -44,8 +46,8 @@ struct GameStatRow {
 	unsigned char Epr;		//"Enemies per row"
 };
 
-static struct GameStatRow Estat_row[MAXROWS];
-static struct State Enemy[MAXROWS][MAX_ENEMY_PR];
+static struct GameStatRow Estat_row[ALLOC_MAXROWS];
+static struct State Enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
 static struct State Laser_enemy[MAXLASERS];
 
 #endif
@@ -67,7 +69,7 @@ static struct State Laser_ship[MAXLASERS];
 #if DRAW_ENEMIES
 void EnemyInit(void){
 	unsigned char row;
-	for(row=0;row<MAXROWS;row++){
+	for(row=0;row<maxrows;row++){
 		unsigned int column;
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			Enemy[row][column].x = 20*column;
@@ -224,10 +226,10 @@ void BonusEnemyInit(void){
 void defaultValues(void){
 	unsigned char i;
 	//tracking defaults
-	lastLine = MAXROWS-1;
+	lastLine = maxrows-1;
 	//sets defaults column stats
 	for(i=0;i<MAX_ENEMY_PR;i++){
-		Estat_column[i].Epc = MAXROWS;
+		Estat_column[i].Epc = maxrows;
 		Estat_column[i].Fep = lastLine;
 	}	
 	for(i=0;i<MAX_ENEMY_PR;i++){											
@@ -301,7 +303,7 @@ void Player_Move(void){
 void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){ 
 	unsigned char row;
 	
-	for(row=0;row<MAXROWS;row++){
+	for(row=0;row<maxrows;row++){
 		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
 			signed char column;
 			static unsigned char right = true;			//moves the enemies, 0: moves left
@@ -436,7 +438,7 @@ LaserShipDraw();		//uses MasterDraw
 void EnemyDraw(void){
 	signed char row;
 
-	for(row=0;row<MAXROWS;row++){
+	for(row=0;row<maxrows;row++){
 		unsigned char column;
 		static unsigned char FrameCount = 0;
 		if(gStatus == INGAME){FrameCount ^= 0x01;}	// 0,1,0,1,...
@@ -571,7 +573,7 @@ unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
 			lowest 	= Estat_row[row].Fep;
 			highest	= Estat_row[row].Lep;
 			row = 1;
-			while(row <= MAXROWS-1){//change
+			while(row <= maxrows-1){//change
 				if(Estat_row[row].Fep < lowest){
 					lowest = Estat_row[row].Fep;
 				}
@@ -668,8 +670,8 @@ void EnemyscanY(unsigned int laserNum){
 	unsigned char found = 0;
 	unsigned char exit = 0;
 	
-	unsigned char ELL[MAXROWS];		//Enemy line low
-	unsigned char ELH[MAXROWS];		//Enemy line high
+	unsigned char ELL[ALLOC_MAXROWS];		//Enemy line low
+	unsigned char ELH[ALLOC_MAXROWS];		//Enemy line high
 	
 	//it creates an array with thresholds
 	for(row=lastLine;row>=0;row--){
@@ -837,17 +839,17 @@ void BonusLaserCollision(void){
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+static unsigned char enemyCount;
 unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode){
 	unsigned char lastCheck = 0;
-	static unsigned char enemyCount = MAXROWS * MAX_ENEMY_PR;
-	static unsigned char AliveRows[MAXROWS];
+	static unsigned char AliveRows[ALLOC_MAXROWS];
 	
 	//setting defaults
 	if(mode == RESET) {
-		enemyCount = MAXROWS * MAX_ENEMY_PR;
+		enemyCount = maxrows * MAX_ENEMY_PR; // see COPYPASTE
 		{	//liverows[] defaults
 			unsigned char i;
-			for(i=0;i<MAXROWS;i++){
+			for(i=0;i<maxrows;i++){
 				AliveRows[i] = 1;
 			}
 		}
@@ -896,7 +898,7 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 
 	{unsigned int alr_counter=0;
 		{unsigned char i;
-			for(i=0;i<=MAXROWS-1;i++){
+			for(i=0;i<=maxrows-1;i++){
 				if(AliveRows[i]){
 					alr_counter++;
 				}
@@ -1018,6 +1020,17 @@ void setStatus(const unsigned int v){
  unsigned int getStatus(void){
 	return gStatus;
 }
+
+
+
+void GameEngine_init(unsigned int max_number_of_enemy_rows) {
+	assert(max_number_of_enemy_rows <= ALLOC_MAXROWS);
+	maxrows= max_number_of_enemy_rows;
+	lastLine= maxrows-1;
+	enemyCount= maxrows * MAX_ENEMY_PR; // COPYPASTE
+}
+
+
 //---------------------------------------------------------------TODOS--------------------------------------------------
 /*
 changes:

@@ -281,7 +281,8 @@ void main_update_LCD(void) {
 // outputs: none
 // assumes: na
 #ifndef TEST_WITHOUT_IO
-int main(void){	
+int main(void){
+	GameEngine_init(2 /* max_number_of_enemy_rows */);
 	init_Hw();											//call all initializing functions
 	//Create initial message
 #if IMESSAGE

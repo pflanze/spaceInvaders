@@ -8,7 +8,7 @@
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
 #define REAL_MAX_EPR (MAX_ENEMY_PR-1)
-#define MAXROWS	2
+#define ALLOC_MAXROWS	2
 
 //used for Convert2Distance calibration
 #define Avalue 16
@@ -139,5 +139,6 @@ void EnemyscanX(unsigned int row, unsigned int laserNum);
 void setStatus(unsigned int v);
 unsigned int getStatus(void);
 void LaserInit_ship2(void);
+void GameEngine_init(unsigned int max_number_of_enemy_rows);
 
 #endif /* _GAMEENGINE_H */
