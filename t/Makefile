@@ -5,6 +5,9 @@ VPATH=..
 
 SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
 
+OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o test.o
+
+
 SAN=`./sanflags`
 
 # To make it possible to work with
@@ -15,7 +18,6 @@ SAN=`./sanflags`
 
 CFLAGS=-O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 
-OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o test.o
 
 runtest: test t
 	./test
