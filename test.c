@@ -93,18 +93,9 @@ static void game_step(struct Game *game) {
 
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
-int main () {
-	GameEngine_init(2 /* max_number_of_enemy_rows */);
-	init_Hw();
-	#if IMESSAGE
-		InitMessage();
-	#endif
-	//Initializing game
-	#if DRAW_ENEMIES
-		EnemyInit();
-		defaultValues();
-	#endif
-	ShipInit();
+
+static void test_run(unsigned int max_number_of_enemy_rows) {
+	SpaceInvaders_init(max_number_of_enemy_rows);
 	Random_Init(223412);
 
 	struct Game game;
@@ -134,7 +125,11 @@ int main () {
 				      screen_write_numbered(game.frame_number);
 			      });
 	       });
+}
 
+
+int main () {
+	test_run(2);
 
 	/* verify that there are no differences to the committed
 	   versions of the frames */

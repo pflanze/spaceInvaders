@@ -263,11 +263,25 @@ void init_Hw(void){
 	EnableInterrupts();
 #endif
 }
-//********main*****************
-//Multiline description
-// inputs: none
-// outputs: none
-// assumes: na
+
+
+// Make parts of the main functionality accessible by test.c
+
+void SpaceInvaders_init(unsigned int max_number_of_enemy_rows) {
+	GameEngine_init(max_number_of_enemy_rows);
+	init_Hw();											//call all initializing functions
+	//Create initial message
+#if IMESSAGE
+	InitMessage();
+#endif
+	
+#if DRAW_ENEMIES
+	EnemyInit();
+	defaultValues();
+#endif
+	ShipInit();
+}
+
 void main_update_LCD(void) {
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
 		Draw(); // update the LCD
@@ -282,21 +296,10 @@ void main_update_LCD(void) {
 // assumes: na
 #ifndef TEST_WITHOUT_IO
 int main(void){
-	GameEngine_init(2 /* max_number_of_enemy_rows */);
-	init_Hw();											//call all initializing functions
-	//Create initial message
-#if IMESSAGE
-	InitMessage();
-#endif
-	
-#if DRAW_ENEMIES
-	EnemyInit();
-	defaultValues();
-#endif
-	ShipInit();
+	SpaceInvaders_init(2 /* max_number_of_enemy_rows */);
 	Random_Init(1);
 	
-  while(1){
+	while(1){
 		while(SysTickFlag == 0){};
 		main_update_LCD();
 		SysTickFlag = 0;
