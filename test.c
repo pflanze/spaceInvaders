@@ -77,17 +77,18 @@ static void screen_write_xpm(const char* screen, const char* basepath) {
 	free(path);
 }
 
-static void screen_write_numbered(int i) {
-	char basepath[10];
-	XSNPRINTF(basepath, 10, "out/%04i", i);
-	screen_write_xpm(Screen, basepath);
-}
-
-
 
 struct Game {
+	unsigned int max_number_of_enemy_rows;
 	int frame_number;
 };
+
+static void game_screen_write(struct Game *game) {
+	char basepath[100];
+	XSNPRINTF(basepath, 100, "out/%i-%04i",
+		  game->max_number_of_enemy_rows, game->frame_number);
+	screen_write_xpm(Screen, basepath);
+}
 
 static void game_step(struct Game *game) {
 	SysTick_Handler();
@@ -104,10 +105,13 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	Random_Init(223412);
 
 	struct Game game;
-	game.frame_number=-1;
+	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
+	game.frame_number= -1;
 
 	game_step(&game);
-	screen_write_numbered(game.frame_number);
+	game_screen_write(&game);
+
+	ADC0_SSFIFO3_R= 0;
 
 	REPEAT(8,
 	       {
@@ -115,11 +119,11 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 		       REPEAT(10,
 			      {
 				      game_step(&game);
-				      screen_write_numbered(game.frame_number);
+				      game_screen_write(&game);
 			      });
 	       });
 
-	ADC0_SSFIFO3_R=2000;
+	ADC0_SSFIFO3_R= 2000;
 
 	REPEAT(8,
 	       {
@@ -127,7 +131,7 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 		       REPEAT(10,
 			      {
 				      game_step(&game);
-				      screen_write_numbered(game.frame_number);
+				      game_screen_write(&game);
 			      });
 	       });
 }
