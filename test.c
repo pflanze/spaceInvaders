@@ -101,17 +101,16 @@ static void game_step(struct Game *game) {
 
 
 static void test_run(unsigned int max_number_of_enemy_rows) {
-	SpaceInvaders_init(max_number_of_enemy_rows);
-	Random_Init(223412);
-
 	struct Game game;
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
 
+	SpaceInvaders_init(max_number_of_enemy_rows);
+	Random_Init(223412);
+	ADC0_SSFIFO3_R= 0;
+
 	game_step(&game);
 	game_screen_write(&game);
-
-	ADC0_SSFIFO3_R= 0;
 
 	REPEAT(8,
 	       {
