@@ -116,26 +116,6 @@ volatile static unsigned char fireSound;
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-//********Timer2A_Handler*****************
-//Multiline description
-// inputs: none
-// outputs: none
-// assumes: na
-#if AUDIO
-void Timer2A_Handler(void){
-#ifndef TEST_WITHOUT_IO
-  TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
-#if	PORTF1_audio
-	GPIO_PORTF_DATA_R ^= 0x02;
-#endif
-	if(gameOverFlag == INGAME && fireSound == 1){
-		shipFire();
-		fireSound = 0;
-	}
-//	TimerCount++;
-#endif
-}
-#endif
 //********SysTick_Handler*****************
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // inputs: none
@@ -150,7 +130,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	if(Pressfire_B1()){
 		clickCounter++;
-		fireSound = 1;
+		Sound_Play(&shoot);
 	}
 	
 	switch(gameOverFlag){
@@ -246,8 +226,11 @@ void init_Hw(void){
 	PortF_init();								//test only
 #endif
   Nokia5110_Init();
-#if AUDIO
-	Timer2_Init();					//initialized @11kHz
+#if AUDIO_1A
+	Timer1A_Init();					//initialized @11kHz
+#endif
+#if AUDIO_2A
+	Timer2A_Init();					//initialized @11kHz
 #endif
 	Systick_Init(2666666);			//initialized @30Hz
 	ADC0_Init();

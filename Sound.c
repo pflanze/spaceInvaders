@@ -13,13 +13,21 @@ Configure on periodic mode, down-count
 
 #include "tm4c123gh6pm.h"
 #include "sound.h"
+#include "debug.h"
 
 
 //Global variables
 unsigned int Index = 0;
 
+#if AUDIO_1A
+static const struct Sound *sound1;
+#endif
+
+#if AUDIO_2A
+static const struct Sound *sound2;
+#endif
 //----------------------------------------------Compressed Sounds------------------------------------------
-const unsigned int shoot[] = {
+const unsigned int _shoot[] = {
 	0x866AD827, 0xD7369EA4, 0x5AC658D8, 0x368DA558, 0xC748D947, 0x9B738D85, 0x7DF635A7, 0x259DCCC7, 0x6105A78F, 
 	0xFF700000, 0x6FFFFFC0, 0x001BA9FF, 0xFB200104, 0xAFFFFF40, 0x03438DFF, 0xF9310019, 0xDDFFFD00, 0x01128FFF, 
 	0xFF900054, 0x5BFFFF93, 0x001758DF, 0xFF940000, 0x9AAEFFF5, 0x000005DE, 0xEFFF7000, 0x5438DFFF, 0xE7300078, 
@@ -77,7 +85,33 @@ const unsigned int shoot[] = {
 	0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 
 	0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 
 	0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888, 0x88888888};
+
+
+const struct Sound shoot = {
+	_shoot, 
+	sizeof(_shoot)/sizeof(_shoot[0])	//number of elements of array
+};
+
 //-------------------------------------------------------------------------------------------
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
+void Timer1A_Stop(void){
+  TIMER1_CTL_R &= ~0x00000001; // disable
+}
+//********functionName*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
+void Timer1A_Start(void){
+  TIMER1_CTL_R |= 0x00000001;   // enable
+}	
 //********functionName*****************
 // Multiline description
 // changes: variablesChanged
@@ -98,25 +132,87 @@ void Timer2A_Stop(void){
 void Timer2A_Start(void){
   TIMER2_CTL_R |= 0x00000001;   // enable
 }
+//----------------------------------------------Handlers----------------------------------------------
+//********Timer1A_Handler*****************
+//Multiline description
+// inputs: none
+// outputs: none
+// assumes: na
+#if AUDIO_1A
+void Timer1A_Handler(void){
+	const struct Sound *snd = sound1;
+	static unsigned int frameIndex = 0, sampleIndex = 0, currentSample = 0, frame = 0;
+  TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
+	
+	if(sampleIndex == 8){
+		frameIndex++;
+		sampleIndex = 0;
+	}
+
+	if(sampleIndex == 0){
+		frame = snd->data[frameIndex];
+	}
+	
+	currentSample = (frame&0xF0000000)>>28;
+	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | currentSample;
+	sampleIndex++;
+	frame <<= 4;
+	if(frameIndex >= snd->size){
+		Timer1A_Stop();
+		frameIndex = 0, sampleIndex = 0, currentSample = 0, frame = 0;
+	}
+}
+#endif
+//********Timer2B_Handler*****************
+//Multiline description
+// inputs: none
+// outputs: none
+// assumes: na
+#if AUDIO_2A
+void Timer2A_Handler(void){
+	const struct Sound *snd = sound2;
+	static unsigned int frameIndex = 0, sampleIndex = 0, currentSample = 0, frame = 0;
+  TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
+	
+	if(sampleIndex == 8){
+		frameIndex++;
+		sampleIndex = 0;
+	}
+
+	if(sampleIndex == 0){
+		frame = snd->data[frameIndex];
+	}
+	
+	currentSample = (frame&0xF0000000)>>28;
+	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | currentSample;
+	sampleIndex++;
+	frame <<= 4;
+	if(frameIndex >= snd->size){
+		Timer2A_Stop();
+		frameIndex = 0, sampleIndex = 0, currentSample = 0, frame = 0;
+	}
+}
+#endif
+
+//------------------------------------------------------------------
 //********functionName*****************
 // Multiline description
 // changes: variablesChanged
 // Callers: 
-// inputs: none
+// inputs: *ptArraySound
 // outputs: none
 // assumes: na
-void shipFire(void){
-	unsigned int matrixSize = sizeof(shoot);
-	unsigned char frameIndex;	//it counts the frame number
-	for(frameIndex=0;frameIndex<=matrixSize;frameIndex++){
-		unsigned char sample;
-		static unsigned int frame;
-		frame	= shoot[frameIndex];
-		for(sample=0;sample<=7;sample++){
-			volatile static unsigned char currentSample;
-			currentSample	= (char)((frame&0xF0000000)>>28);
-			frame <<= 4;
-		}	
-	};
+void Sound_Play(const struct Sound *ptSound){
+	volatile unsigned char timer1 = TIMER1_CTL_R&0x01;
+  if (timer1 == 0 ) {
+		sound1 = ptSound;
+     Timer1A_Start();
+  }
+#if AUDIO_2A	
+  else {
+		sound2 = ptSound;
+     Timer2A_Start();
+  }	
+#endif
 }
 
