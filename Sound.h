@@ -8,6 +8,7 @@ struct Sound {
 };
 
 extern const struct Sound shoot;
+extern const struct Sound smallExplosion;
 //------------------------------------------------------------------------------------
 	
 void shipFire(void);

@@ -130,14 +130,13 @@ void SysTick_Handler(void){			// runs at 30 Hz
 	
 	if(Pressfire_B1()){
 		clickCounter++;
-		Sound_Play(&shoot);
 	}
 	
 	switch(gameOverFlag){
 		case INGAME:{
 			if(clickCounter){
 				LaserInit_ship();
-				//Fire1_Sound();
+				Sound_Play(&shoot);
 				clickCounter = 0;
 			}	
 #if DRAW_ENEMIES
@@ -171,6 +170,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			if(clickCounter == 1){
 				LaserInit_ship();
 				clickCounter = 0;
+				Sound_Play(&shoot);
 				gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = true;
@@ -281,16 +281,11 @@ int main(void){
 #endif
 
 /*
-fix:
-swapMessage: replace for current... mask current to get a smaller timing
-create a led.h
-
-volatile unsigned int *status
-	make bigger scope and make calls only when differet to gameOverflag
+ToDO:
+*improve firing sound: Play only when ingame
+*introduce the rest of the sounds(game music, game music+bonus, explode)
 
 sound:
 C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
 
-notes:
-???globals should be static
 */

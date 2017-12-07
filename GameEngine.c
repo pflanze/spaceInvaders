@@ -14,6 +14,7 @@ rows/columns with enemies alive,
 #include "random.h"
 #include "utils.h"
 #include "assert.h"
+#include "sound.h"
 
 //local variables
 //static unsigned gStatus = STANDBY;
@@ -349,6 +350,7 @@ void LaserEnemy_Move(void){
 void BonusEnemy_Move(unsigned int mode){
 	if(mode == RESET){EnemyBonus.life = 0;return;}
 	if(EnemyBonus.life){
+		Sound_Play(&smallExplosion);
 		EnemyBonus.x--;
 		if(EnemyBonus.x <= LEFTLIMIT){
 			EnemyBonus.life = 0;
@@ -418,6 +420,7 @@ void MasterDraw(struct State *s, unsigned int FrameCount){
 	if(s->JK){
 		//used to change explosions offset values
 		if(s->id == ID_BONUS){	//BONUS
+			Sound_Play(&smallExplosion);
 			offsetX = OFFSETEXPLOSIONX;
 			offsetY = OFFSETEXPLOSIONY;
 		}
