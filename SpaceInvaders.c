@@ -123,6 +123,7 @@ void EnableInterrupts(void);  // Enable interrupts
 // assumes: na
 void SysTick_Handler(void){			// runs at 30 Hz
 	volatile static unsigned char clickCounter = 0;			//keeps track of clicks
+	volatile static unsigned char multishot = 0;
 	
 #if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
@@ -132,6 +133,10 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		clickCounter++;
 	}
 	
+	if(Pressfire_B2()){
+		multishot = 1;
+	}
+	
 	switch(gameOverFlag){
 		case INGAME:{
 			if(clickCounter){
@@ -139,6 +144,12 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				Sound_Play(&shoot);
 				clickCounter = 0;
 			}	
+			
+			if(multishot){
+				LaserInit_ship2();
+				Sound_Play(&shoot);
+				multishot = 0;
+			}
 #if DRAW_ENEMIES
 			{static unsigned char EFcounter;
 				EFcounter = (EFcounter+1)&FIREDEL;
@@ -181,12 +192,15 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		}	
 		default:{
 			static char swapMessage = 0;
+			Sound_stop_all(&ufoLowPitch);
 			if(swapMessage < SWAPDELAYMSG){
 				if(gameOverFlag == LOOSE){
 					GameOverMessage();
+					GPIO_PORTB_DATA_R |= 0x20;
 				}
 				else{
 					WinMessage();
+					GPIO_PORTB_DATA_R |= 0x10;
 				}
 			}
 			else{
@@ -205,9 +219,11 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
 				ShipInit();
+#if DRAW_ENEMYBONUS				
 				BonusEnemy_Move(RESET);
-
+#endif
 				clickCounter = 0;
+				GPIO_PORTB_DATA_R &= ~0x30;
 				gameOverFlag = STANDBY;
 			}
 		}
@@ -282,9 +298,7 @@ int main(void){
 
 /*
 ToDO:
-*improve firing sound: Play only when ingame
-*introduce the rest of the sounds(game music, game music+bonus, explode)
-
+	*Missing: enemyBonus explode
 sound:
 C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
 

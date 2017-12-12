@@ -23,18 +23,13 @@ How sound are implemented
 #include "tm4c123gh6pm.h"
 #include "sound.h"
 #include "debug.h"
+#include "utils.h"
 
 
 //Global variables
 unsigned int Index = 0;
 
-#if AUDIO_1A
-static const struct Sound *sound1;
-#endif
 
-#if AUDIO_2A
-static const struct Sound *sound2;
-#endif
 //----------------------------------------------Compressed Sounds------------------------------------------
 #if AUDIO_1A || AUDIO_2A
 const unsigned int _shoot[] = {
@@ -538,7 +533,40 @@ void Timer2A_Stop(void){
 void Timer2A_Start(void){
   TIMER2_CTL_R |= 0x00000001;   // enable
 }
+
+
+
+
 //----------------------------------------------Handlers----------------------------------------------
+
+struct SoundState {
+	const unsigned int timerN;
+	const struct Sound *sound;
+	unsigned int average;
+	unsigned int frameIndex;
+	unsigned int sampleIndex;
+	unsigned int frame;
+	unsigned int currentSample;
+};
+/*
+write function that stop playing
+create struct to pass parameters as pointers (reset parameters)
+	which sound
+	which timer
+	average
+	
+a sound player 
+*/
+
+#if AUDIO_1A
+static struct SoundState soundState1 = {1};
+#endif
+
+#if AUDIO_2A
+static struct SoundState soundState2 = {2};
+#endif
+
+
 //********Timer1A_Handler*****************
 //Multiline description
 // inputs: none
@@ -546,65 +574,91 @@ void Timer2A_Start(void){
 // assumes: na
 #if AUDIO_1A
 
-static unsigned int frameIndex_1A = 0, sampleIndex_1A = 0, currentSample_1A = 0, frame_1A = 0;
+//static unsigned int frameIndex_1A = 0, sampleIndex_1A = 0, currentSample_1A = 0, frame_1A = 0;
 
-void Timer1A_Handler(void){
-	const struct Sound *snd = sound1;
+unsigned int average;
+
+void outputSounds(){
+	average = (soundState1.currentSample + soundState2.currentSample) / 2;
+	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | average;
+}
+//********functionName*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
+//Used by: Function name
+void soundStateInit(struct SoundState *soundState){
+	soundState->frameIndex = 0, soundState->sampleIndex = 0, soundState->currentSample = 0, soundState->frame = 0;
+}
+//********functionName*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
+//Used by: Function name
+void soundUpdate(struct SoundState *soundState){
 	
-  TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
-	
-	if(sampleIndex_1A == 8){
-		frameIndex_1A++;
-		sampleIndex_1A = 0;
+	if(soundState->sampleIndex == 8){
+		soundState->frameIndex++;
+		soundState->sampleIndex = 0;
 	}
 
-	if(sampleIndex_1A == 0){
-		frame_1A = snd->data[frameIndex_1A];
+	if(soundState->sampleIndex == 0){
+		soundState->frame = soundState->sound->data[soundState->frameIndex];
 	}
 	
-	currentSample_1A = (frame_1A&0xF0000000)>>28;
-	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | currentSample_1A;
-	sampleIndex_1A++;
-	frame_1A <<= 4;
-	if(frameIndex_1A >= snd->size){
-		Timer1A_Stop();
-		frameIndex_1A = 0, sampleIndex_1A = 0, currentSample_1A = 0, frame_1A = 0;
+	soundState->currentSample = (soundState->frame&0xF0000000)>>28;	
+	
+	outputSounds();
+	
+	soundState->sampleIndex++;
+	soundState->frame <<= 4;
+	
+	if(soundState->frameIndex >= soundState->sound->size){
+		switch(soundState->timerN){
+			case 1:
+					Timer1A_Stop();
+					break;
+			case 2:
+					Timer2A_Stop();
+					break;
+		};
+		soundStateInit(soundState);
 	}
 }
+//********functionName*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
+//Used by: Function name
+void Timer1A_Handler(void){
+	TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
+	soundUpdate(&soundState1);
+}
+
 #endif
 //********Timer2B_Handler*****************
 //Multiline description
 // inputs: none
 // outputs: none
 // assumes: na
-#if AUDIO_2A
+//#if AUDIO_2A
 
-static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
+//static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
 void Timer2A_Handler(void){
-	const struct Sound *snd = sound2;
-
   TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
-	
-	if(sampleIndex_2A == 8){
-		frameIndex_2A++;
-		sampleIndex_2A = 0;
-	}
-
-	if(sampleIndex_2A == 0){
-		frame_2A = snd->data[frameIndex_2A];
-	}
-	
-	currentSample_2A = (frame_2A&0xF0000000)>>28;
-	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | currentSample_2A;
-	sampleIndex_2A++;
-	frame_2A <<= 4;
-	if(frameIndex_2A >= snd->size){
-		Timer2A_Stop();
-		frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
-	}
+	soundUpdate(&soundState2);
 }
-#endif
+//#endif
 
 //------------------------------------------------------------------
 //********functionName*****************
@@ -617,20 +671,37 @@ void Timer2A_Handler(void){
 void Sound_Play(const struct Sound *ptSound){
 	volatile unsigned char timer1 = TIMER1_CTL_R&0x01;
   if (timer1 == 0 ) {
-		sound1 = ptSound;
+		soundState1.sound = ptSound;
      Timer1A_Start();
   }
 #if AUDIO_2A	
   else {
-		sound2 = ptSound;
+		soundState2.sound = ptSound;
      Timer2A_Start();
   }	
 #endif
 }
 
+
+void Sound_stop_all(const struct Sound *sp){
+	if(soundState1.sound == sp){
+		Timer1A_Stop();
+		soundStateInit(&soundState1);
+	}
+	
+	if(soundState2.sound == sp){
+		Timer2A_Stop();
+		soundStateInit(&soundState2);
+	}
+}
+
 /*
 Modifications:
 Precalculate ArraySize (sizeof) during compilation (using define)
+
+BonusShip music should stop after explodes>>>> struct Sound should have a field to keep track of whick timers is in use for that sound
+
+
 
 */
 

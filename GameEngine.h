@@ -33,7 +33,7 @@
 
 //BonusShip
 #define BONUS_C_LINE TOPLIMIT+ENEMYBONUSH
-#define BONUSTIMING 1
+#define BONUSTIMING 30
 #define OFFSETEXPLOSIONX 2
 #define OFFSETEXPLOSIONY 4
 
@@ -138,7 +138,6 @@ unsigned int * FirstEPC(unsigned int mode);
 void EnemyscanX(unsigned int row, unsigned int laserNum);
 void setStatus(unsigned int v);
 unsigned int getStatus(void);
-
-
+void LaserInit_ship2(void);
 
 #endif /* _GAMEENGINE_H */

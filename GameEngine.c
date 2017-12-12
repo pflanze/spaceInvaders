@@ -130,6 +130,41 @@ void LaserInit_ship(void){
 		}
 	}	
 }
+
+//********LaserInit_ship2*****************
+// Function used to initialize the lasers fired by the spaceship
+// changes: Laser_ship[index].*
+// inputs: none
+// outputs: none
+// assumes: na
+void LaserInit_ship2(void){
+	unsigned char i;
+	unsigned int count = 0;
+	
+	for(i=0;i<MAXLASERS;i++){
+		if(Laser_ship[i].life == 0){
+			switch(count){
+				case 0:
+					Laser_ship[i].x = Ship.x + SHIPMIDDLE;
+					count++;
+					break;			//terminate loop when a slot is found
+				case 1:
+					Laser_ship[i].x = Ship.x + 2 + SHIPMIDDLE;
+					count++;
+					break;			//terminate loop when a slot is found
+				case 2:	
+					Laser_ship[i].x = Ship.x + 4 + SHIPMIDDLE;
+					break;			//terminate loop when a slot is found
+				
+			}
+					Laser_ship[i].y = 39;
+					Laser_ship[i].image[0] = Laser0;
+					Laser_ship[i].life = 1;				// 0=dead, 1=alive
+					Laser_ship[i].id = ID_S_LASER;
+					Laser_ship[i].JK = 0;
+		}
+	}	
+}
 //********EnemyLaserInit*****************
 //Initializes the lasers fired by the enemy ship. It selects an enemy randomly to shoot.
 // changes: Laser_enemy[index].*
@@ -174,6 +209,8 @@ void BonusEnemyInit(void){
 	EnemyBonus.life = 1;
 	EnemyBonus.JK = 0;
 	EnemyBonus.id = ID_BONUS;
+	
+	Sound_Play(&ufoLowPitch);
 }
 #endif
 //-----------------------------------------------------------DEFAULT VALUES-----------------------------------------------------------------------
@@ -193,8 +230,12 @@ void defaultValues(void){
 		Estat_column[i].Epc = MAXROWS;
 		Estat_column[i].Fep = lastLine;
 	}	
-	for(i=0;i<MAXLASERS;i++){											
+	for(i=0;i<MAX_ENEMY_PR;i++){											
 		Laser_enemy[i].life = 0;
+	}
+	
+	for(i=0;i<MAXLASERS;i++){											
+		Laser_ship[i].life = 0;
 	}
 }
 #endif
@@ -350,7 +391,6 @@ void LaserEnemy_Move(void){
 void BonusEnemy_Move(unsigned int mode){
 	if(mode == RESET){EnemyBonus.life = 0;return;}
 	if(EnemyBonus.life){
-		Sound_Play(&smallExplosion);
 		EnemyBonus.x--;
 		if(EnemyBonus.x <= LEFTLIMIT){
 			EnemyBonus.life = 0;
@@ -420,12 +460,19 @@ void MasterDraw(struct State *s, unsigned int FrameCount){
 	if(s->JK){
 		//used to change explosions offset values
 		if(s->id == ID_BONUS){	//BONUS
+			Sound_stop_all(&ufoLowPitch);
 			Sound_Play(&smallExplosion);
 			offsetX = OFFSETEXPLOSIONX;
 			offsetY = OFFSETEXPLOSIONY;
 		}
-		else if(s->id == ID_E_LASER){	//BONUS
+		else if(s->id == ID_SHIP){
+			Sound_Play(&smallExplosion);
+		}
+		else if(s->id == ID_E_LASER){
 			offsetX = -5;
+		}
+		else if(s->id == ID_ENEMY){
+			Sound_Play(&smallExplosion);
 		}
 		
 		switch (frame){

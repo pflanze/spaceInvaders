@@ -1,7 +1,7 @@
 //debug.h
 
 //debugging code
-#define DRAW_ENEMIES	0
+#define DRAW_ENEMIES 1
 #define DRAW_ENEMYBONUS 1
 #define GODMODE 1
 

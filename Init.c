@@ -12,6 +12,9 @@
 void Buttons_Init(){
 #ifndef TEST_WITHOUT_IO
 	//Clock for Port E already active
+	volatile unsigned long delay;
+	SYSCTL_RCGC2_R |= 0x00000010;   // 1) activate clock for Port E
+	delay = SYSCTL_RCGC2_R;         //    allow time for clock to stabilize
 	GPIO_PORTE_AMSEL_R &= ~0x03; // 3) disable analog function on PE1-0
   GPIO_PORTE_PCTL_R &= ~0x000000FF; // 4) enable regular GPIO on PE1-0
   GPIO_PORTE_DIR_R &= ~0x03;   // 5) inputs on PE1-0
@@ -26,12 +29,6 @@ void Buttons_Init(){
 void ADC0_Init(void){ 
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned long delay;
-	SYSCTL_RCGC2_R |= 0x00000010;   // 1) activate clock for Port E
-	delay = SYSCTL_RCGC2_R;         //    allow time for clock to stabilize
-	GPIO_PORTE_DIR_R &= ~0x04;      // 2) make PE2 input
-	GPIO_PORTE_AFSEL_R |= 0x04;     // 3) enable alternate function on PE2
-	GPIO_PORTE_DEN_R &= ~0x04;      // 4) disable digital I/O on PE2
-	GPIO_PORTE_AMSEL_R |= 0x04;     // 5) enable analog function on PE2
 	
 	SYSCTL_RCGC0_R |= 0x00010000;   // 6) activate ADC0 
 	delay = SYSCTL_RCGC2_R;         
@@ -72,13 +69,14 @@ void DAC_Init(void){
 void LED_Init(void){
 #ifndef TEST_WITHOUT_IO
 	//port B already active
-	GPIO_PORTB_AMSEL_R &= ~0x30;      // no analog function for PB3-0
-	GPIO_PORTB_PCTL_R &= ~0x0000FFFF; // regular function for PB3-0
-	GPIO_PORTB_DIR_R |= 0x30;      // make PB3-0 out
+	GPIO_PORTB_AMSEL_R &= ~0x30;      // no analog function for PB4-5
+	GPIO_PORTB_PCTL_R &= ~0x00FF0000; // regular function for PB4-5
+	GPIO_PORTB_DIR_R |= 0x30;      // make PB4-5 out
 	GPIO_PORTB_DR8R_R |= 0x30;    // can drive up to 8mA out
-	GPIO_PORTB_AFSEL_R &= ~0x30;   // disable alt funct on PB3-0
-	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB3-0
+	GPIO_PORTB_AFSEL_R &= ~0x30;   // disable alt funct on PB4-5
+	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB4-5
 	GPIO_PORTB_DATA_R &= ~0x30;		//LEDs off by default
+//	GPIO_PORTB_DATA_R |= 0x30;		//LEDs on test
 #endif
 }
 //********HeartBit****************
