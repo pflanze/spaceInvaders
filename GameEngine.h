@@ -8,7 +8,7 @@
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
 #define REAL_MAX_EPR (MAX_ENEMY_PR-1)
-#define MAXROWS	1
+#define MAXROWS	2
 
 //used for Convert2Distance calibration
 #define Avalue 16
