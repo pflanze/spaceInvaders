@@ -3,10 +3,15 @@ VPATH=..
 # From here on do not use the "../" prefix, relative paths are assumed
 # to be found in ".." already.
 
+# ----------------------------------------------------------------------
+# Keep these two variables updated manually:
+
 SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c test.c
 
 OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o test.o
 
+# ----------------------------------------------------------------------
+# No need for manual updating here
 
 SAN=`./sanflags`
 
