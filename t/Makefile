@@ -12,9 +12,8 @@ SAN=`./sanflags`
 
 # To make it possible to work with
 #   valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --keep-stacktraces=alloc-and-free ./test
-# disable sanitizer here: 
+# disable sanitizer via "touch .nosan" or by clearing the SAN variable here: 
 #SAN=
-# ^ comment out this line if interested in using the sanitizer
 
 CFLAGS=-O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 
