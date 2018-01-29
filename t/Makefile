@@ -18,6 +18,9 @@ SAN=`./sanflags`
 CFLAGS=-O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 
 
+all: depend
+	make runtest
+
 runtest: test t
 	./test
 
@@ -32,7 +35,7 @@ clean:
 
 depend:
 	cp Makefile $(VPATH)/
-	(cd $(VPATH) && makedepend -- $(CFLAGS) -- $(SRCS))
+	(cd $(VPATH) && makedepend -- $(CFLAGS) -- $(SRCS)) > .makedepend.log 2>&1
 	mv $(VPATH)/Makefile .
 	./makedepend_clean Makefile
 
