@@ -32,9 +32,9 @@ clean:
 	rm *.o test
 
 depend:
-	cp Makefile ..
-	(cd .. && makedepend -- $(CFLAGS) -- $(SRCS))
-	mv ../Makefile .
+	cp Makefile $(VPATH)/
+	(cd $(VPATH) && makedepend -- $(CFLAGS) -- $(SRCS))
+	mv $(VPATH)/Makefile .
 	./makedepend_clean Makefile
 
 
