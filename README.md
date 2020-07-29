@@ -32,8 +32,8 @@ available; this can be turned off via:
     touch .nosan
 
 The test creates image files in `t/out/` which can be viewed for
-example with the `eog` image viewer, or by looking them as text files
-(hit return for the next image):
+example with the `eog` image viewer, or by looking at them as text
+files (hit return for the next image):
 
     for f in out/*; do read; cat "$f"; done
 
