@@ -44,7 +44,7 @@
 #include "random.h"
 #include "Message.h"
 #include "utils.h"
-#include "sound.h"
+#include "Sound.h"
 #include "debug.h"
 
 
@@ -197,11 +197,15 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			if(swapMessage < SWAPDELAYMSG){
 				if(gameOverFlag == LOOSE){
 					GameOverMessage();
+#ifndef TEST_WITHOUT_IO
 					GPIO_PORTB_DATA_R |= 0x20;
+#endif
 				}
 				else{
 					WinMessage();
+#ifndef TEST_WITHOUT_IO
 					GPIO_PORTB_DATA_R |= 0x10;
+#endif
 				}
 			}
 			else{
@@ -224,7 +228,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 				BonusEnemy_Move(RESET);
 #endif
 				clickCounter = 0;
+#ifndef TEST_WITHOUT_IO
 				GPIO_PORTB_DATA_R &= ~0x30;
+#endif
 				gameOverFlag = STANDBY;
 			}
 		}

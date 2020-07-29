@@ -14,7 +14,7 @@ rows/columns with enemies alive,
 #include "random.h"
 #include "utils.h"
 #include "assert.h"
-#include "sound.h"
+#include "Sound.h"
 
 //local variables
 //static unsigned gStatus = STANDBY;

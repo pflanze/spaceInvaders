@@ -10,7 +10,6 @@ Configured on 32-bit mode
 Configure on periodic mode, down-count
 */
 
-
 /*
 How sound are implemented
 - gameSound: should start when gameFlag==INGAME, then stop on WIN/LOOSE and EnemyBonus
@@ -20,8 +19,10 @@ How sound are implemented
 
 */
 
-#include "tm4c123gh6pm.h"
-#include "sound.h"
+#ifndef TEST_WITHOUT_IO
+#  include "tm4c123gh6pm.h"
+#endif
+#include "Sound.h"
 #include "debug.h"
 #include "utils.h"
 
@@ -501,7 +502,9 @@ const struct Sound ufoLowPitch = {
 // outputs: none
 // assumes: na
 void Timer1A_Stop(void){
+#ifndef TEST_WITHOUT_IO
   TIMER1_CTL_R &= ~0x00000001; // disable
+#endif
 }
 //********functionName*****************
 // Multiline description
@@ -511,7 +514,9 @@ void Timer1A_Stop(void){
 // outputs: none
 // assumes: na
 void Timer1A_Start(void){
+#ifndef TEST_WITHOUT_IO
   TIMER1_CTL_R |= 0x00000001;   // enable
+#endif
 }	
 //********functionName*****************
 // Multiline description
@@ -521,7 +526,9 @@ void Timer1A_Start(void){
 // outputs: none
 // assumes: na
 void Timer2A_Stop(void){
+#ifndef TEST_WITHOUT_IO
   TIMER2_CTL_R &= ~0x00000001; // disable
+#endif
 }
 //********functionName*****************
 // Multiline description
@@ -531,7 +538,9 @@ void Timer2A_Stop(void){
 // outputs: none
 // assumes: na
 void Timer2A_Start(void){
+#ifndef TEST_WITHOUT_IO
   TIMER2_CTL_R |= 0x00000001;   // enable
+#endif
 }
 
 
@@ -580,7 +589,9 @@ unsigned int average;
 
 void outputSounds(){
 	average = (soundState1.currentSample + soundState2.currentSample) / 2;
+#ifndef TEST_WITHOUT_IO
 	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | average;
+#endif
 }
 //********functionName*****************
 // Multiline description
@@ -640,7 +651,9 @@ void soundUpdate(struct SoundState *soundState){
 // assumes: na
 //Used by: Function name
 void Timer1A_Handler(void){
+#ifndef TEST_WITHOUT_IO
 	TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
+#endif
 	soundUpdate(&soundState1);
 }
 
@@ -655,7 +668,9 @@ void Timer1A_Handler(void){
 //static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
 void Timer2A_Handler(void){
-  TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
+#ifndef TEST_WITHOUT_IO
+	TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
+#endif
 	soundUpdate(&soundState2);
 }
 //#endif
@@ -669,16 +684,18 @@ void Timer2A_Handler(void){
 // outputs: none
 // assumes: na
 void Sound_Play(const struct Sound *ptSound){
+#ifndef TEST_WITHOUT_IO
 	volatile unsigned char timer1 = TIMER1_CTL_R&0x01;
-  if (timer1 == 0 ) {
+	if (timer1 == 0 ) {
 		soundState1.sound = ptSound;
-     Timer1A_Start();
-  }
+		Timer1A_Start();
+	}
 #if AUDIO_2A	
-  else {
+	else {
 		soundState2.sound = ptSound;
-     Timer2A_Start();
-  }	
+		Timer2A_Start();
+	}
+#endif
 #endif
 }
 
