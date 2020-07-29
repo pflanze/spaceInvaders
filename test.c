@@ -74,7 +74,7 @@ static void screen_write_xpm(const char* screen, const char* basepath) {
 
 static void screen_write_numbered(int i) {
 	char basepath[10];
-	snprintf(basepath, 10, "t/%04i", i);
+	snprintf(basepath, 10, "out/%04i", i);
 	screen_write_xpm(Screen, basepath);
 }
 
@@ -139,7 +139,7 @@ int main () {
 	   versions of the frames */
 
 	// assume that MingW's shell can do redirection
-	system("git status --porcelain t > t.out");
+	system("git status --porcelain out > t.out");
 
 	const char* path= "t.out";
 	FILE *fh= fopen(path, "r");
