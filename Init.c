@@ -5,44 +5,16 @@
 #endif
 #include "Init.h"
 
-
-void Systick_Init(unsigned long periodSystick){
-#ifndef TEST_WITHOUT_IO
-  NVIC_ST_CTRL_R = 0;         						// disable SysTick during setup
-  NVIC_ST_RELOAD_R = periodSystick;						// reload value
-  NVIC_ST_CURRENT_R = 0;      						// any write to current clears it
-  NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x20000000; // priority 1
-  NVIC_ST_CTRL_R = 0x0007; 								// enable,core clock, and interrupts
-#endif
-}
-
-
-// You can use this timer only if you learn how it works
-#if AUDIO
-void Timer2_Init(unsigned long period){ 
-#ifndef TEST_WITHOUT_IO
-  unsigned long volatile delay;
-  SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
-  delay = SYSCTL_RCGCTIMER_R;
-  TIMER2_CTL_R &= ~0x00000001;    // 1) disable timer2A during setup
-  TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
-  TIMER2_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
-  TIMER2_TAILR_R = period-1;    // 4) reload value
-  TIMER2_TAPR_R = 0;            // 5) bus clock resolution
-  TIMER2_ICR_R = 0x00000001;    // 6) clear timer2A timeout flag
-  TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4
-// interrupts enabled in the main program after all devices initialized
-// vector number 39, interrupt number 23
-  NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
-  TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A
-#endif
-}
-#endif
-
+//********ButtonRight*****************
+//Clock used: 
+//Port: NA
+//Mode: Digital
 void Buttons_Init(){
 #ifndef TEST_WITHOUT_IO
 	//Clock for Port E already active
+	volatile unsigned long delay;
+	SYSCTL_RCGC2_R |= 0x00000010;   // 1) activate clock for Port E
+	delay = SYSCTL_RCGC2_R;         //    allow time for clock to stabilize
 	GPIO_PORTE_AMSEL_R &= ~0x03; // 3) disable analog function on PE1-0
   GPIO_PORTE_PCTL_R &= ~0x000000FF; // 4) enable regular GPIO on PE1-0
   GPIO_PORTE_DIR_R &= ~0x03;   // 5) inputs on PE1-0
@@ -50,16 +22,13 @@ void Buttons_Init(){
 	GPIO_PORTE_DEN_R |= 0x03; // 7) enable digital on PE1-0
 #endif
 }
-
+//********ADC*****************
+//Clock used: 
+//Port: NA
+//Mode: Digital
 void ADC0_Init(void){ 
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned long delay;
-	SYSCTL_RCGC2_R |= 0x00000010;   // 1) activate clock for Port E
-	delay = SYSCTL_RCGC2_R;         //    allow time for clock to stabilize
-	GPIO_PORTE_DIR_R &= ~0x04;      // 2) make PE2 input
-	GPIO_PORTE_AFSEL_R |= 0x04;     // 3) enable alternate function on PE2
-	GPIO_PORTE_DEN_R &= ~0x04;      // 4) disable digital I/O on PE2
-	GPIO_PORTE_AMSEL_R |= 0x04;     // 5) enable analog function on PE2
 	
 	SYSCTL_RCGC0_R |= 0x00010000;   // 6) activate ADC0 
 	delay = SYSCTL_RCGC2_R;         
@@ -72,8 +41,11 @@ void ADC0_Init(void){
 	ADC0_ACTSS_R |= 0x0008;         // 13) enable sample sequencer 3
 #endif
 }
-
-//DAC PB3-0
+//********DAC OUT*****************
+//Clock used: 
+//Port: DAC PB3-0
+//Mode: Digital
+//Description: Audio Digital out
 void DAC_Init(void){
 #ifndef TEST_WITHOUT_IO
 	unsigned long volatile delay;
@@ -87,28 +59,34 @@ void DAC_Init(void){
 	GPIO_PORTB_DEN_R |= 0x0F;      // enable digital I/O on PB3-0
 #endif
 }
-
-
-// LED on PB4, PB5
-//PB4 RED
-//PB5 Green
+//********LED****************
+//Clock used: 
+//Port: PB3-0
+//Mode: Digital
+//Description: 
+//Default: LED off
+//Colours: PB4 RED, PB5 Green
 void LED_Init(void){
 #ifndef TEST_WITHOUT_IO
 	//port B already active
-	GPIO_PORTB_AMSEL_R &= ~0x30;      // no analog function for PB3-0
-	GPIO_PORTB_PCTL_R &= ~0x0000FFFF; // regular function for PB3-0
-	GPIO_PORTB_DIR_R |= 0x30;      // make PB3-0 out
+	GPIO_PORTB_AMSEL_R &= ~0x30;      // no analog function for PB4-5
+	GPIO_PORTB_PCTL_R &= ~0x00FF0000; // regular function for PB4-5
+	GPIO_PORTB_DIR_R |= 0x30;      // make PB4-5 out
 	GPIO_PORTB_DR8R_R |= 0x30;    // can drive up to 8mA out
-	GPIO_PORTB_AFSEL_R &= ~0x30;   // disable alt funct on PB3-0
-	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB3-0
-	
+	GPIO_PORTB_AFSEL_R &= ~0x30;   // disable alt funct on PB4-5
+	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB4-5
 	GPIO_PORTB_DATA_R &= ~0x30;		//LEDs off by default
+//	GPIO_PORTB_DATA_R |= 0x30;		//LEDs on test
 #endif
 }
-
-
-//initialize PortF !!!!testing Only!!!!
-#if PORTF1
+//********HeartBit****************
+//Clock used: 
+//Port: PF1
+//Mode: Digital
+//Description: Led on/off, used for testing
+//Default: LED off
+//Colours: Red
+#if PORTF1_systick || PORTF1_audio
 void PortF_init(void){ volatile unsigned long delay;
 #ifndef TEST_WITHOUT_IO
 	SYSCTL_RCGC2_R |= 0x00000020;     // activate clock for Port F
@@ -121,3 +99,75 @@ void PortF_init(void){ volatile unsigned long delay;
 #endif
 }
 #endif
+
+//-----------------------------------------------------TIMERS--------------------------------
+//Note: 16-bit mode timers not supported on simulation
+//********timer1A*****************
+//Clock: 
+//Port: NA
+//Mode: Digital
+//Description: Led on/off, used for testing
+//Default: Disabled, enable: TIMER1_CTL_R
+#if AUDIO_1A
+void Timer1A_Init(void){ 
+#ifndef TEST_WITHOUT_IO
+  unsigned long volatile delay;
+  SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate timer1 (2^1)
+  delay = SYSCTL_RCGCTIMER_R;
+  TIMER1_CTL_R &= ~0x00000001;    // 1) disable timer1A during setup
+  TIMER1_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
+  TIMER1_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
+  TIMER1_TAILR_R = PERIOD-1;    // 4) reload value
+  TIMER1_TAPR_R = 0;            // 5) bus clock resolution
+  TIMER1_ICR_R = 0x00000001;    // 6) clear timer1A timeout flag
+	
+  TIMER1_IMR_R = 0x00000001;    // 7) arm timeout interrupt (interrupt enable)
+  NVIC_PRI5_R = (NVIC_PRI5_R&0xFFFF0FFF)|0x00008000; // 8) priority 4
+// interrupts enabled in the main program after all devices initialized
+// vector number 37, interrupt number 21
+  NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
+//  TIMER1_CTL_R = 0x00000001;    // 10) enable timer1A, testing only
+#endif
+}	
+#endif
+//********timer2A*****************
+//Clock: 
+//Port: NA
+//Mode: Digital
+//Description: Led on/off, used for testing
+//Default: Disabled, enable: TIMER2_CTL_R
+#if AUDIO_2A
+void Timer2A_Init(void){ 
+#ifndef TEST_WITHOUT_IO
+  unsigned long volatile delay;
+  SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
+  delay = SYSCTL_RCGCTIMER_R;
+  TIMER2_CTL_R &= ~0x00000001;    // 1) disable timer2A during setup
+  TIMER2_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
+  TIMER2_TAMR_R = 0x00000002;   // 3) configure for periodic mode, default down-count settings
+  TIMER2_TAILR_R = PERIOD-1;    // 4) reload value
+  TIMER2_TAPR_R = 0;            // 5) bus clock resolution
+  TIMER2_ICR_R = 0x00000001;    // 6) clear timer2A timeout flag
+  TIMER2_IMR_R = 0x00000001;    // 7) arm timeout interrupt (interrupt enable)
+  NVIC_PRI5_R = (NVIC_PRI5_R&0x00FFFFFF)|0x80000000; // 8) priority 4
+// interrupts enabled in the main program after all devices initialized
+// vector number 39, interrupt number 23
+  NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
+//  TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A, testing only
+#endif
+}	
+#endif
+
+//********Systick*****************
+//Clock used: 
+//Port: NA
+//Mode: Digital
+void Systick_Init(unsigned long periodSystick){
+#ifndef TEST_WITHOUT_IO
+  NVIC_ST_CTRL_R = 0;         						// disable SysTick during setup
+  NVIC_ST_RELOAD_R = periodSystick;						// reload value
+  NVIC_ST_CURRENT_R = 0;      						// any write to current clears it
+  NVIC_SYS_PRI3_R = (NVIC_SYS_PRI3_R&0x00FFFFFF)|0x20000000; // priority 1
+  NVIC_ST_CTRL_R = 0x0007; 								// enable,core clock, and interrupts
+#endif
+}

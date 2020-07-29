@@ -1,21 +1,14 @@
 //GameEngine.h
 #ifndef _GAMEENGINE_H
 #define _GAMEENGINE_H
-
-
-
+#include "debug.h"
 
 //----------------------------------------------------------Definition------------------------------------------------
-//debugging code
-#define DRAW_ENEMIES	1
-#define DRAW_ENEMYBONUS 1
-#define GODMODE 1
-
 //game max
 #define MAXLASERS 5
 #define MAX_ENEMY_PR 4
 #define REAL_MAX_EPR (MAX_ENEMY_PR-1)
-#define MAXROWS	1
+#define MAXROWS	2
 
 //used for Convert2Distance calibration
 #define Avalue 16
@@ -40,7 +33,7 @@
 
 //BonusShip
 #define BONUS_C_LINE TOPLIMIT+ENEMYBONUSH
-#define BONUSTIMING 1
+#define BONUSTIMING 30
 #define OFFSETEXPLOSIONX 2
 #define OFFSETEXPLOSIONY 4
 
@@ -111,6 +104,7 @@ extern unsigned long ADC0_SSFIFO3_R;
 	void LaserEnemy_Move(void);
 	void PlayerLaserCollisions(void);
 	void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn);
+	void defaultValues(void);
 #endif
 
 #if DRAW_ENEMYBONUS
@@ -123,7 +117,7 @@ void BonusLaserCollision(void);
 void LaserShip_Move(void);
 void EnemyDraw(void);
 void LaserShipDraw(void);
-void defaultValues(void);
+
 void EnemyLaserInit(void);
 void LaserEnemyDraw(void);
 void MasterDraw(struct State *st_ptr, unsigned int FrameCount);
@@ -144,7 +138,6 @@ unsigned int * FirstEPC(unsigned int mode);
 void EnemyscanX(unsigned int row, unsigned int laserNum);
 void setStatus(unsigned int v);
 unsigned int getStatus(void);
-
-
+void LaserInit_ship2(void);
 
 #endif /* _GAMEENGINE_H */

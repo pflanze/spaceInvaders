@@ -44,6 +44,8 @@
 #include "random.h"
 #include "Message.h"
 #include "utils.h"
+#include "sound.h"
+#include "debug.h"
 
 
 /*	Required Hardware I/O connections
@@ -88,6 +90,15 @@ SSI0Clk       (SCLK, pin 7) connected to PA2
 back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~80mA total
 */
 
+/*
+Notes:
+Handlers:
+Systick: @30hz: Bottons, ADC, Video calculations
+Timer2: @44100hz: Sound
+
+gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
+*/
+
 //testing & preprocessing directives
 #define IMESSAGE			0		//Enables/disables inittial message
 
@@ -95,38 +106,17 @@ back light    (LED, pin 8) not connected, consists of 4 white LEDs which draw ~8
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
 
-//Global variables
-#if AUDIO
-	unsigned long TimerCount;
-	unsigned long Semaphore;
-#endif
-
 volatile unsigned char SysTickFlag = 0;
 volatile unsigned int gameOverFlag = STANDBY;
 																//0: In game
 																//1: Game Over (you loose)
 																//2: Just Won
 																//3: Game on standBy
+volatile static unsigned char fireSound;
 //function Prototypes
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-//********Timer2A_Handler*****************
-//Multiline description
-// inputs: none
-// outputs: none
-// assumes: na
-#if AUDIO
-void Timer2A_Handler(void){ 
-#ifndef TEST_WITHOUT_IO
-  TIMER2_ICR_R = 0x00000001;   // acknowledge timer2A timeout
-	
-	//GPIO_PORTF_DATA_R ^= 0x02;
-	TimerCount++;
-  Semaphore = 1; // trigger
-#endif
-}
-#endif
 //********SysTick_Handler*****************
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // inputs: none
@@ -134,8 +124,9 @@ void Timer2A_Handler(void){
 // assumes: na
 void SysTick_Handler(void){			// runs at 30 Hz
 	volatile static unsigned char clickCounter = 0;			//keeps track of clicks
+	volatile static unsigned char multishot = 0;
 	
-#if PORTF1
+#if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
 #endif
 	
@@ -143,13 +134,23 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		clickCounter++;
 	}
 	
+	if(Pressfire_B2()){
+		multishot = 1;
+	}
+	
 	switch(gameOverFlag){
 		case INGAME:{
 			if(clickCounter){
 				LaserInit_ship();
-				//Fire1_Sound();
+				Sound_Play(&shoot);
 				clickCounter = 0;
 			}	
+			
+			if(multishot){
+				LaserInit_ship2();
+				Sound_Play(&shoot);
+				multishot = 0;
+			}
 #if DRAW_ENEMIES
 			{static unsigned char EFcounter;
 				EFcounter = (EFcounter+1)&FIREDEL;
@@ -164,9 +165,9 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #endif	
 			Collisions();
 			{
-					//update gameOverFlag only if different
-					unsigned int status= getStatus();
-					if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
+				//update gameOverFlag only if different
+				unsigned int status= getStatus();
+				if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
 			}
 			MoveObjects();				//game engine
 			break;
@@ -181,6 +182,7 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			if(clickCounter == 1){
 				LaserInit_ship();
 				clickCounter = 0;
+				Sound_Play(&shoot);
 				gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = true;
@@ -191,12 +193,15 @@ void SysTick_Handler(void){			// runs at 30 Hz
 		}	
 		default:{
 			static char swapMessage = 0;
+			Sound_stop_all(&ufoLowPitch);
 			if(swapMessage < SWAPDELAYMSG){
 				if(gameOverFlag == LOOSE){
 					GameOverMessage();
+					GPIO_PORTB_DATA_R |= 0x20;
 				}
 				else{
 					WinMessage();
+					GPIO_PORTB_DATA_R |= 0x10;
 				}
 			}
 			else{
@@ -209,14 +214,17 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			if(clickCounter){
 #if DRAW_ENEMIES
 					EnemyInit();
+					defaultValues();
 #endif
 #ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
 				ShipInit();
+#if DRAW_ENEMYBONUS				
 				BonusEnemy_Move(RESET);
-				defaultValues();
+#endif
 				clickCounter = 0;
+				GPIO_PORTB_DATA_R &= ~0x30;
 				gameOverFlag = STANDBY;
 			}
 		}
@@ -231,12 +239,15 @@ void SysTick_Handler(void){			// runs at 30 Hz
 void init_Hw(void){
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
-#if PORTF1
+#if PORTF1_systick || PORTF1_audio
 	PortF_init();								//test only
 #endif
   Nokia5110_Init();
-#if AUDIO
-	Timer2_Init(7272);					//initialized @11kHz
+#if AUDIO_1A
+	Timer1A_Init();					//initialized @11kHz
+#endif
+#if AUDIO_2A
+	Timer2A_Init();					//initialized @11kHz
 #endif
 	Systick_Init(2666666);			//initialized @30Hz
 	ADC0_Init();
@@ -251,15 +262,18 @@ void init_Hw(void){
 // inputs: none
 // outputs: none
 // assumes: na
-
 void main_update_LCD(void) {
 	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
 		Draw(); // update the LCD
 	}
-	SysTickFlag = 0;
 }
-
-
+//********main*****************
+// Multiline description
+// changes: variablesChanged
+// Callers: 
+// inputs: none
+// outputs: none
+// assumes: na
 #ifndef TEST_WITHOUT_IO
 int main(void){	
 	init_Hw();											//call all initializing functions
@@ -270,27 +284,23 @@ int main(void){
 	
 #if DRAW_ENEMIES
 	EnemyInit();
+	defaultValues();
 #endif
 	ShipInit();
-	defaultValues();
 	Random_Init(1);
 	
   while(1){
-	 while(SysTickFlag == 0){};
-	 main_update_LCD();
+		while(SysTickFlag == 0){};
+		main_update_LCD();
+		SysTickFlag = 0;
 	}
 }
 #endif
 
 /*
-fix:
-swapMessage: replace for current... mask current to get a smaller timing
-create a led.h
-
-volatile unsigned int *status
-	make bigger scope and make calls only when differet to gameOverflag
-	SpaceInvaders.c(141): warning:  #185-D: dynamic initialization in unreachable code
-
+ToDO:
+	*Missing: enemyBonus explode
 sound:
 C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
+
 */
