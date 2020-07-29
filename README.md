@@ -16,3 +16,28 @@ About the game music:
 
 Demo:
 * https://www.youtube.com/watch?v=Jzi1S1Zj7oA
+
+## Automatic tests
+
+The code can be built on Linux and perhaps Cygwin/MSYS to run
+integration tests.
+
+    cd t
+    make runtest
+
+This compiles and runs with (some of) gcc's sanitizers if
+available; this can be turned off via:
+
+    cd t
+    touch .nosan
+
+The test creates image files in `t/out/` which can be viewed for
+example with the `eog` image viewer, or by looking them as text files
+(hit return for the next image):
+
+    for f in out/*; do read; cat "$f"; done
+
+### make depend
+
+Running `make depend` requires `makedepend` which is in the
+`xutils-dev` package on Debian.
