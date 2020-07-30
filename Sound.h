@@ -4,7 +4,7 @@
 //Used to set the sound frequency
 struct Sound {
 	const unsigned int *data;
-	const unsigned int size;
+	const unsigned int size; //number of elements in data array
 };
 
 extern const struct Sound shoot;
