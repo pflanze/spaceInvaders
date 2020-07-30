@@ -27,11 +27,11 @@ CFLAGS=-O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 all: depend
 	make runtest
 
-runtest: test t
+runtest: test t/out
 	./test
 
-t:
-	mkdir t
+t/out:
+	mkdir out
 
 test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
