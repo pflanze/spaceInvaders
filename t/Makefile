@@ -61,3 +61,4 @@ SpaceInvaders.o: GameEngine.h random.h Message.h Sound.h
 random.o: random.h CMWC.h
 test.o: Buttons.h utils.h GameEngine.h debug.h Init.h LED.h Message.h
 test.o: Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h
+test.o: assert.h

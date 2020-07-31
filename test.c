@@ -18,6 +18,11 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <assert.h>
+
+#define XSNPRINTF(str, n, ...) \
+	assert(snprintf(str, n, __VA_ARGS__) < n)
+
 
 void die_errno(const char* msg, const char* arg) {
 	fprintf(stderr, "error: %s (%s): %s\n", msg, arg, strerror(errno));
@@ -74,7 +79,7 @@ static void screen_write_xpm(const char* screen, const char* basepath) {
 
 static void screen_write_numbered(int i) {
 	char basepath[10];
-	snprintf(basepath, 10, "out/%04i", i);
+	XSNPRINTF(basepath, 10, "out/%04i", i);
 	screen_write_xpm(Screen, basepath);
 }
 
