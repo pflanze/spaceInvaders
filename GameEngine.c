@@ -207,7 +207,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemyLaserInit(struct GameEngine *this) {
-	//modifiction may be needed function called twice, please explore
+	//modification may need function to be called twice, please explore
 	unsigned int *AliveColsLocal =  GameEngine_firstEPC(this, RETURNVAL);
 	unsigned char randN = (Random32()>>24)%(*AliveColsLocal);
 	// ^ generates number [0-aliveCols]
