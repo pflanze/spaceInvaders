@@ -284,12 +284,6 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 #if IMESSAGE
 	InitMessage();
 #endif
-	
-#if DRAW_ENEMIES
-	GameEngine_enemyInit(&(this->gameEngine));
-	GameEngine_defaultValues(&(this->gameEngine));
-#endif
-	GameEngine_shipInit(&(this->gameEngine));
 }
 
 void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {

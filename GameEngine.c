@@ -139,6 +139,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 void GameEngine_shipInit(struct GameEngine *this) {
 	this->Ship.y = 46;
 	this->Ship.image[0] = PlayerShip0;
+	this->Ship.image[1] = PlayerShip0;
 	this->Ship.life = 1;				// 0=dead, 1=alive
 	this->Ship.JK = 0;
 	this->Ship.id = ID_SHIP;
@@ -1122,6 +1123,13 @@ void GameEngine_init(struct GameEngine *this,
 #endif
 
 	// XXX Estat_column .. EnemyBonus
+	
+#if DRAW_ENEMIES
+	GameEngine_enemyInit(this);
+	GameEngine_defaultValues(this);
+#endif
+
+	GameEngine_shipInit(this);
 
 	this->right = true;
 	this->down = false;
