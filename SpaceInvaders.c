@@ -100,7 +100,7 @@ gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
 */
 
 //testing & preprocessing directives
-#define IMESSAGE			0		//Enables/disables inittial message
+#define IMESSAGE    0  // Enables/disables initial message
 
 //messages
 #define SWAPDELAYMSG 10
@@ -122,8 +122,8 @@ void EnableInterrupts(void);  // Enable interrupts
 // inputs: none
 // outputs: none
 // assumes: na
-void SysTick_Handler(void){			// runs at 30 Hz
-	volatile static unsigned char clickCounter = 0;			//keeps track of clicks
+void SysTick_Handler(void){ // runs at 30 Hz
+	volatile static unsigned char clickCounter = 0; // keeps track of clicks
 	volatile static unsigned char multishot = 0;
 	
 #if PORTF1_systick
@@ -154,7 +154,8 @@ void SysTick_Handler(void){			// runs at 30 Hz
 #if DRAW_ENEMIES
 			{static unsigned char EFcounter;
 				EFcounter = (EFcounter+1)&FIREDEL;
-				if(EFcounter >= FIREDEL){			//enemy shooting frequency
+				if(EFcounter >= FIREDEL){
+					// enemy shooting frequency
 					EnemyLaserInit();
 				}
 			}
@@ -167,9 +168,10 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			{
 				//update gameOverFlag only if different
 				unsigned int status= getStatus();
-				if(gameOverFlag != status){gameOverFlag = status;}			//it seems that there is need of a loop here
+				if(gameOverFlag != status){gameOverFlag = status;}
+				// it seems that there is need of a loop here
 			}
-			MoveObjects();				//game engine
+			MoveObjects(); // game engine
 			break;
 		}
 		case STANDBY:{
@@ -210,7 +212,8 @@ void SysTick_Handler(void){			// runs at 30 Hz
 			}
 			else{
 				RestartMessage();
-				if(swapMessage > SWAPDELAYMSG_2){			//Swapmessage intermitent every 50 cycles
+				if(swapMessage > SWAPDELAYMSG_2){
+					// Swapmessage intermittent every 50 cycles
 					swapMessage = 0;
 				}
 			}
@@ -246,16 +249,16 @@ void init_Hw(void){
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
 #if PORTF1_systick || PORTF1_audio
-	PortF_init();								//test only
+	PortF_init();  // test only
 #endif
   Nokia5110_Init();
 #if AUDIO_1A
-	Timer1A_Init();					//initialized @11kHz
+	Timer1A_Init(); // initialized @11kHz
 #endif
 #if AUDIO_2A
-	Timer2A_Init();					//initialized @11kHz
+	Timer2A_Init(); // initialized @11kHz
 #endif
-	Systick_Init(2666666);			//initialized @30Hz
+	Systick_Init(2666666); // initialized @30Hz
 	ADC0_Init();
 	Buttons_Init();
 	DAC_Init();
@@ -269,7 +272,7 @@ void init_Hw(void){
 
 void SpaceInvaders_init(unsigned int max_number_of_enemy_rows) {
 	GameEngine_init(max_number_of_enemy_rows);
-	init_Hw();											//call all initializing functions
+	init_Hw(); // call all initializing functions
 	//Create initial message
 #if IMESSAGE
 	InitMessage();

@@ -17,18 +17,19 @@
 #define FIREDEL 		7
 
 
-//----------------------------------------------------------Structs------------------------------------------------
+//-----------------------------------Structs------------------------------------
 
 struct State {
-	unsigned char x;      // x coordinate
-	unsigned char y;      // y coordinate
+	unsigned char x;               // x coordinate
+	unsigned char y;               // y coordinate
 	const unsigned char *image[2]; // two pointers to images
 	unsigned char life;            // 0=dead, 1=alive
-	unsigned char JK;	//status for image replacement, represents "Just Killed"				, needs updating
+	unsigned char JK;              // status for image replacement,
+	                               // represents "Just Killed", needs updating
 	unsigned char id;
 };         
 
-//----------------------------------------------------------Function definition------------------------------------------------
+//----------------------------------Function definition-------------------------
 void Player_Move(void);
 void LaserInit_ship(void);
 void ShipInit(void);
