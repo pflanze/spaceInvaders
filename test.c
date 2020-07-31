@@ -81,6 +81,7 @@ static void screen_write_xpm(const char* screen, const char* basepath) {
 struct Game {
 	unsigned int max_number_of_enemy_rows;
 	int frame_number;
+	struct SpaceInvaders spaceInvaders;
 };
 
 static void game_screen_write(struct Game *game) {
@@ -91,8 +92,8 @@ static void game_screen_write(struct Game *game) {
 }
 
 static void game_step(struct Game *game) {
-	SysTick_Handler();
-	main_update_LCD();
+	SpaceInvaders_step(&(game->spaceInvaders));
+	SpaceInvaders_main_update_LCD(&(game->spaceInvaders));
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 	game->frame_number++;
 }
@@ -105,7 +106,8 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
 
-	SpaceInvaders_init(max_number_of_enemy_rows);
+	SpaceInvaders_init(&(game.spaceInvaders),
+			   max_number_of_enemy_rows);
 	Random_Init(223412);
 	ADC0_SSFIFO3_R= 0;
 

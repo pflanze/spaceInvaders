@@ -32,7 +32,6 @@
  http://users.ece.utexas.edu/~valvano/
  */
 
-#include "SpaceInvaders.h"
 #ifndef TEST_WITHOUT_IO
 #  include "..//tm4c123gh6pm.h"
 #  include "TExaS.h"
@@ -46,6 +45,7 @@
 #include "utils.h"
 #include "Sound.h"
 #include "debug.h"
+#include "SpaceInvaders.h"
 
 
 /*	Required Hardware I/O connections
@@ -96,7 +96,7 @@ Handlers:
 Systick: @30hz: Bottons, ADC, Video calculations
 Timer2: @44100hz: Sound
 
-gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
+gameStatus: End game@: FirstLast, EnemyLaserCollisions@GameEngine_masterDraw
 */
 
 //testing & preprocessing directives
@@ -106,23 +106,15 @@ gameStatus: End game@: FirstLast, EnemyLaserCollisions@MasterDraw
 #define SWAPDELAYMSG 10
 #define SWAPDELAYMSG_2 SWAPDELAYMSG*2
 
-volatile unsigned char SysTickFlag = 0;
-volatile unsigned int gameOverFlag = STANDBY;
-																//0: In game
-																//1: Game Over (you loose)
-																//2: Just Won
-																//3: Game on standBy
-volatile static unsigned char fireSound;
+
 //function Prototypes
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-//********SysTick_Handler*****************
+//********SpaceInvaders_step*****************
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
-// inputs: none
-// outputs: none
-// assumes: na
-void SysTick_Handler(void){ // runs at 30 Hz
+// To be run from systick handler at 30 Hz
+void SpaceInvaders_step(struct SpaceInvaders *this) {
 	volatile static unsigned char clickCounter = 0; // keeps track of clicks
 	volatile static unsigned char multishot = 0;
 	
@@ -138,16 +130,16 @@ void SysTick_Handler(void){ // runs at 30 Hz
 		multishot = 1;
 	}
 	
-	switch(gameOverFlag){
+	switch(this->gameOverFlag){
 		case INGAME:{
 			if(clickCounter){
-				LaserInit_ship();
+				GameEngine_laserInit_ship(&(this->gameEngine));
 				Sound_Play(&shoot);
 				clickCounter = 0;
 			}	
 			
 			if(multishot){
-				LaserInit_ship2();
+				GameEngine_laserInit_ship2(&(this->gameEngine));
 				Sound_Play(&shoot);
 				multishot = 0;
 			}
@@ -156,39 +148,50 @@ void SysTick_Handler(void){ // runs at 30 Hz
 				EFcounter = (EFcounter+1)&FIREDEL;
 				if(EFcounter >= FIREDEL){
 					// enemy shooting frequency
-					EnemyLaserInit();
+					GameEngine_enemyLaserInit(&(this->gameEngine));
 				}
 			}
 #endif
 			
 #if DRAW_ENEMYBONUS	
-			enemyBonusCreate();
+			GameEngine_enemyBonusCreate(&(this->gameEngine));
 #endif	
-			Collisions();
+			GameEngine_collisions(&(this->gameEngine));
 			{
 				//update gameOverFlag only if different
-				unsigned int status= getStatus();
-				if(gameOverFlag != status){gameOverFlag = status;}
+				unsigned int status=
+					GameEngine_getStatus(&(this->gameEngine));
+				if (this->gameOverFlag != status) {
+					this->gameOverFlag = status;
+				}
 				// it seems that there is need of a loop here
 			}
-			MoveObjects(); // game engine
+			GameEngine_moveObjects(&(this->gameEngine));
 			break;
 		}
 		case STANDBY:{
 			{//sets defaults
 				unsigned char rst = true;
-				setStatus(gameOverFlag);
-				if(rst){reset();rst=false;}
+				GameEngine_setStatus(&(this->gameEngine),
+						     this->gameOverFlag);
+				if (rst) {
+					GameEngine_reset(&(this->gameEngine));
+					rst=false;
+				}
 			}
-			Player_Move();
+			GameEngine_player_move(&(this->gameEngine));
 			if(clickCounter == 1){
-				LaserInit_ship();
+				GameEngine_laserInit_ship(&(this->gameEngine));
 				clickCounter = 0;
 				Sound_Play(&shoot);
-				gameOverFlag = INGAME;
+				this->gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = true;
-					if(done){setStatus(gameOverFlag);done = false;}
+					if (done) {
+						GameEngine_setStatus(&(this->gameEngine),
+								     this->gameOverFlag);
+						done = false;
+					}
 				}
 			}
 			break;
@@ -197,7 +200,7 @@ void SysTick_Handler(void){ // runs at 30 Hz
 			static char swapMessage = 0;
 			Sound_stop_all(&ufoLowPitch);
 			if(swapMessage < SWAPDELAYMSG){
-				if(gameOverFlag == LOOSE){
+				if(this->gameOverFlag == LOOSE){
 					GameOverMessage();
 #ifndef TEST_WITHOUT_IO
 					GPIO_PORTB_DATA_R |= 0x20;
@@ -220,25 +223,26 @@ void SysTick_Handler(void){ // runs at 30 Hz
 			swapMessage++;
 			if(clickCounter){
 #if DRAW_ENEMIES
-					EnemyInit();
-					defaultValues();
+				GameEngine_enemyInit(&(this->gameEngine));
+				GameEngine_defaultValues(&(this->gameEngine));
 #endif
 #ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
-				ShipInit();
+				GameEngine_shipInit(&(this->gameEngine));
 #if DRAW_ENEMYBONUS				
-				BonusEnemy_Move(RESET);
+				GameEngine_bonusEnemy_Move(&(this->gameEngine),
+							   RESET);
 #endif
 				clickCounter = 0;
 #ifndef TEST_WITHOUT_IO
 				GPIO_PORTB_DATA_R &= ~0x30;
 #endif
-				gameOverFlag = STANDBY;
+				this->gameOverFlag = STANDBY;
 			}
 		}
 	}
-  SysTickFlag = 1;
+	this->SysTickFlag = 1;
 }
 //********init_Hw*****************
 //Multiline description
@@ -268,10 +272,11 @@ void init_Hw(void){
 }
 
 
-// Make parts of the main functionality accessible by test.c
-
-void SpaceInvaders_init(unsigned int max_number_of_enemy_rows) {
-	GameEngine_init(max_number_of_enemy_rows);
+void SpaceInvaders_init(struct SpaceInvaders *this,
+			unsigned int max_number_of_enemy_rows) {
+	this->SysTickFlag= 0;
+	this->gameOverFlag = STANDBY;
+	GameEngine_init(&(this->gameEngine), max_number_of_enemy_rows);
 	init_Hw(); // call all initializing functions
 	//Create initial message
 #if IMESSAGE
@@ -279,15 +284,15 @@ void SpaceInvaders_init(unsigned int max_number_of_enemy_rows) {
 #endif
 	
 #if DRAW_ENEMIES
-	EnemyInit();
-	defaultValues();
+	GameEngine_enemyInit(&(this->gameEngine));
+	GameEngine_defaultValues(&(this->gameEngine));
 #endif
-	ShipInit();
+	GameEngine_shipInit(&(this->gameEngine));
 }
 
-void main_update_LCD(void) {
-	if((gameOverFlag == INGAME)||(gameOverFlag == STANDBY)){
-		Draw(); // update the LCD
+void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {
+	if ((this->gameOverFlag == INGAME) || (this->gameOverFlag == STANDBY)) {
+		GameEngine_draw(&(this->gameEngine)); // update the LCD
 	}
 }
 //********main*****************
@@ -298,13 +303,20 @@ void main_update_LCD(void) {
 // outputs: none
 // assumes: na
 #ifndef TEST_WITHOUT_IO
+
+static struct SpaceInvaders game;
+
+void SysTick_Handler(void) {
+	SpaceInvaders_step(&game);
+}
+
 int main(void){
-	SpaceInvaders_init(2 /* max_number_of_enemy_rows */);
 	Random_Init(1);
+	SpaceInvaders_init(&game, 2 /* max_number_of_enemy_rows */);
 	
 	while(1){
 		while(SysTickFlag == 0){};
-		main_update_LCD();
+		SpaceInvaders_main_update_LCD(&game);
 		SysTickFlag = 0;
 	}
 }
