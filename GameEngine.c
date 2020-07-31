@@ -944,7 +944,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	
 	if (this->enemyCount == 0) {
 		this->AliveRows[row] = false;
-		// ^ needed only to update stats before quiting, good for debugging
+		// ^ needed only to update stats before quitting, good for debugging
 		GameEngine_setStatus(this, WIN);
 	}
 	else {
