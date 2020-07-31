@@ -1,3 +1,0 @@
-
-SpaceInvaders.axf:     file format elf32-little
-
