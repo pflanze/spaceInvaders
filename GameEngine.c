@@ -481,10 +481,11 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 
 	for (row=0; row < this->maxrows; row++) {
 		unsigned char column;
-		static unsigned char FrameCount = 0;
-		if (this->gStatus == INGAME) { FrameCount ^= 0x01; }  // 0,1,0,1,...
+		if (this->gStatus == INGAME) { this->FrameCount ^= 0x01; }  // 0,1,0,1,...
 		for(column=0;column<4;column++){	
-			GameEngine_masterDraw(this, &(this->Enemy[row][column]), FrameCount);
+			GameEngine_masterDraw(this,
+					      &(this->Enemy[row][column]),
+					      this->FrameCount);
 		}
 	}
 }
@@ -497,8 +498,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // assumes: na
 void GameEngine_masterDraw(struct GameEngine *this,
 			   struct State *s,
-			   unsigned int FrameCount){
-	static unsigned char frame = 0;
+			   unsigned int FrameCount) {
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
@@ -520,7 +520,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 			Sound_Play(&smallExplosion);
 		}
 		
-		switch (frame){
+		switch (this->frame){
 			case 0:
 				s->image[0] = SmallExplosion0;
 				break;
@@ -529,7 +529,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 				break;
 			case 2:
 				s->JK = 0;
-				frame = 0;
+				this->frame = 0;
 				if(s->id == ID_SHIP){
 					this->gStatus = LOOSE;
 				}
@@ -550,8 +550,8 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		}	
 	}
 	else if(s->JK){
-		Nokia5110_PrintBMP(s->x + offsetX, s->y + offsetY, s->image[frame], 0);
-		frame++;
+		Nokia5110_PrintBMP(s->x + offsetX, s->y + offsetY, s->image[this->frame], 0);
+		this->frame++; // XXX is it a bug that there's no check for wraparound here?
 	}
 }
 //********GameEngine_laserShipDraw*****************
@@ -586,60 +586,59 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 #endif
 //********GameEngine_enemyShiftTrack*****************
 //Keeps track if the leftmost and right most Enemies.
-// changes: enemyTracking[]
-// inputs: none
-// outputs: none
-// assumes: na
 #if DRAW_ENEMIES
+void
+GameEngine_enemyTracking_reset(struct GameEngine *this) {
+	this->enemyTracking[0] = FIRST_E;		
+	this->enemyTracking[1] = LAST_E;
+	this->lowest = FIRST_E;	
+	this->highest = LAST_E;
+}
+
 unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
 					  unsigned int localAliveRows,
 					  unsigned int mode) {
-	static unsigned int enemyTracking[] = {FIRST_E,LAST_E};
-	// ^ keeps track of the first and last enemy across diferrent rows
-	static unsigned char lowest = FIRST_E;
-	// ^ represents the lowest column number with a enemy alive (general)
-	static unsigned char highest = LAST_E;
-	// ^ represents the higest column number with a enemy alive (general)
-	
+
 	switch(mode){
 		case RESET:{
-			enemyTracking[0] = FIRST_E;		
-			enemyTracking[1] = LAST_E;
-			lowest = FIRST_E;	
-			highest = LAST_E;
+			GameEngine_enemyTracking_reset(this);
 			break;
-		}	
+			// XXX is this still necessary as opposed to
+			// simply using GameEngine_enemyTracking_reset
+			// directly now (i.e. is there magic in
+			// continuing to run here?)
+		}
 		case RETURNARR:
-			return enemyTracking;
+			return this->enemyTracking;
 	}
 	
 	switch(localAliveRows){
 		case 1:
 			if (this->Estat_row[this->lastLine].Epr == 1) {
-				enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
-				enemyTracking[1] = this->Estat_row[this->lastLine].Fep;
+				this->enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
+				this->enemyTracking[1] = this->Estat_row[this->lastLine].Fep;
 			}
-			else{
-				enemyTracking[1] = this->Estat_row[this->lastLine].Lep;
-				enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
+			else {
+				this->enemyTracking[1] = this->Estat_row[this->lastLine].Lep;
+				this->enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
 			}
 			break;
 		default:{
 			signed char row = 0;
-			lowest 	= this->Estat_row[row].Fep;
-			highest	= this->Estat_row[row].Lep;
+			this->lowest 	= this->Estat_row[row].Fep;
+			this->highest	= this->Estat_row[row].Lep;
 			row = 1;
 			while (row <= this->maxrows - 1) {//change
-				if (this->Estat_row[row].Fep < lowest) {
-					lowest = this->Estat_row[row].Fep;
+				if (this->Estat_row[row].Fep < this->lowest) {
+					this->lowest = this->Estat_row[row].Fep;
 				}
-				if (this->Estat_row[row].Lep > highest) {
-					highest = this->Estat_row[row].Lep;
+				if (this->Estat_row[row].Lep > this->highest) {
+					this->highest = this->Estat_row[row].Lep;
 				}
 				row++;
 			}
-			enemyTracking[1] = highest;
-			enemyTracking[0] = lowest;
+			this->enemyTracking[1] = this->highest;
+			this->enemyTracking[0] = this->lowest;
 		}	
 	}
 	return NULL;
@@ -927,7 +926,6 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 				  unsigned int column,
 				  unsigned int mode) {
 	unsigned char lastCheck = 0;
-	static unsigned char AliveRows[ALLOC_MAXROWS];
 	
 	//setting defaults
 	if(mode == RESET) {
@@ -935,7 +933,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{	//liverows[] defaults
 			unsigned char i;
 			for (i=0; i < this->maxrows; i++) {
-				AliveRows[i] = 1;
+				this->AliveRows[i] = 1;
 			}
 		}
 		return 0;
@@ -946,7 +944,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	enemyCount--;
 	
 	if(enemyCount == 0){
-		AliveRows[row] = 0;
+		this->AliveRows[row] = 0;
 		// ^ needed only to update stats before quiting, good for debugging
 		GameEngine_setStatus(this, WIN);
 	}
@@ -955,7 +953,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 			lastCheck = 1;			//Does forward checking only
 		}
 		else if (this->Estat_row[row].Epr == 0) {
-			AliveRows[row] = 0;
+			this->AliveRows[row] = 0;
 		}
 
 		if (this->Estat_row[row].Epr) {
@@ -990,7 +988,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	{unsigned int alr_counter=0;
 		{unsigned char i;
 			for(i=0; i <= this->maxrows - 1; i++) {
-				if(AliveRows[i]){
+				if (this->AliveRows[i]) {
 					alr_counter++;
 				}
 			}
@@ -1122,6 +1120,13 @@ void GameEngine_init(struct GameEngine *this,
 	this->maxrows= max_number_of_enemy_rows;
 	this->lastLine= this->maxrows - 1;
 	enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
+	this->right = true;
+	this->down = false;
+	this->FrameCount = 0;
+	this->frame = 0;
+	GameEngine_enemyTracking_reset(this);
+	this->lowest = FIRST_E;
+	this->highest = LAST_E;
 }
 
 

@@ -78,8 +78,26 @@ struct GameEngine {
 	struct State  EnemyBonus;
 #endif
 
+	// GameEngine_enemy_move:
 	bool right; //moves the enemies, 0: moves left
 	bool down; //moves the enemies, 1: moves down
+
+	// GameEngine_enemyDraw:
+	unsigned char FrameCount;  // 0,1,0,1,...
+
+	// GameEngine_masterDraw:
+	unsigned char frame;
+
+	// GameEngine_enemyShiftTrack:
+	unsigned int enemyTracking[2];
+	// ^ keeps track of the first and last enemy across diferrent rows
+	unsigned char lowest;
+	// ^ represents the lowest column number with a enemy alive (general)
+	unsigned char highest;
+	// ^ represents the higest column number with a enemy alive (general)
+
+	// GameEngine_firstLast:
+	unsigned char AliveRows[ALLOC_MAXROWS];
 };
 
 
