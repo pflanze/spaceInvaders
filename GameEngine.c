@@ -1,8 +1,13 @@
 //GameEngine.c
 /*
-The game engine keeps track of game statistics to perform movement, drawing, shooting.
-In general terms the statistics tracked are: enemies per row/column, first/last enemy per row, first enemy per column, total number of enemies,
-rows/columns with enemies alive,
+
+  The game engine keeps track of game statistics to perform movement,
+  drawing, shooting.
+
+  In general terms the statistics tracked are: enemies per row/column,
+  first/last enemy per row, first enemy per column, total number of
+  enemies, rows/columns with enemies alive,
+
 */
 
 #include "GameEngine.h"
@@ -27,7 +32,7 @@ static unsigned int maxrows;
 	static unsigned lastLine;
 #endif
 
-//----------------------------------------------------------Structs------------------------------------------------
+//----------------------------------------------------------Structs-------------
 //game stats per column
 #if DRAW_ENEMIES
 static void EnemyLaserCollisions(void);
@@ -58,7 +63,7 @@ static struct State Laser_ship[MAXLASERS];
 	static struct State  EnemyBonus;
 #endif	
 
-//-----------------------------------------------------------INIT-----------------------------------------------------------------------
+//-----------------------------------------------------------INIT---------------
 //********EnemyInit*****************
 //Initialize enemies
 //Enemies are counted normaly, top left 00
@@ -74,7 +79,7 @@ void EnemyInit(void){
 		for(column=0;column<MAX_ENEMY_PR;column++){
 			Enemy[row][column].x = 20*column;
 			Enemy[row][column].y = 10 + row*10;
-			Enemy[row][column].life = 1;				// 0=dead, 1=alive
+			Enemy[row][column].life = 1;  // 0=dead, 1=alive
 			Enemy[row][column].JK = 0;
 			Enemy[row][column].id = ID_ENEMY;
 			switch(row){
@@ -84,7 +89,7 @@ void EnemyInit(void){
 					break;
 				case 1:
 					Enemy[row][column].image[0] = SmallEnemy20PointA;
-					Enemy[row][column].image[1] = SmallEnemy20PointB;					
+					Enemy[row][column].image[1] = SmallEnemy20PointB;
 					break;
 				case 2:
 					Enemy[row][column].image[0] = SmallEnemy10PointA;
@@ -93,9 +98,10 @@ void EnemyInit(void){
 			}
 		}
 		//initializes Estat
-		Estat_row[row].Epr = MAX_ENEMY_PR;	//keeps track od the amount of enemies per row
-		Estat_row[row].Fep = 0;							//first end position
-		Estat_row[row].Lep = 3;							//last end position
+		Estat_row[row].Epr = MAX_ENEMY_PR;
+		// ^ keeps track of the amount of enemies per row
+		Estat_row[row].Fep = 0;	  // first end position
+		Estat_row[row].Lep = 3;	  // last end position
 	}
 }
 #endif
@@ -125,10 +131,10 @@ void LaserInit_ship(void){
 			Laser_ship[i].x = Ship.x + SHIPMIDDLE;
 			Laser_ship[i].y = 39;
 			Laser_ship[i].image[0] = Laser0;
-			Laser_ship[i].life = 1;				// 0=dead, 1=alive
+			Laser_ship[i].life = 1; // 0=dead, 1=alive
 			Laser_ship[i].id = ID_S_LASER;
 			Laser_ship[i].JK = 0;
-			break;			//terminate loop when a slot is found
+			break; // terminate loop when a slot is found
 		}
 	}	
 }
@@ -149,19 +155,19 @@ void LaserInit_ship2(void){
 				case 0:
 					Laser_ship[i].x = Ship.x + SHIPMIDDLE;
 					count++;
-					break;			//terminate loop when a slot is found
+					break; // terminate loop when a slot is found
 				case 1:
 					Laser_ship[i].x = Ship.x + 2 + SHIPMIDDLE;
 					count++;
-					break;			//terminate loop when a slot is found
+					break; // terminate loop when a slot is found
 				case 2:	
 					Laser_ship[i].x = Ship.x + 4 + SHIPMIDDLE;
-					break;			//terminate loop when a slot is found
+					break; // terminate loop when a slot is found
 				
 			}
 					Laser_ship[i].y = 39;
 					Laser_ship[i].image[0] = Laser0;
-					Laser_ship[i].life = 1;				// 0=dead, 1=alive
+					Laser_ship[i].life = 1; // 0=dead, 1=alive
 					Laser_ship[i].id = ID_S_LASER;
 					Laser_ship[i].JK = 0;
 		}
@@ -177,9 +183,11 @@ void LaserInit_ship2(void){
 	void EnemyLaserInit(void){	
 		//modifiction may be needed function called twice, please explore
 		unsigned int *AliveColsLocal =  FirstEPC(RETURNVAL);
-		unsigned char randN = (Random32()>>24)%(*AliveColsLocal);		//generates number [0-aliveCols]
+		unsigned char randN = (Random32()>>24)%(*AliveColsLocal);
+		// ^ generates number [0-aliveCols]
 		unsigned int *AlColsMatLocal = 	FirstEPC(RETURNARR);
-		unsigned char columnNew	= AlColsMatLocal[randN];					//matrix holds the valid Enemy firing positions
+		unsigned char columnNew	= AlColsMatLocal[randN];
+		// ^ matrix holds the valid Enemy firing positions
 		
 		if(Estat_column[columnNew].Epc){
 			unsigned char i;
@@ -189,9 +197,9 @@ void LaserInit_ship2(void){
 					Laser_enemy[i].x = Enemy[row][columnNew].x + E_LASER_OFFX;
 					Laser_enemy[i].y = Enemy[row][columnNew].y + E_LASER_OFFY;
 					Laser_enemy[i].image[0] = Laser0;
-					Laser_enemy[i].life = 1;				//0=dead, 1=alive
+					Laser_enemy[i].life = 1; // 0=dead, 1=alive
 					Laser_enemy[i].id = ID_E_LASER;
-					break;			//terminate loop when a slot is found
+					break; // terminate loop when a slot is found
 				}	
 			}	
 		}
@@ -215,7 +223,7 @@ void BonusEnemyInit(void){
 	Sound_Play(&ufoLowPitch);
 }
 #endif
-//-----------------------------------------------------------DEFAULT VALUES-----------------------------------------------------------------------
+//-----------------------------------------------------------DEFAULT VALUES-----
 //********defaultValues*****************
 // Resets the values to default 
 // changes: Laser_enemy[i].life, lastLine, Estat_column[i].(Epc|Fep)
@@ -232,11 +240,11 @@ void defaultValues(void){
 		Estat_column[i].Epc = maxrows;
 		Estat_column[i].Fep = lastLine;
 	}	
-	for(i=0;i<MAX_ENEMY_PR;i++){											
+	for(i=0;i<MAX_ENEMY_PR;i++){
 		Laser_enemy[i].life = 0;
 	}
 	
-	for(i=0;i<MAXLASERS;i++){											
+	for(i=0;i<MAXLASERS;i++){
 		Laser_ship[i].life = 0;
 	}
 }
@@ -259,7 +267,7 @@ void reset(void){
 	FirstLast(NULL, NULL, RESET);
 #endif
 }
-//--------------------------------------------------------------MOVE OBJECTS-------------------------------------------------------------------------
+//--------------------------------------------------------------MOVE OBJECTS----
 //********MoveObjects*****************
 //Updates the position values of the asociated objects
 // inputs: INGAME
@@ -269,10 +277,10 @@ void MoveObjects(void){
 #if DRAW_ENEMIES
 	unsigned int *ETracking = EnemyShiftTrack(NA,RETURNARR);
 #endif
-	Player_Move();						//calls ADC0_in, Convert2Distance
+	Player_Move(); // calls ADC0_in, Convert2Distance
 	if(gStatus == INGAME){
 #if DRAW_ENEMIES
-	Enemy_Move(ETracking[0], ETracking[1]);					//updates enemy coordinate
+	Enemy_Move(ETracking[0], ETracking[1]); // updates enemy coordinate
 	LaserEnemy_Move();
 #endif
 
@@ -304,10 +312,11 @@ void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){
 	unsigned char row;
 	
 	for(row=0;row<maxrows;row++){
-		if(Enemy[lastLine][0].y < 40){			//Do it while not raching the earth, At 40 the ships have reach the earth!
+		// While not raching the earth
+		if (Enemy[lastLine][0].y < 40) {
 			signed char column;
-			static unsigned char right = true;			//moves the enemies, 0: moves left
-			static unsigned char down = false;			//moves the enemies, 1: moves down
+			static unsigned char right = true; //moves the enemies, 0: moves left
+			static unsigned char down = false; //moves the enemies, 1: moves down
 			//sets the switches to move down/left/right
 			if(Enemy[row][RightShiftColumn].x >= RIGHTLIMIT){
 				right = false;	//moves left
@@ -334,7 +343,8 @@ void Enemy_Move(unsigned int LeftShiftColumn, unsigned int RightShiftColumn){
 				down = false;
 			}
 		}
-		else{										//Enemies have reached the earth
+		else {
+			// Enemies have reached the earth
 			gStatus = LOOSE;
 		}
 	}
@@ -400,7 +410,7 @@ void BonusEnemy_Move(unsigned int mode){
 	}
 }
 #endif
-//------------------------------------------------------------------------DRAWING----------------------------------------------------------------------
+//-------------------------------------------DRAWING----------------------------
 //********Draw*****************
 // Updates the objects positions and sends the data to the screen
 // inputs: none
@@ -495,11 +505,15 @@ void MasterDraw(struct State *s, unsigned int FrameCount){
 	}
 	if(s->life){
 
-		if(s->id == ID_ENEMY){		//only enemies need change between frames, unless something explodes
-			Nokia5110_PrintBMP(s->x, s->y, s->image[FrameCount], 0); //frame is always 0, except for enemies
+		// only enemies need change between frames, unless
+		// something explodes
+		if (s->id == ID_ENEMY) {
+			Nokia5110_PrintBMP(s->x, s->y, s->image[FrameCount], 0);
+			// ^ frame is always 0, except for enemies
 		}
-		else{
-			Nokia5110_PrintBMP(s->x, s->y, s->image[0], 0); //frame is always 0, except for enemies
+		else {
+			Nokia5110_PrintBMP(s->x, s->y, s->image[0], 0);
+			// frame is always 0, except for enemies
 		}	
 	}
 	else if(s->JK){
@@ -541,9 +555,12 @@ void LaserEnemyDraw(void){
 // assumes: na
 #if DRAW_ENEMIES
 unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
-	static unsigned int enemyTracking[] = {FIRST_E,LAST_E};	//keeps track of the first and last enemy across diferrent rows
-	static unsigned char lowest = FIRST_E;		//represents the lowest column number with a enemy alive (general)
-	static unsigned char highest = LAST_E;		//represents the higest column number with a enemy alive (general)
+	static unsigned int enemyTracking[] = {FIRST_E,LAST_E};
+	// ^ keeps track of the first and last enemy across diferrent rows
+	static unsigned char lowest = FIRST_E;
+	// ^ represents the lowest column number with a enemy alive (general)
+	static unsigned char highest = LAST_E;
+	// ^ represents the higest column number with a enemy alive (general)
 	
 	switch(mode){
 		case RESET:{
@@ -590,7 +607,7 @@ unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
 }
 #endif
 
-//-------------------------------------------------------------------------ADC--------------------------------------------------
+//-----------------------------------------------------ADC----------------------
 
 //********Convert2Distance*****************
 // Converts the sample value to an equivalent distance
@@ -598,7 +615,7 @@ unsigned int * EnemyShiftTrack(unsigned int localAliveRows, unsigned int mode){
 // outputs: none
 // assumes: na
 unsigned long Convert2Distance(unsigned long sample){
-	return (Avalue*(sample) >> 10)+Bvalue; 					//Needs recalibration
+	return (Avalue*(sample) >> 10)+Bvalue; // Needs recalibration
 }
 //********ADC0_In*****************
 // ADC converter
@@ -622,7 +639,7 @@ unsigned long ADC0_In(void){
   return ADC0_SSFIFO3_R;
 #endif
 }
-//------------------------------------------------------------------COLLISIONS------------------------------------------------
+//----------------------------------------------COLLISIONS----------------------
 //********Collisions*****************
 //Check colision detection: Enemy lasers, ship lasers, laser on laser
 // inputs: none
@@ -652,15 +669,18 @@ void PlayerLaserCollisions(void){
 	unsigned char laserNum = 0; 
 		//each laser is checked for a collition
 		for(laserNum=0;laserNum<MAXLASERS;laserNum++){
-			if((Laser_ship[laserNum].life)&&(Enemy[lastLine][0].y + YOFFSET >= Laser_ship[laserNum].y)){//found a line with enemies>>start calculating
-				//calculate enemy zone(grouping)
+			if((Laser_ship[laserNum].life) &&
+			   (Enemy[lastLine][0].y + YOFFSET >= Laser_ship[laserNum].y)){
+				// found a line with enemies>>start calculating
+				// calculate enemy zone(grouping)
 				EnemyscanY(laserNum);
 			}	
 		}
 }
 #endif
 //********EnemyscanY*****************
-//scans for an enemy line (y-axis), then sends a request to scan for an enemy on the x-axis. Updates the enemy line values
+//scans for an enemy line (y-axis), then sends a request to scan for
+//an enemy on the x-axis. Updates the enemy line values
 // inputs: lastLine, laserNum
 // outputs: none
 // assumes: na
@@ -726,7 +746,8 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 	for(column=0;column <= Estat_row[row].Lep;column++){
 		if(Enemy[row][column].life){
 			//checking x coordinate of each active laser against each enemy
-			signed char enemyInRange = (Enemy[row][column].x + E_LASER_OFFX - Laser_ship[laserNum].x);
+			signed char enemyInRange =
+				(Enemy[row][column].x + E_LASER_OFFX - Laser_ship[laserNum].x);
 			enemyInRange = absValue(enemyInRange);
 			if (enemyInRange <= E_LASER_OFFX){	
 				unsigned int alive_rows;
@@ -734,11 +755,11 @@ void EnemyscanX(unsigned int row, unsigned int laserNum){
 				Enemy[row][column].life = 0;
 				Enemy[row][column].JK = 1;
 				alive_rows = FirstLast(row, column, UPDATE);
-				lastLine = Verify_lastLine(lastLine);								//updates last line value
+				lastLine = Verify_lastLine(lastLine); //updates last line value
 				//updates 
 				EnemyShiftTrack(alive_rows, UPDATE);
-				FirstEPC(UPDATE);														//update point
-				break;																			//return????
+				FirstEPC(UPDATE); //update point
+				break; //return????
 			}
 		}
 	}	
@@ -782,9 +803,9 @@ void LaserCollision(void){
 	//checks collision course
 	for(lasernumEnemy=0;lasernumEnemy<MAXLASERS;lasernumEnemy++){
 		if(Laser_enemy[lasernumEnemy].life){
-			unsigned char lasernumShip = 0;			//avoids unnecessary comparison
+			unsigned char lasernumShip = 0; //avoids unnecessary comparison
 			for(lasernumShip=0;lasernumShip<MAXLASERS;lasernumShip++){
-				if(Laser_ship[lasernumShip].life){																									//avoids unnecessary comparison
+				if(Laser_ship[lasernumShip].life){ //avoids unnecessary comparison
 					signed char xDistance = (Laser_enemy[lasernumEnemy].x - Laser_ship[lasernumShip].x);
 					if((absValue(xDistance)<2)&&(Laser_ship[lasernumShip].life)){
 						signed char yDistance = ((Laser_enemy[lasernumEnemy].y+LASERH) > Laser_ship[lasernumShip].y);	//crossOver each other
@@ -813,8 +834,11 @@ void BonusLaserCollision(void){
 		unsigned char laserNumber = 0;
 		for(laserNumber=0;laserNumber<MAXLASERS;laserNumber++){
 			if(Laser_ship[laserNumber].life){
-				if(Laser_ship[laserNumber].y <= BONUS_C_LINE){			//if any of the lasers pases certain threshold
-					signed char xDistance = (EnemyBonus.x + ENEMY_Bon_midX - Laser_ship[laserNumber].x);
+				if(Laser_ship[laserNumber].y <= BONUS_C_LINE){
+					// any of the lasers passes certain threshold
+					signed char xDistance =
+						EnemyBonus.x + ENEMY_Bon_midX
+						- Laser_ship[laserNumber].x;
 					xDistance = absValue(xDistance);
 					if(xDistance < ENEMY_Bon_midX){
 						EnemyBonus.life = 0;
@@ -828,7 +852,7 @@ void BonusLaserCollision(void){
 	}
 }
 #endif
-//--------------------------------------------------------------GAME STATS----------------------------------------------------------
+//-----------------------------------------GAME STATS---------------------------
 //********FirstLast*****************
 //this function should keep track of:
 //					the number of enemies on each row
@@ -861,7 +885,8 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 	enemyCount--;
 	
 	if(enemyCount == 0){
-		AliveRows[row] = 0;					//needed only to update stats before quiting, good for debugging
+		AliveRows[row] = 0;
+		// ^ needed only to update stats before quiting, good for debugging
 		setStatus(WIN);
 	}
 	else{
@@ -876,7 +901,8 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 			unsigned char column=0;
 			unsigned char firstCheck = 0;
 			for(column=0;column<MAX_ENEMY_PR;column++){
-				if ((firstCheck == 0)&&(Enemy[row][column].life)){									//counts forward, check = 0 >> keeps checking
+				if ((firstCheck == 0)&&(Enemy[row][column].life)){
+					// ^ counts forward, check = 0 >> keeps checking
 					Estat_row[row].Fep = column;
 					firstCheck = 1;
 					if(Estat_row[row].Epr == 1){
@@ -884,7 +910,8 @@ unsigned int FirstLast(unsigned int row, unsigned int column, unsigned int mode)
 					}
 				}
 				
-				if((lastCheck == 0)&&(Enemy[row][REAL_MAX_EPR-column].life)){		//counts backwards
+				if((lastCheck == 0)&&(Enemy[row][REAL_MAX_EPR-column].life)){
+					// ^ counts backwards
 					Estat_row[row].Lep = REAL_MAX_EPR-column;
 					lastCheck = 1;
 				}	
@@ -943,7 +970,8 @@ unsigned int * FirstEPC(unsigned int mode){
 	//RETURNARR will continue
 	//we are reading left>right, dowun>up
 	for(column=0;column<MAX_ENEMY_PR;column++){
-		signed char row = Estat_column[column].Fep;		//start from last known position
+		signed char row = Estat_column[column].Fep;
+		// ^ start from last known position
 		if(Estat_column[column].Epc == 0){
 			continue;
 		}
@@ -969,7 +997,7 @@ unsigned int * FirstEPC(unsigned int mode){
 	}
 }
 #endif
-//--------------------------------------------------------------Miscelaneus----------------------------------------------------------
+//----------------------------------Miscelaneus---------------------------------
 //********enemyBonusCreate*****************
 // It creates the Enemy bonus ship, and times the reApereance
 // changes: na
@@ -990,7 +1018,7 @@ unsigned int * FirstEPC(unsigned int mode){
 		}
 	}
 #endif
-//--------------------------------------------------------------Utilities----------------------------------------------------------
+//----------------------------------------------Utilities-----------------------
 //********absValue*****************
 // Returns positive value
 // changes: value
@@ -1031,19 +1059,22 @@ void GameEngine_init(unsigned int max_number_of_enemy_rows) {
 }
 
 
-//---------------------------------------------------------------TODOS--------------------------------------------------
+//-----------------------------------------------TODOS--------------------------
 /*
 changes:
 	*add sound:
 		-lab13
 Improve firing: adding firing secuences
 
--------------------------------------------------------------Var Map Globals---------------------------------------------
+-------------------------------------------Var Map Globals----------------------
 I created this section to identify the needs to re-scoping.
 >: Static value modified to default(Special care or consideration)
 
-Reason to remain: There are several function that need this variable (a entire branch Collision), then it updates at the end of the branch 
-(Verify_lastLine), and it is also used on a separate branch that needs the value already updated.
+Reason to remain: There are several function that need this variable
+(a entire branch Collision), then it updates at the end of the branch
+(Verify_lastLine), and it is also used on a separate branch that needs
+the value already updated.
+
 Var: lastLine
 updated@:Verify_lastLine
 Functions:
