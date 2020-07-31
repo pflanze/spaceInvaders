@@ -525,8 +525,10 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		switch (this->frame) {
 			case 0:
 				s->image[0] = SmallExplosion0;
+				s->image[1] = SmallExplosion1;
 				break;
 			case 1:
+				s->image[0] = SmallExplosion0;
 				s->image[1] = SmallExplosion1;
 				break;
 			case 2:
