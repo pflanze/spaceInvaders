@@ -1146,14 +1146,8 @@ void GameEngine_init(struct GameEngine *this,
 	GameEngine_enemyTracking_reset(this);
 
 	// XXX AliveRows ?
-	
-	this->LiveCols = MAX_ENEMY_PR;
-	{
-		unsigned char i;
-		for (i=0; i<MAX_ENEMY_PR; i++) {
-			this->AlColsMat[i] = i;
-		}
-	}
+
+	GameEngine_firstEPC(this, RESET);
 #if DRAW_ENEMYBONUS
 	this->localCounter = 0;
 #endif
