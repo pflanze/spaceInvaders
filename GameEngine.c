@@ -1124,10 +1124,13 @@ void GameEngine_init(struct GameEngine *this,
 	
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
+	GameEngine_enemyLaserInit(this);
 	GameEngine_defaultValues(this);
 #endif
 
 	GameEngine_shipInit(this);
+	GameEngine_laserInit_ship(this);
+	GameEngine_laserInit_ship2(this);
 
 	this->right = true;
 	this->down = false;
