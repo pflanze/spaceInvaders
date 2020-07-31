@@ -139,7 +139,7 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 
 int main () {
 	test_run(1);
-	//test_run(2);
+	test_run(2);
 
 	/* verify that there are no differences to the committed
 	   versions of the frames */
