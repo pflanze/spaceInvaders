@@ -61,6 +61,8 @@ struct GameEngine {
 #if DRAW_ENEMIES
 	//use to keep the statistics from the game
 	unsigned lastLine;
+	// GameEngine_firstLast:
+	unsigned char enemyCount;
 #endif
 
 	//game stats per column
@@ -98,6 +100,15 @@ struct GameEngine {
 
 	// GameEngine_firstLast:
 	bool AliveRows[ALLOC_MAXROWS];
+
+	// GameEngine_firstEPC:
+	unsigned int LiveCols;
+	unsigned int AlColsMat[MAX_ENEMY_PR];
+
+#if DRAW_ENEMYBONUS
+	// GameEngine_enemyBonusCreate:
+	unsigned char localCounter;
+#endif
 };
 
 

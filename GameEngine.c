@@ -920,7 +920,6 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-static unsigned char enemyCount; // XXXX move to local scope or to this ?
 unsigned int GameEngine_firstLast(struct GameEngine *this,
 				  unsigned int row,
 				  unsigned int column,
@@ -929,7 +928,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	
 	//setting defaults
 	if(mode == RESET) {
-		enemyCount = this->maxrows * MAX_ENEMY_PR; // see COPYPASTE
+		this->enemyCount = this->maxrows * MAX_ENEMY_PR; // see COPYPASTE
 		{	//liverows[] defaults
 			unsigned char i;
 			for (i=0; i < this->maxrows; i++) {
@@ -941,9 +940,9 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	
 	this->Estat_row[row].Epr--;
 	this->Estat_column[column].Epc--;
-	enemyCount--;
+	this->enemyCount--;
 	
-	if(enemyCount == 0){
+	if (this->enemyCount == 0) {
 		this->AliveRows[row] = false;
 		// ^ needed only to update stats before quiting, good for debugging
 		GameEngine_setStatus(this, WIN);
@@ -1006,8 +1005,6 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // assumes: na
 #if DRAW_ENEMIES
 unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
-	static unsigned int LiveCols = MAX_ENEMY_PR;
-	static unsigned int AlColsMat[MAX_ENEMY_PR] = {0,1,2,3};
 	unsigned char column = 0;
 	unsigned char aliveCol = 0;
 	
@@ -1016,15 +1013,15 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 		case RESET:{
 			unsigned int *p = 0;
 			unsigned char i;
-			LiveCols = MAX_ENEMY_PR;
+			this->LiveCols = MAX_ENEMY_PR;
 			for(i=0;i<MAX_ENEMY_PR;i++){
-				AlColsMat[i] = i;
+				this->AlColsMat[i] = i;
 			}
 			return p;
 		}
 		//RETURNVAL return the alive columns
 		case RETURNVAL:{
-			unsigned int *p = &LiveCols;
+			unsigned int *p = &(this->LiveCols);
 			return p;
 		}	
 	}
@@ -1038,7 +1035,7 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 			continue;
 		}
 	
-		AlColsMat[aliveCol] = column;
+		this->AlColsMat[aliveCol] = column;
 		aliveCol++;
 		
 		//finds the first enemy on a column
@@ -1052,9 +1049,9 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 			}
 		}
 	}
-	LiveCols = aliveCol;
+	this->LiveCols = aliveCol;
 	{//RETURNARR mode return the array
-		unsigned int *p = AlColsMat;
+		unsigned int *p = this->AlColsMat;
 		return p;
 	}
 }
@@ -1068,15 +1065,14 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 // assumes: na
 #if DRAW_ENEMYBONUS
 void GameEngine_enemyBonusCreate(struct GameEngine *this) {
-	static unsigned char localCounter = 0;
 	
-	if ((this->EnemyBonus.life == 0) && (localCounter >= BONUSTIMING)){
+	if ((this->EnemyBonus.life == 0) && (this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemyInit(this);
-		localCounter = 0;
+		this->localCounter = 0;
 	}
 		
 	if (this->EnemyBonus.life == 0) {
-		localCounter++;
+		this->localCounter++;
 	}
 }
 #endif
@@ -1118,15 +1114,31 @@ void GameEngine_init(struct GameEngine *this,
 	this->gStatus = STANDBY;
 	assert(max_number_of_enemy_rows <= ALLOC_MAXROWS);
 	this->maxrows= max_number_of_enemy_rows;
+#if DRAW_ENEMIES
 	this->lastLine= this->maxrows - 1;
-	enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
+	this->enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
+#endif
+
+	// XXX Estat_column .. EnemyBonus
+
 	this->right = true;
 	this->down = false;
 	this->FrameCount = 0;
 	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
-	this->lowest = FIRST_E;
-	this->highest = LAST_E;
+
+	// XXX AliveRows ?
+	
+	this->LiveCols = MAX_ENEMY_PR;
+	{
+		unsigned char i;
+		for (i=0; i<MAX_ENEMY_PR; i++) {
+			this->AlColsMat[i] = i;
+		}
+	}
+#if DRAW_ENEMYBONUS
+	this->localCounter = 0;
+#endif
 }
 
 
