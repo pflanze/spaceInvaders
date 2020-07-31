@@ -1037,6 +1037,7 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 	for (column=0; column < MAX_ENEMY_PR; column++) {
 		signed char row = this->Estat_column[column].Fep;
 		// ^ start from last known position
+		assert(row < this->maxrows);
 		if (this->Estat_column[column].Epc == 0) {
 			continue;
 		}
