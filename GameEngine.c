@@ -22,6 +22,19 @@
 #include "Sound.h"
 
 
+struct GameStatColumn {
+	unsigned char Fep;		//"First enemy position"
+	unsigned char Epc;		//"Enemies per column"
+};
+
+//game stats per row
+struct GameStatRow {
+	unsigned char Fep;		//"First enemy position"
+	unsigned char Lep;		//"Last enemy position"
+	unsigned char Epr;		//"Enemies per row"
+};
+
+
 //local variables
 static unsigned int gStatus = STANDBY;
 static unsigned int maxrows;
@@ -31,30 +44,16 @@ static unsigned int maxrows;
 	static unsigned lastLine;
 #endif
 
-//----------------------------------------------------------Structs-------------
 //game stats per column
 #if DRAW_ENEMIES
 static void EnemyLaserCollisions(void);
 
-struct GameStatColumn {
-	unsigned char Fep;		//"First enemy position"
-	unsigned char Epc;		//"Enemies per column"
-};
-
 static struct GameStatColumn Estat_column[MAX_ENEMY_PR];
-
-//game stats per row
-struct GameStatRow {
-	unsigned char Fep;		//"First enemy position"
-	unsigned char Lep;		//"Last enemy position"
-	unsigned char Epr;		//"Enemies per row"
-};
-
 static struct GameStatRow Estat_row[ALLOC_MAXROWS];
 static struct State Enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
 static struct State Laser_enemy[MAXLASERS];
-
 #endif
+
 static struct State Ship;
 static struct State Laser_ship[MAXLASERS];
 
