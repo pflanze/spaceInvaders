@@ -97,7 +97,7 @@ struct GameEngine {
 	// ^ represents the higest column number with a enemy alive (general)
 
 	// GameEngine_firstLast:
-	unsigned char AliveRows[ALLOC_MAXROWS];
+	bool AliveRows[ALLOC_MAXROWS];
 };
 
 

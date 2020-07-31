@@ -933,7 +933,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{	//liverows[] defaults
 			unsigned char i;
 			for (i=0; i < this->maxrows; i++) {
-				this->AliveRows[i] = 1;
+				this->AliveRows[i] = true;
 			}
 		}
 		return 0;
@@ -944,7 +944,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	enemyCount--;
 	
 	if(enemyCount == 0){
-		this->AliveRows[row] = 0;
+		this->AliveRows[row] = false;
 		// ^ needed only to update stats before quiting, good for debugging
 		GameEngine_setStatus(this, WIN);
 	}
@@ -953,7 +953,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 			lastCheck = 1;			//Does forward checking only
 		}
 		else if (this->Estat_row[row].Epr == 0) {
-			this->AliveRows[row] = 0;
+			this->AliveRows[row] = false;
 		}
 
 		if (this->Estat_row[row].Epr) {
