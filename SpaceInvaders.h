@@ -8,6 +8,10 @@ struct SpaceInvaders {
 	struct GameEngine gameEngine;
 	unsigned char SysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?
+	unsigned char clickCounter; // keeps track of clicks
+	unsigned char multishot;
+	unsigned char EFcounter;
+	char swapMessage;
 };
 
 void SpaceInvaders_init(struct SpaceInvaders *this,

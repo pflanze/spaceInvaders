@@ -115,38 +115,36 @@ void EnableInterrupts(void);  // Enable interrupts
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // To be run from systick handler at 30 Hz
 void SpaceInvaders_step(struct SpaceInvaders *this) {
-	volatile static unsigned char clickCounter = 0; // keeps track of clicks
-	volatile static unsigned char multishot = 0;
 	
 #if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
 #endif
 	
 	if(Pressfire_B1()){
-		clickCounter++;
+		this->clickCounter++;
 	}
 	
 	if(Pressfire_B2()){
-		multishot = 1;
+		this->multishot = 1;
 	}
 	
 	switch(this->gameOverFlag){
 		case INGAME:{
-			if(clickCounter){
+			if (this->clickCounter) {
 				GameEngine_laserInit_ship(&(this->gameEngine));
 				Sound_Play(&shoot);
-				clickCounter = 0;
+				this->clickCounter = 0;
 			}	
 			
-			if(multishot){
+			if (this->multishot) {
 				GameEngine_laserInit_ship2(&(this->gameEngine));
 				Sound_Play(&shoot);
-				multishot = 0;
+				this->multishot = 0;
 			}
 #if DRAW_ENEMIES
-			{static unsigned char EFcounter;
-				EFcounter = (EFcounter+1)&FIREDEL;
-				if(EFcounter >= FIREDEL){
+			{
+				this->EFcounter = (this->EFcounter + 1) & FIREDEL;
+				if (this->EFcounter >= FIREDEL) {
 					// enemy shooting frequency
 					GameEngine_enemyLaserInit(&(this->gameEngine));
 				}
@@ -180,9 +178,9 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				}
 			}
 			GameEngine_player_move(&(this->gameEngine));
-			if(clickCounter == 1){
+			if (this->clickCounter == 1) {
 				GameEngine_laserInit_ship(&(this->gameEngine));
-				clickCounter = 0;
+				this->clickCounter = 0;
 				Sound_Play(&shoot);
 				this->gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
@@ -197,9 +195,8 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			break;
 		}	
 		default:{
-			static char swapMessage = 0;
 			Sound_stop_all(&ufoLowPitch);
-			if(swapMessage < SWAPDELAYMSG){
+			if (this->swapMessage < SWAPDELAYMSG) {
 				if(this->gameOverFlag == LOOSE){
 					GameOverMessage();
 #ifndef TEST_WITHOUT_IO
@@ -215,13 +212,13 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			}
 			else{
 				RestartMessage();
-				if(swapMessage > SWAPDELAYMSG_2){
+				if (this->swapMessage > SWAPDELAYMSG_2) {
 					// Swapmessage intermittent every 50 cycles
-					swapMessage = 0;
+					this->swapMessage = 0;
 				}
 			}
-			swapMessage++;
-			if(clickCounter){
+			this->swapMessage++;
+			if (this->clickCounter) {
 #if DRAW_ENEMIES
 				GameEngine_enemyInit(&(this->gameEngine));
 				GameEngine_defaultValues(&(this->gameEngine));
@@ -234,7 +231,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				GameEngine_bonusEnemy_Move(&(this->gameEngine),
 							   RESET);
 #endif
-				clickCounter = 0;
+				this->clickCounter = 0;
 #ifndef TEST_WITHOUT_IO
 				GPIO_PORTB_DATA_R &= ~0x30;
 #endif
@@ -276,6 +273,10 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 			unsigned int max_number_of_enemy_rows) {
 	this->SysTickFlag= 0;
 	this->gameOverFlag = STANDBY;
+	this->clickCounter = 0;
+	this->multishot = 0;
+	this->EFcounter = 0;
+	this->swapMessage = 0;
 	GameEngine_init(&(this->gameEngine), max_number_of_enemy_rows);
 	init_Hw(); // call all initializing functions; XX could this
 		   // call be moved outside SpaceInvaders_init?

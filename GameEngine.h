@@ -76,6 +76,9 @@ struct GameEngine {
 #if DRAW_ENEMYBONUS
 	struct State  EnemyBonus;
 #endif
+
+	unsigned char right; //moves the enemies, 0: moves left
+	unsigned char down; //moves the enemies, 1: moves down
 };
 
 

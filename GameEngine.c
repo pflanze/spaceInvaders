@@ -345,32 +345,30 @@ void GameEngine_enemy_move(struct GameEngine *this,
 		// While not raching the earth
 		if (this->Enemy[this->lastLine][0].y < 40) {
 			signed char column;
-			static unsigned char right = true; //moves the enemies, 0: moves left
-			static unsigned char down = false; //moves the enemies, 1: moves down
 			//sets the switches to move down/left/right
 			if (this->Enemy[row][RightShiftColumn].x >= RIGHTLIMIT) {
-				right = false;	//moves left
-				down = true;
+				this->right = false;	//moves left
+				this->down = true;
 			}
 			else if (this->Enemy[row][LeftShiftColumn].x <= LEFTLIMIT) {
-				right = true;
-				down = true;
+				this->right = true;
+				this->down = true;
 			}	
 			//moves left/right using the switches
 			for(column=0;column<MAX_ENEMY_PR;column++){
-				if(right){
+				if (this->right) {
 					this->Enemy[row][column].x += 2; // move to right
 				}	
-				else{
+				else {
 					this->Enemy[row][column].x -= 2; // move to left
 				}	
 			}
 			//moves down using the switches
-			if(down){
+			if (this->down) {
 				for(column=0;column<4;column++){
 					this->Enemy[row][column].y += 1;
 				}
-				down = false;
+				this->down = false;
 			}
 		}
 		else {
