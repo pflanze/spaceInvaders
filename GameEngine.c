@@ -286,9 +286,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 // assumes: na
 //Used by: Function name
 void GameEngine_reset(struct GameEngine *this) {
-	this->Ship.image[0] = PlayerShip0;
-	this->Ship.image[1] = PlayerShip0;
-	this->Ship.JK = 0;
+	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
 	GameEngine_enemyShiftTrack(this, NULL, RESET);
 	GameEngine_firstEPC(this, RESET);
