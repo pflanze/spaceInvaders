@@ -277,7 +277,8 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 	this->SysTickFlag= 0;
 	this->gameOverFlag = STANDBY;
 	GameEngine_init(&(this->gameEngine), max_number_of_enemy_rows);
-	init_Hw(); // call all initializing functions
+	init_Hw(); // call all initializing functions; XX could this
+		   // call be moved outside SpaceInvaders_init?
 	//Create initial message
 #if IMESSAGE
 	InitMessage();
