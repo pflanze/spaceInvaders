@@ -27,3 +27,4 @@ test
 t.out
 .nosan
 .makedepend.log
+t/.gdb_history
