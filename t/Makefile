@@ -21,7 +21,7 @@ SAN=`./sanflags`
 #SAN=
 
 CC=gcc
-CFLAGS=-O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
+CFLAGS=-fdiagnostics-color=always -O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 $(SAN)
 
 
 all: depend
