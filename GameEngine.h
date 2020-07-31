@@ -2,6 +2,7 @@
 #ifndef _GAMEENGINE_H
 #define _GAMEENGINE_H
 #include "debug.h"
+#include "utils.h" /* bool */
 
 
 //----------------------------------Definitions---------------------------------
@@ -77,8 +78,8 @@ struct GameEngine {
 	struct State  EnemyBonus;
 #endif
 
-	unsigned char right; //moves the enemies, 0: moves left
-	unsigned char down; //moves the enemies, 1: moves down
+	bool right; //moves the enemies, 0: moves left
+	bool down; //moves the enemies, 1: moves down
 };
 
 

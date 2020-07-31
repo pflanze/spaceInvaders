@@ -49,7 +49,7 @@ depend:
 # DO NOT DELETE
 
 Buttons.o: Buttons.h utils.h
-GameEngine.o: GameEngine.h debug.h sprites.h Nokia5110.h random.h utils.h
+GameEngine.o: GameEngine.h debug.h utils.h sprites.h Nokia5110.h random.h
 GameEngine.o: assert.h Sound.h
 Init.o: Init.h debug.h
 LED.o: LED.h
