@@ -23,8 +23,7 @@
 
 
 //local variables
-//static unsigned gStatus = STANDBY;
-volatile static unsigned int gStatus = STANDBY;
+static unsigned int gStatus = STANDBY;
 static unsigned int maxrows;
 
 #if DRAW_ENEMIES
