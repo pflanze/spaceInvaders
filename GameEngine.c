@@ -1130,8 +1130,9 @@ void GameEngine_init(struct GameEngine *this,
 	
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
+	// must call defaultValues and firstEPC *before* enemyLaserInit
 	GameEngine_defaultValues(this);
-	// must call defaultValues *before* enemyLaserInit
+	GameEngine_firstEPC(this, RESET);
 	GameEngine_enemyLaserInit(this);
 #endif
 
@@ -1147,7 +1148,6 @@ void GameEngine_init(struct GameEngine *this,
 
 	// XXX AliveRows ?
 
-	GameEngine_firstEPC(this, RESET);
 #if DRAW_ENEMYBONUS
 	this->localCounter = 0;
 #endif
