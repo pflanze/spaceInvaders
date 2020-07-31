@@ -97,8 +97,8 @@
 #define SYSCTL_RCGC2_GPIOA      0x00000001  // port A Clock Gating Control
 
 enum typeOfWrite{
-  COMMAND,                              // the transmission is an LCD command
-  DATA                                  // the transmission is data
+	COMMAND,                              // the transmission is an LCD command
+	DATA                                  // the transmission is data
 };
 // The Data/Command pin must be valid when the eighth bit is
 // sent.  The SSI module has hardware input and output FIFOs
@@ -121,19 +121,19 @@ enum typeOfWrite{
 //         message  8-bit code to transmit
 // outputs: none
 // assumes: SSI0 and port A have already been initialized and enabled
-void static lcdwrite(enum typeOfWrite type, char message){
-  if(type == COMMAND){
-                                        // wait until SSI0 not busy/transmit FIFO empty
-    while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
-    DC = DC_COMMAND;
-    SSI0_DR_R = message;                // command out
-                                        // wait until SSI0 not busy/transmit FIFO empty
-    while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
-  } else{
-    while((SSI0_SR_R&SSI_SR_TNF)==0){}; // wait until transmit FIFO not full
-    DC = DC_DATA;
-    SSI0_DR_R = message;                // data out
-  }
+void static lcdwrite(enum typeOfWrite type, char message) {
+	if(type == COMMAND){
+		// wait until SSI0 not busy/transmit FIFO empty
+		while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
+		DC = DC_COMMAND;
+		SSI0_DR_R = message;                // command out
+		// wait until SSI0 not busy/transmit FIFO empty
+		while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
+	} else {
+		while((SSI0_SR_R&SSI_SR_TNF)==0){}; // wait until transmit FIFO not full
+		DC = DC_DATA;
+		SSI0_DR_R = message;                // data out
+	}
 }
 
 #endif /* TEST_WITHOUT_IO */
@@ -148,50 +148,54 @@ void static lcdwrite(enum typeOfWrite type, char message){
 // inputs: none
 // outputs: none
 // assumes: system clock rate of 80 MHz
-void Nokia5110_Init(void){
+void Nokia5110_Init(void) {
 #ifndef TEST_WITHOUT_IO
-  volatile unsigned long delay;
-  SYSCTL_RCGC1_R |= SYSCTL_RCGC1_SSI0;  // activate SSI0
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
-  delay = SYSCTL_RCGC2_R;               // allow time to finish activating
-  GPIO_PORTA_DIR_R |= 0xC0;             // make PA6,7 out
-  GPIO_PORTA_AFSEL_R |= 0x2C;           // enable alt funct on PA2,3,5
-  GPIO_PORTA_AFSEL_R &= ~0xC0;          // disable alt funct on PA6,7
-  GPIO_PORTA_DEN_R |= 0xEC;             // enable digital I/O on PA2,3,5,6,7
-                                        // configure PA2,3,5 as SSI
-  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFF0F00FF)+0x00202200;
-                                        // configure PA6,7 as GPIO
-  GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0x00FFFFFF)+0x00000000;
-  GPIO_PORTA_AMSEL_R &= ~0xEC;          // disable analog functionality on PA2,3,5,6,7
-  SSI0_CR1_R &= ~SSI_CR1_SSE;           // disable SSI
-  SSI0_CR1_R &= ~SSI_CR1_MS;            // master mode
-                                        // configure for system clock/PLL baud clock source
-  SSI0_CC_R = (SSI0_CC_R&~SSI_CC_CS_M)+SSI_CC_CS_SYSPLL;
-                                        // clock divider for 3.33 MHz SSIClk (80 MHz PLL/24)
-                                        // SysClk/(CPSDVSR*(1+SCR))
-                                        // 80/(24*(1+0)) = 3.33 MHz (slower than 4 MHz)
-  SSI0_CPSR_R = (SSI0_CPSR_R&~SSI_CPSR_CPSDVSR_M)+24; // must be even number
-  SSI0_CR0_R &= ~(SSI_CR0_SCR_M |       // SCR = 0 (3.33 Mbps data rate)
-                  SSI_CR0_SPH |         // SPH = 0
-                  SSI_CR0_SPO);         // SPO = 0
-                                        // FRF = Freescale format
-  SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_FRF_M)+SSI_CR0_FRF_MOTO;
-                                        // DSS = 8-bit data
-  SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_DSS_M)+SSI_CR0_DSS_8;
-  SSI0_CR1_R |= SSI_CR1_SSE;            // enable SSI
-
-  RESET = RESET_LOW;                    // reset the LCD to a known state
-  for(delay=0; delay<10; delay=delay+1);// delay minimum 100 ns
-  RESET = RESET_HIGH;                   // negative logic
-
-  lcdwrite(COMMAND, 0x21);              // chip active; horizontal addressing mode (V = 0); use extended instruction set (H = 1)
-                                        // set LCD Vop (contrast), which may require some tweaking:
-  lcdwrite(COMMAND, CONTRAST);          // try 0xB1 (for 3.3V red SparkFun), 0xB8 (for 3.3V blue SparkFun), 0xBF if your display is too dark, or 0x80 to 0xFF if experimenting
-  lcdwrite(COMMAND, 0x04);              // set temp coefficient
-  lcdwrite(COMMAND, 0x14);              // LCD bias mode 1:48: try 0x13 or 0x14
-
-  lcdwrite(COMMAND, 0x20);              // we must send 0x20 before modifying the display control mode
-  lcdwrite(COMMAND, 0x0C);              // set display control to normal mode: 0x0D for inverse
+	volatile unsigned long delay;
+	SYSCTL_RCGC1_R |= SYSCTL_RCGC1_SSI0;  // activate SSI0
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
+	delay = SYSCTL_RCGC2_R;               // allow time to finish activating
+	GPIO_PORTA_DIR_R |= 0xC0;             // make PA6,7 out
+	GPIO_PORTA_AFSEL_R |= 0x2C;           // enable alt funct on PA2,3,5
+	GPIO_PORTA_AFSEL_R &= ~0xC0;          // disable alt funct on PA6,7
+	GPIO_PORTA_DEN_R |= 0xEC;             // enable digital I/O on PA2,3,5,6,7
+	// configure PA2,3,5 as SSI
+	GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0xFF0F00FF)+0x00202200;
+	// configure PA6,7 as GPIO
+	GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R&0x00FFFFFF)+0x00000000;
+	GPIO_PORTA_AMSEL_R &= ~0xEC;          // disable analog functionality on PA2,3,5,6,7
+	SSI0_CR1_R &= ~SSI_CR1_SSE;           // disable SSI
+	SSI0_CR1_R &= ~SSI_CR1_MS;            // master mode
+	// configure for system clock/PLL baud clock source
+	SSI0_CC_R = (SSI0_CC_R&~SSI_CC_CS_M)+SSI_CC_CS_SYSPLL;
+	// clock divider for 3.33 MHz SSIClk (80 MHz PLL/24)
+	// SysClk/(CPSDVSR*(1+SCR))
+	// 80/(24*(1+0)) = 3.33 MHz (slower than 4 MHz)
+	SSI0_CPSR_R = (SSI0_CPSR_R&~SSI_CPSR_CPSDVSR_M)+24; // must be even number
+	SSI0_CR0_R &= ~(SSI_CR0_SCR_M |       // SCR = 0 (3.33 Mbps data rate)
+			SSI_CR0_SPH |         // SPH = 0
+			SSI_CR0_SPO);         // SPO = 0
+	// FRF = Freescale format
+	SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_FRF_M)+SSI_CR0_FRF_MOTO;
+	// DSS = 8-bit data
+	SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_DSS_M)+SSI_CR0_DSS_8;
+	SSI0_CR1_R |= SSI_CR1_SSE;            // enable SSI
+	
+	RESET = RESET_LOW;                    // reset the LCD to a known state
+	for(delay=0; delay<10; delay=delay+1);// delay minimum 100 ns
+	RESET = RESET_HIGH;                   // negative logic
+	
+	lcdwrite(COMMAND, 0x21);              /* chip active;
+					       * horizontal addressing
+					       * mode (V = 0); use
+					       * extended instruction
+					       * set (H = 1) */
+	// set LCD Vop (contrast), which may require some tweaking:
+	lcdwrite(COMMAND, CONTRAST);          // try 0xB1 (for 3.3V red SparkFun), 0xB8 (for 3.3V blue SparkFun), 0xBF if your display is too dark, or 0x80 to 0xFF if experimenting
+	lcdwrite(COMMAND, 0x04);              // set temp coefficient
+	lcdwrite(COMMAND, 0x14);              // LCD bias mode 1:48: try 0x13 or 0x14
+	
+	lcdwrite(COMMAND, 0x20);              // we must send 0x20 before modifying the display control mode
+	lcdwrite(COMMAND, 0x0C);              // set display control to normal mode: 0x0D for inverse
 #endif
 }
 
@@ -207,14 +211,14 @@ void Nokia5110_Init(void){
 // inputs: data  character to print
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutChar(unsigned char data){
+void Nokia5110_OutChar(unsigned char data) {
 #ifndef TEST_WITHOUT_IO
-  int i;
-  lcdwrite(DATA, 0x00);                 // blank vertical line padding
-  for(i=0; i<5; i=i+1){
-    lcdwrite(DATA, ASCII[data - 0x20][i]);
-  }
-  lcdwrite(DATA, 0x00);                 // blank vertical line padding
+	int i;
+	lcdwrite(DATA, 0x00);                 // blank vertical line padding
+	for (i=0; i<5; i=i+1) {
+		lcdwrite(DATA, ASCII[data - 0x20][i]);
+	}
+	lcdwrite(DATA, 0x00);                 // blank vertical line padding
 #endif
 }
 
@@ -225,12 +229,12 @@ void Nokia5110_OutChar(unsigned char data){
 // inputs: ptr  pointer to NULL-terminated ASCII string
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutString(char *ptr){
+void Nokia5110_OutString(char *ptr) {
 #ifndef TEST_WITHOUT_IO
-  while(*ptr){
-    Nokia5110_OutChar((unsigned char)*ptr);
-    ptr = ptr + 1;
-  }
+	while (*ptr) {
+		Nokia5110_OutChar((unsigned char)*ptr);
+		ptr = ptr + 1;
+	}
 #endif
 }
 
@@ -240,40 +244,40 @@ void Nokia5110_OutString(char *ptr){
 // Inputs: n  16-bit unsigned number
 // Outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutUDec(unsigned short n){
-  if(n < 10){
-    Nokia5110_OutString("    ");
-    Nokia5110_OutChar(n+'0'); /* n is between 0 and 9 */
-  } else if(n<100){
-    Nokia5110_OutString("   ");
-    Nokia5110_OutChar(n/10+'0'); /* tens digit */
-    Nokia5110_OutChar(n%10+'0'); /* ones digit */
-  } else if(n<1000){
-    Nokia5110_OutString("  ");
-    Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
-    n = n%100;
-    Nokia5110_OutChar(n/10+'0'); /* tens digit */
-    Nokia5110_OutChar(n%10+'0'); /* ones digit */
-  }
-  else if(n<10000){
-    Nokia5110_OutChar(' ');
-    Nokia5110_OutChar(n/1000+'0'); /* thousands digit */
-    n = n%1000;
-    Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
-    n = n%100;
-    Nokia5110_OutChar(n/10+'0'); /* tens digit */
-    Nokia5110_OutChar(n%10+'0'); /* ones digit */
-  }
-  else {
-    Nokia5110_OutChar(n/10000+'0'); /* ten-thousands digit */
-    n = n%10000;
-    Nokia5110_OutChar(n/1000+'0'); /* thousands digit */
-    n = n%1000;
-    Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
-    n = n%100;
-    Nokia5110_OutChar(n/10+'0'); /* tens digit */
-    Nokia5110_OutChar(n%10+'0'); /* ones digit */
-  }
+void Nokia5110_OutUDec(unsigned short n) {
+	if (n < 10) {
+		Nokia5110_OutString("    ");
+		Nokia5110_OutChar(n+'0'); /* n is between 0 and 9 */
+	} else if (n<100) {
+		Nokia5110_OutString("   ");
+		Nokia5110_OutChar(n/10+'0'); /* tens digit */
+		Nokia5110_OutChar(n%10+'0'); /* ones digit */
+	} else if (n<1000) {
+		Nokia5110_OutString("  ");
+		Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
+		n = n%100;
+		Nokia5110_OutChar(n/10+'0'); /* tens digit */
+		Nokia5110_OutChar(n%10+'0'); /* ones digit */
+	}
+	else if (n<10000) {
+		Nokia5110_OutChar(' ');
+		Nokia5110_OutChar(n/1000+'0'); /* thousands digit */
+		n = n%1000;
+		Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
+		n = n%100;
+		Nokia5110_OutChar(n/10+'0'); /* tens digit */
+		Nokia5110_OutChar(n%10+'0'); /* ones digit */
+	}
+	else {
+		Nokia5110_OutChar(n/10000+'0'); /* ten-thousands digit */
+		n = n%10000;
+		Nokia5110_OutChar(n/1000+'0'); /* thousands digit */
+		n = n%1000;
+		Nokia5110_OutChar(n/100+'0'); /* hundreds digit */
+		n = n%100;
+		Nokia5110_OutChar(n/10+'0'); /* tens digit */
+		Nokia5110_OutChar(n%10+'0'); /* ones digit */
+	}
 }
 
 //********Nokia5110_SetCursor*****************
@@ -283,14 +287,14 @@ void Nokia5110_OutUDec(unsigned short n){
 // inputs: newX  new X-position of the cursor (0<=newX<=11)
 //         newY  new Y-position of the cursor (0<=newY<=5)
 // outputs: none
-void Nokia5110_SetCursor(unsigned char newX, unsigned char newY){
+void Nokia5110_SetCursor(unsigned char newX, unsigned char newY) {
 #ifndef TEST_WITHOUT_IO
-  if((newX > 11) || (newY > 5)){        // bad input
-    return;                             // do nothing
-  }
-  // multiply newX by 7 because each character is 7 columns wide
-  lcdwrite(COMMAND, 0x80|(newX*7));     // setting bit 7 updates X-position
-  lcdwrite(COMMAND, 0x40|newY);         // setting bit 6 updates Y-position
+	if((newX > 11) || (newY > 5)){        // bad input
+		return;                             // do nothing
+	}
+	// multiply newX by 7 because each character is 7 columns wide
+	lcdwrite(COMMAND, 0x80|(newX*7));     // setting bit 7 updates X-position
+	lcdwrite(COMMAND, 0x40|newY);         // setting bit 6 updates Y-position
 #endif
 }
 
@@ -348,67 +352,72 @@ char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be printed on
 //                     0 to 14
 //                     0 is fine for ships, explosions, projectiles, and bunkers
 // outputs: none
-void Nokia5110_PrintBMP(unsigned char xpos, unsigned char ypos, const unsigned char *ptr, unsigned char threshold){
-  long width = ptr[18], height = ptr[22], i, j;
-  unsigned short screenx, screeny;
-  unsigned char mask;
-  // check for clipping
-  if((height <= 0) ||              // bitmap is unexpectedly encoded in top-to-bottom pixel order
-     ((width%2) != 0) ||           // must be even number of columns
-     ((xpos + width) > SCREENW) || // right side cut off
-     (ypos < (height - 1)) ||      // top cut off
-     (ypos >= SCREENH))           { // bottom cut off...... = added
-    return;
-  }
-  if(threshold > 14){
-    threshold = 14;             // only full 'on' turns pixel on
-  }
-  // bitmaps are encoded backwards, so start at the bottom left corner of the image
-  screeny = ypos/8;
-  screenx = xpos + SCREENW*screeny;
-  mask = ypos%8;                // row 0 to 7
-  mask = 0x01<<mask;            // now stores a mask 0x01 to 0x80
-  j = ptr[10];                  // byte 10 contains the offset where image data can be found
-  for(i=1; i<=(width*height/2); i=i+1){
-    // the left pixel is in the upper 4 bits
-    if(((ptr[j]>>4)&0xF) > threshold){
-      Screen[screenx] |= mask;
-    } else{
-      Screen[screenx] &= ~mask;
-    }
-    screenx = screenx + 1;
-    // the right pixel is in the lower 4 bits
-    if((ptr[j]&0xF) > threshold){
-      Screen[screenx] |= mask;
-    } else{
-      Screen[screenx] &= ~mask;
-    }
-    screenx = screenx + 1;
-    j = j + 1;
-    if((i%(width/2)) == 0){     // at the end of a row
-      if(mask > 0x01){
-        mask = mask>>1;
-      } else{
-        mask = 0x80;
-        screeny = screeny - 1;
-      }
-      screenx = xpos + SCREENW*screeny;
-      // bitmaps are 32-bit word aligned
-      switch((width/2)%4){      // skip any padding
-        case 0: j = j + 0; break;
-        case 1: j = j + 3; break;
-        case 2: j = j + 2; break;
-        case 3: j = j + 1; break;
-      }
-    }
-  }
+void Nokia5110_PrintBMP(unsigned char xpos,
+			unsigned char ypos,
+			const unsigned char *ptr,
+			unsigned char threshold) {
+
+	long width = ptr[18], height = ptr[22], i, j;
+	unsigned short screenx, screeny;
+	unsigned char mask;
+	// check for clipping
+	if((height <= 0) ||              // bitmap is unexpectedly encoded in top-to-bottom pixel order
+	   ((width%2) != 0) ||           // must be even number of columns
+	   ((xpos + width) > SCREENW) || // right side cut off
+	   (ypos < (height - 1)) ||      // top cut off
+	   (ypos >= SCREENH))           { // bottom cut off...... = added
+		return;
+	}
+	if (threshold > 14) {
+		threshold = 14;             // only full 'on' turns pixel on
+	}
+	// bitmaps are encoded backwards, so start at the bottom left corner of the image
+	screeny = ypos/8;
+	screenx = xpos + SCREENW*screeny;
+	mask = ypos%8;                // row 0 to 7
+	mask = 0x01<<mask;            // now stores a mask 0x01 to 0x80
+	j = ptr[10];                  // byte 10 contains the offset where image data can be found
+	for(i=1; i<=(width*height/2); i=i+1){
+		// the left pixel is in the upper 4 bits
+		if (((ptr[j]>>4)&0xF) > threshold) {
+			Screen[screenx] |= mask;
+		} else {
+			Screen[screenx] &= ~mask;
+		}
+		screenx = screenx + 1;
+		// the right pixel is in the lower 4 bits
+		if ((ptr[j]&0xF) > threshold) {
+			Screen[screenx] |= mask;
+		} else {
+			Screen[screenx] &= ~mask;
+		}
+		screenx = screenx + 1;
+		j = j + 1;
+		if ((i%(width/2)) == 0) {     // at the end of a row
+			if (mask > 0x01) {
+				mask = mask>>1;
+			} else {
+				mask = 0x80;
+				screeny = screeny - 1;
+			}
+			screenx = xpos + SCREENW*screeny;
+			// bitmaps are 32-bit word aligned
+			switch((width/2)%4){      // skip any padding
+			case 0: j = j + 0; break;
+			case 1: j = j + 3; break;
+			case 2: j = j + 2; break;
+			case 3: j = j + 1; break;
+			}
+		}
+	}
 }
 // There is a buffer in RAM that holds one screen
 // This routine clears this buffer
-void Nokia5110_ClearBuffer(void){int i;
-  for(i=0; i<SCREENW*SCREENH/8; i=i+1){
-    Screen[i] = 0;              // clear buffer
-  }
+void Nokia5110_ClearBuffer(void) {
+	int i;
+	for (i=0; i<SCREENW*SCREENH/8; i=i+1) {
+		Screen[i] = 0;              // clear buffer
+	}
 }
 
 //********Nokia5110_DisplayBuffer*****************
@@ -416,7 +425,7 @@ void Nokia5110_ClearBuffer(void){int i;
 // inputs: none
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_DisplayBuffer(void){
-  Nokia5110_DrawFullImage(Screen);
+void Nokia5110_DisplayBuffer(void) {
+	Nokia5110_DrawFullImage(Screen);
 }
 
