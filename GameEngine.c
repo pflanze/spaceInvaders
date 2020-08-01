@@ -138,6 +138,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 void GameEngine_shipInit(struct GameEngine *this) {
+	this->Ship.x = 0;
 	this->Ship.y = 46;
 	this->Ship.image[0] = PlayerShip0;
 	this->Ship.image[1] = PlayerShip0;
@@ -1144,6 +1145,8 @@ void GameEngine_init(struct GameEngine *this,
 	GameEngine_enemyLaserInit(this);
 #endif
 
+	// must call GameEngine_shipInit before
+	// GameEngine_laserInit_ship and GameEngine_laserInit_ship2
 	GameEngine_shipInit(this);
 	GameEngine_laserInit_ship(this);
 	GameEngine_laserInit_ship2(this);
