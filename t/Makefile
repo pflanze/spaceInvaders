@@ -14,8 +14,6 @@ OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInv
 # No need for manual updating here
 
 SAN=`./sanflags`
-MSAN_SYMBOLIZER_PATH=`./san-llvm-symbolizer`
-# XX may leave symlink+dir entries in /tmp on every call
 
 # To make it possible to work with
 #   valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --keep-stacktraces=alloc-and-free ./test
