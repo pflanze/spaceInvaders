@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=
+
+path=$(which llvm-symbolizer-6.0 || which llvm-symbolizer)
+
+if echo "$path" | grep -q '/llvm-symbolizer$'; then
+    echo "$path"
+else
+    # hack since, huh, why the hell, sanitizer will fail with an
+    # *error* if the MSAN_SYMBOLIZER_PATH env var is set to a path
+    # that doesn't have a file name being llvm-symbolizer.
+    d=$(tempdir)
+    ln -s "$path" "$d/llvm-symbolizer"
+    echo "$d/llvm-symbolizer"
+fi
+
