@@ -140,10 +140,6 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	       });
 }
 
-// I actually, *please*, just want to inspect, in GDB.
-void __asan_on_error() {
-	abort();
-}
 
 int main () {
 	test_run(1);
