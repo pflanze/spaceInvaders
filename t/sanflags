@@ -1,15 +1,8 @@
 #!/bin/bash
 
-SAN="-fsanitize=address -fsanitize=undefined"
-
 if [ -e .nosan ]; then 
 	exit 0
 fi
 
-errs=`cc $SAN --help 2>&1 | grep sanitize | wc -l`
+echo "-fsanitize=address -fsanitize=undefined"
 
-if [ "$errs" = "0" ]; then
-    echo $SAN
-else
-    echo -n ""
-fi
