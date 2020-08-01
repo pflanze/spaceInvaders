@@ -31,7 +31,7 @@
 
 //-----------------------------------Structs------------------------------------
 
-struct State {
+struct Actor {
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
 	const unsigned char *image[2]; // two pointers to images
@@ -70,15 +70,15 @@ struct GameEngine {
 #if DRAW_ENEMIES
 	struct GameStatColumn Estat_column[MAX_ENEMY_PR];
 	struct GameStatRow Estat_row[ALLOC_MAXROWS];
-	struct State Enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
-	struct State Laser_enemy[MAXLASERS];
+	struct Actor Enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
+	struct Actor Laser_enemy[MAXLASERS];
 #endif
 
-	struct State Ship;
-	struct State Laser_ship[MAXLASERS];
+	struct Actor Ship;
+	struct Actor Laser_ship[MAXLASERS];
 
 #if DRAW_ENEMYBONUS
-	struct State  EnemyBonus;
+	struct Actor  EnemyBonus;
 #endif
 
 	// GameEngine_enemy_move:
@@ -150,7 +150,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this);
 void GameEngine_enemyLaserInit(struct GameEngine *this);
 void GameEngine_laserEnemyDraw(struct GameEngine *this);
 void GameEngine_masterDraw(struct GameEngine *this,
-			   struct State *s,
+			   struct Actor *s,
 			   unsigned int FrameCount);
 
 void GameEngine_enemyscanY(struct GameEngine *this,

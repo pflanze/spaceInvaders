@@ -500,10 +500,10 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 
-// XX should probably change this into a State_draw procedure and move
-// the GameEngine parts out. (Also, rename State to Actor?)
+// XX should probably change this into a Actor_draw procedure and move
+// the GameEngine parts out.
 void GameEngine_masterDraw(struct GameEngine *this,
-			   struct State *s,
+			   struct Actor *s,
 			   unsigned int FrameCount) {
 	signed char offsetX = 0;
 	signed char offsetY = 0;
