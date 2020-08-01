@@ -223,15 +223,14 @@ void GameEngine_enemyLaserInit(struct GameEngine *this) {
 	if (this->Estat_column[columnNew].Epc) {
 		unsigned char i;
 		for (i=0; i < MAXLASERS; i++) {
-			if (this->Laser_enemy[i].alive == false) {
+			struct Actor *l= &(this->Laser_enemy[i]);
+			if (l->alive == false) {
 				unsigned char row = this->Estat_column[columnNew].Fep;
-				this->Laser_enemy[i].x =
-					this->Enemy[row][columnNew].x + E_LASER_OFFX;
-				this->Laser_enemy[i].y =
-					this->Enemy[row][columnNew].y + E_LASER_OFFY;
-				this->Laser_enemy[i].image[0] = Laser0;
-				this->Laser_enemy[i].alive = true;
-				this->Laser_enemy[i].id = ID_E_LASER;
+				l->x = this->Enemy[row][columnNew].x + E_LASER_OFFX;
+				l->y = this->Enemy[row][columnNew].y + E_LASER_OFFY;
+				l->image[0] = Laser0;
+				l->alive = true;
+				l->id = ID_E_LASER;
 				break; // terminate loop when a slot is found
 			}
 		}
