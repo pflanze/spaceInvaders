@@ -4,5 +4,9 @@ if [ -e .nosan ]; then
 	exit 0
 fi
 
-echo "-fsanitize=address -fsanitize=undefined"
+#echo "-fsanitize=address -fsanitize=undefined"
+# XX can't have both,
+# invalid argument '-fsanitize=address' not allowed with '-fsanitize=memory'
+
+echo "-fsanitize=undefined -fsanitize=memory -fPIE -fno-omit-frame-pointer"
 
