@@ -36,7 +36,7 @@ struct Actor {
 	unsigned char y;               // y coordinate
 	const unsigned char *image[2]; // two pointers to images
 	bool alive;
-	unsigned char JK;              // status for image replacement,
+	bool JK;                       // status for image replacement,
 	                               // represents "Just Killed", needs updating
 	unsigned char id;
 };
