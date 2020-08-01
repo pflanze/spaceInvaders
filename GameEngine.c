@@ -230,6 +230,7 @@ void GameEngine_enemyLaserInit(struct GameEngine *this) {
 				l->y = this->Enemy[row][columnNew].y + E_LASER_OFFY;
 				l->image[0] = Laser0;
 				l->alive = true;
+				l->JK = false;
 				l->id = ID_E_LASER;
 				break; // terminate loop when a slot is found
 			}
