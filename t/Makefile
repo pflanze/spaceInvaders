@@ -37,7 +37,7 @@ test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
 
 clean:
-	rm *.o test
+	rm -f *.o test
 
 depend:
 	cp Makefile $(VPATH)/
