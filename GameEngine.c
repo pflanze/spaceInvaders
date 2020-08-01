@@ -173,6 +173,9 @@ void GameEngine_laserInit_ship(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
+
+// XX what is the difference to GameEngine_laserInit_ship, what is it
+// for?
 void GameEngine_laserInit_ship2(struct GameEngine *this) {
 	unsigned char i;
 	unsigned int count = 0;
@@ -1149,7 +1152,7 @@ void GameEngine_init(struct GameEngine *this,
 	// GameEngine_laserInit_ship and GameEngine_laserInit_ship2
 	GameEngine_shipInit(this);
 	GameEngine_laserInit_ship(this);
-	GameEngine_laserInit_ship2(this);
+	//GameEngine_laserInit_ship2(this); XX wrong?
 
 	this->right = true;
 	this->down = false;
