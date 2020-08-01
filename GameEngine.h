@@ -5,7 +5,6 @@
 #include "utils.h" /* bool */
 
 
-//----------------------------------Definitions---------------------------------
 
 //Game over status
 #define INGAME		0
@@ -29,7 +28,6 @@
 #define ALLOC_MAXROWS	2
 
 
-//-----------------------------------Structs------------------------------------
 
 struct Actor {
 	unsigned char x;               // x coordinate
@@ -41,6 +39,9 @@ struct Actor {
 	unsigned char id;
 };
 
+#ifdef DEBUG
+const char* Actor_id_string(struct Actor *this);
+#endif
 
 struct GameStatColumn {
 	unsigned char Fep;		//"First enemy position"
@@ -112,7 +113,6 @@ struct GameEngine {
 };
 
 
-//----------------------------------Function definition-------------------------
 void GameEngine_player_move(struct GameEngine *this);
 void GameEngine_laserInit_ship(struct GameEngine *this);
 void GameEngine_shipInit(struct GameEngine *this);

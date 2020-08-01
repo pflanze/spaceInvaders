@@ -23,7 +23,8 @@
 
 
 
-//----------------------------------Definitions---------------------------------
+//--------------------------General definitions---------------------------------
+// (Those for Actor are grouped with the Actor implementation below)
 
 #define REAL_MAX_EPR (MAX_ENEMY_PR-1)
 
@@ -61,13 +62,6 @@
 #define E_LASER_OFFX ((ENEMY30W>>1)-1)
 #define E_LASER_OFFY 5
 
-//Objecdt IDs
-#define ID_SHIP			0
-#define ID_ENEMY		1
-#define ID_BONUS		2
-#define ID_E_LASER	3
-#define ID_S_LASER	4
-
 
 //Default values
 #define	FIRST_E	0
@@ -87,6 +81,30 @@
 static
 void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #endif
+
+//-----------------------------Actor--------------------------------------------
+
+// Actor IDs
+#define ID_SHIP        0
+#define ID_ENEMY       1
+#define ID_BONUS       2
+#define ID_E_LASER     3
+#define ID_S_LASER     4
+
+#ifdef DEBUG
+const char* Actor_id_string(struct Actor *this) {
+    switch (this->id) {
+    case ID_SHIP: return "ID_SHIP";
+    case ID_ENEMY: return "ID_ENEMY";
+    case ID_BONUS: return "ID_BONUS";
+    case ID_E_LASER: return "ID_E_LASER";
+    case ID_S_LASER: return "ID_S_LASER";
+    }
+    return "<invalid id>";
+}
+#endif
+
+
 
 //-----------------------------------------------------------INIT---------------
 //********GameEngine_enemyInit*****************
