@@ -102,23 +102,24 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 	for (row=0; row < this->maxrows; row++) {
 		unsigned int column;
 		for (column=0; column < MAX_ENEMY_PR; column++) {
-			this->Enemy[row][column].x = 20*column;
-			this->Enemy[row][column].y = 10 + row*10;
-			this->Enemy[row][column].alive = true;
-			this->Enemy[row][column].JK = false;
-			this->Enemy[row][column].id = ID_ENEMY;
+			struct Actor *enemy=  &(this->Enemy[row][column]);
+			enemy->x = 20*column;
+			enemy->y = 10 + row*10;
+			enemy->alive = true;
+			enemy->JK = false;
+			enemy->id = ID_ENEMY;
 			switch(row){
 				case 0:
-					this->Enemy[row][column].image[0] = SmallEnemy30PointA;
-					this->Enemy[row][column].image[1] = SmallEnemy30PointB;
+					enemy->image[0] = SmallEnemy30PointA;
+					enemy->image[1] = SmallEnemy30PointB;
 					break;
 				case 1:
-					this->Enemy[row][column].image[0] = SmallEnemy20PointA;
-					this->Enemy[row][column].image[1] = SmallEnemy20PointB;
+					enemy->image[0] = SmallEnemy20PointA;
+					enemy->image[1] = SmallEnemy20PointB;
 					break;
 				case 2:
-					this->Enemy[row][column].image[0] = SmallEnemy10PointA;
-					this->Enemy[row][column].image[1] = SmallEnemy10PointB;
+					enemy->image[0] = SmallEnemy10PointA;
+					enemy->image[1] = SmallEnemy10PointB;
 					break;
 			}
 		}
