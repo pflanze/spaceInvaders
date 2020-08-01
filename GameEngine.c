@@ -285,6 +285,10 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 //Used by: Function name
+
+// XX what is the difference between this and GameEngine_defaultValues
+// [and GameEngine_init etc.]?
+
 void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
