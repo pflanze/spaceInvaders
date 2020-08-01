@@ -104,7 +104,7 @@ static void game_step(struct Game *game) {
 static void test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
 
-	memset(&game, 8, sizeof(game));
+	//memset(&game, 8, sizeof(game));
 
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
