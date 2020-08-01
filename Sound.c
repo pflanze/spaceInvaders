@@ -15,7 +15,7 @@ How sound are implemented
 - gameSound: should start when gameFlag==INGAME, then stop on WIN/LOOSE and EnemyBonus
 - EnemyBonus: music is a mix of gameSound and EnemyBOnus together, it should start when EnemyBonus appears and terminate when he dies... 
 	then the music should go back to normal
-- ExplosionSound: it should start on life==0 or jk==0, finished at the end of the sound
+- ExplosionSound: it should start on alive==0 or jk==0, finished at the end of the sound
 
 */
 
