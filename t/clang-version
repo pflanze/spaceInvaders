@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=
+
+# try to get the *newest* version available, unlike Debian's default
+# which is the oldest (right?)
+
+which clang-10 || which clang-9 || which clang-8 || which clang-7 || which clang-6

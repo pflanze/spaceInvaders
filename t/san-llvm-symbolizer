@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=
 
-path=$(which llvm-symbolizer-9 || which llvm-symbolizer-6.0 || which llvm-symbolizer)
+path=$(which llvm-symbolizer-10 || which llvm-symbolizer-9 || which llvm-symbolizer-6.0 || which llvm-symbolizer)
 
 if echo "$path" | grep -q '/llvm-symbolizer$'; then
     echo "$path"
