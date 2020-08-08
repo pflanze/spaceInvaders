@@ -272,9 +272,6 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemyLaserInit(struct GameEngine *this) {
-	//modification may need function to be called twice, please explore
-        GameEngine_firstEPC(this, RETURNARR);
-	
 	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24) % this->LiveCols;
 	// ^ generates number [0-aliveCols]
