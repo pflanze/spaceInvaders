@@ -198,13 +198,14 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 void GameEngine_shipInit(struct GameEngine *this) {
-	this->Ship.x = 0;
-	this->Ship.y = 46;
-	this->Ship.image[0] = PlayerShip0;
-	this->Ship.image[1] = PlayerShip0;
-	this->Ship.alive = true;
-	this->Ship.JK = false;
-	this->Ship.id = ID_SHIP;
+    Actor_init(&this->Ship,
+	       0, // x
+	       46, // y
+	       PlayerShip0,
+	       NULL, // image1
+	       true, // alive
+	       false, // JK
+	       ID_SHIP);
 }
 //********LaserInit_ship*****************
 // Function used to initialize the lasers fired by the spaceship
