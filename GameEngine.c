@@ -70,7 +70,6 @@
 #define	LAST_E	3
 
 //Return vs update (mode)
-#define RETURNVAL	0
 #define UPDATE		1
 #define RETURNARR	3
 
@@ -274,14 +273,12 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 #if DRAW_ENEMIES
 void GameEngine_enemyLaserInit(struct GameEngine *this) {
 	//modification may need function to be called twice, please explore
-	unsigned int *AliveColsLocal =  GameEngine_firstEPC(this, RETURNVAL);
-	unsigned int *AlColsMatLocal = 	GameEngine_firstEPC(this, RETURNARR);
-	// ^ matrix holds the valid Enemy firing positions
+        GameEngine_firstEPC(this, RETURNARR);
 	
 	// Choose one of the enemies randomly:
-	unsigned char randN = (Random32()>>24)%(*AliveColsLocal);
+	unsigned char randN = (Random32()>>24) % this->LiveCols;
 	// ^ generates number [0-aliveCols]
-	unsigned char columnNew	= AlColsMatLocal[randN];
+	unsigned char columnNew	= this->AlColsMat[randN];
 	
 	if (this->Estat_column[columnNew].Epc) {
 		unsigned char i;
@@ -1087,26 +1084,19 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
-unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
+void GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 	unsigned char column = 0;
 	unsigned char aliveCol = 0;
 	
 	//sets defaults
 	switch (mode) {
 		case RESET:{
-			unsigned int *p = 0;
 			unsigned char i;
 			this->LiveCols = MAX_ENEMY_PR;
 			for (i=0; i < MAX_ENEMY_PR; i++) {
 				this->AlColsMat[i] = i;
 			}
-			return p;
 		}
-		//RETURNVAL return the alive columns
-		case RETURNVAL:{
-			unsigned int *p = &(this->LiveCols);
-			return p;
-		}	
 	}
 	
 	//RETURNARR will continue
@@ -1134,10 +1124,6 @@ unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
 		}
 	}
 	this->LiveCols = aliveCol;
-	{//RETURNARR mode return the array
-		unsigned int *p = this->AlColsMat;
-		return p;
-	}
 }
 #endif
 //----------------------------------Miscelaneus---------------------------------
