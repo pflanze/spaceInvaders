@@ -315,7 +315,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
-	GameEngine_enemyShiftTrack(this, NULL, RESET);
+	GameEngine_enemyShiftTrack(this, 0, RESET);
 	GameEngine_firstEPC(this, RESET);
 	GameEngine_firstLast(this, 0, 0, RESET);
 #endif
@@ -477,7 +477,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
 	//drawing battleship
-	GameEngine_masterDraw(this, &(this->Ship), NULL);
+	GameEngine_masterDraw(this, &(this->Ship), 0);
 
 	//drawing enemies
 #if DRAW_ENEMIES
@@ -489,7 +489,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	GameEngine_laserShipDraw(this);		//uses GameEngine_masterDraw
 
 #if DRAW_ENEMYBONUS		
-	GameEngine_masterDraw(this, &(this->EnemyBonus), NULL);
+	GameEngine_masterDraw(this, &(this->EnemyBonus), 0);
 #endif	
 		
 	// draw buffer
@@ -596,7 +596,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 		if (this->Laser_ship[laserNum].alive) {
 			GameEngine_masterDraw(this,
 					      &(this->Laser_ship[laserNum]),
-					      NULL);
+					      0);
 		}
 	}
 }
@@ -611,7 +611,7 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		GameEngine_masterDraw(this,
 				      &(this->Laser_enemy[laserNum]),
-				      NULL);
+				      0);
 	}
 }
 #endif
