@@ -283,12 +283,15 @@ void GameEngine_enemyLaserInit(struct GameEngine *this) {
 			struct Actor *l= &(this->Laser_enemy[i]);
 			if (l->alive == false) {
 				unsigned char row = this->Estat_column[columnNew].Fep;
-				l->x = this->Enemy[row][columnNew].x + E_LASER_OFFX;
-				l->y = this->Enemy[row][columnNew].y + E_LASER_OFFY;
-				l->image[0] = Laser0;
-				l->alive = true;
-				l->JK = false;
-				l->id = ID_E_LASER;
+				Actor_init
+				    (l,
+				     this->Enemy[row][columnNew].x + E_LASER_OFFX,
+				     this->Enemy[row][columnNew].y + E_LASER_OFFY,
+				     Laser0,
+				     NULL,
+				     true, // alive
+				     false, // JK
+				     ID_E_LASER);
 				break; // terminate loop when a slot is found
 			} // otherwise laser is in use, don't issue a new one
 		}
