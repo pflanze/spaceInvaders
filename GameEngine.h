@@ -185,6 +185,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 				  unsigned int row,
 				  unsigned int column,
 				  unsigned int mode);
+// first enemy per column
 unsigned int * GameEngine_firstEPC(struct GameEngine *this, unsigned int mode);
 void GameEngine_enemyscanX(struct GameEngine *this,
 			   unsigned int row,

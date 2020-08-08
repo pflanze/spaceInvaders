@@ -275,11 +275,13 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 void GameEngine_enemyLaserInit(struct GameEngine *this) {
 	//modification may need function to be called twice, please explore
 	unsigned int *AliveColsLocal =  GameEngine_firstEPC(this, RETURNVAL);
+	unsigned int *AlColsMatLocal = 	GameEngine_firstEPC(this, RETURNARR);
+	// ^ matrix holds the valid Enemy firing positions
+	
+	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24)%(*AliveColsLocal);
 	// ^ generates number [0-aliveCols]
-	unsigned int *AlColsMatLocal = 	GameEngine_firstEPC(this, RETURNARR);
 	unsigned char columnNew	= AlColsMatLocal[randN];
-	// ^ matrix holds the valid Enemy firing positions
 	
 	if (this->Estat_column[columnNew].Epc) {
 		unsigned char i;
@@ -1076,7 +1078,9 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 }
 #endif
 //********GameEngine_firstEPC*****************
-// Keep track of the first enemy per column
+// Keep track of the first enemy per column,
+//    Used for: - knowing how far enemies should move (before switching
+//                direction)
 // changes: Estat_column[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
 // Callers: EnemyLaserInit, GameEngine_enemyscanX
 // inputs: mode = RETURNVAL|UPDATE|RETURNARR|RESET
