@@ -2,9 +2,11 @@
 #define _SPACEINVADERS_H
 
 #include "SpaceInvaders.h"
+#include "object.h"
 
 
 struct SpaceInvaders {
+        struct ObjectInterface* vtable;
 	struct GameEngine gameEngine;
 	unsigned char SysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?

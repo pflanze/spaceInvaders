@@ -3,7 +3,7 @@
 #define _GAMEENGINE_H
 #include "debug.h"
 #include "utils.h" /* bool */
-
+#include "object.h"
 
 
 //Game over status
@@ -30,6 +30,7 @@
 
 
 struct Actor {
+        struct ObjectInterface* vtable;
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
 	const unsigned char *image[2]; // two pointers to images
@@ -39,23 +40,37 @@ struct Actor {
 	unsigned char id;
 };
 
+void Actor_init(struct Actor* this,
+		unsigned char x,
+		unsigned char y,
+		const unsigned char *image0,
+		const unsigned char *image1,
+		bool alive,
+		bool JK,
+		unsigned char id);
+
 #ifdef DEBUG
 const char* Actor_id_string(struct Actor *this);
 #endif
 
+
+
 struct GameStatColumn {
+        struct ObjectInterface* vtable;
 	unsigned char Fep;		//"First enemy position"
 	unsigned char Epc;		//"Enemies per column"
 };
 
 //game stats per row
 struct GameStatRow {
+        struct ObjectInterface* vtable;
 	unsigned char Fep;		//"First enemy position"
 	unsigned char Lep;		//"Last enemy position"
 	unsigned char Epr;		//"Enemies per row"
 };
 
 struct GameEngine {
+        struct ObjectInterface* vtable;
 	unsigned int gStatus;
 	unsigned int maxrows;
 

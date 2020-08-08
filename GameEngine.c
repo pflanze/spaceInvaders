@@ -20,7 +20,9 @@
 #include "utils.h"
 #include "assert.h"
 #include "Sound.h"
-
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 
 
 //--------------------------General definitions---------------------------------
@@ -92,6 +94,7 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #define ID_S_LASER     4
 
 #ifdef DEBUG
+
 const char* Actor_id_string(struct Actor *this) {
     switch (this->id) {
     case ID_SHIP: return "ID_SHIP";
@@ -102,8 +105,43 @@ const char* Actor_id_string(struct Actor *this) {
     }
     return "<invalid id>";
 }
+
+void Actor_pp(struct Actor* this) {
+    printf("struct Actor {");
+    printf(" .x = %hhu", this->x);
+    printf(", .y = %hhu", this->y);
+    printf(", .image = { %p, %p }", this->image[0], this->image[1]);
+    printf(", .alive = %s", bool_show(this->alive));
+    printf("}\n");
+}
+
+const struct ObjectInterface Actor_ObjectInterface = {
+    .pp = (void (*)(void *))&Actor_pp
+    // ^ ugly to have to cast but there's no way around it
+};
+
 #endif
 
+
+void Actor_init(struct Actor* this,
+		unsigned char x,
+		unsigned char y,
+		const unsigned char *image0,
+		const unsigned char *image1,
+		bool alive,
+		bool JK,
+		unsigned char id) {
+#ifdef DEBUG
+    this->vtable = &Actor_ObjectInterface; // -Wincompatible-pointer-types-discards-qualifiers
+#endif
+    this->x = x;
+    this->y = y;
+    this->image[0] = image0;
+    this->image[1] = image1;
+    this->alive = alive;
+    this->JK = JK;
+    this->id = id;
+}
 
 
 //-----------------------------------------------------------INIT---------------
@@ -120,26 +158,31 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 	for (row=0; row < this->maxrows; row++) {
 		unsigned int column;
 		for (column=0; column < MAX_ENEMY_PR; column++) {
-			struct Actor *enemy=  &(this->Enemy[row][column]);
-			enemy->x = 20*column;
-			enemy->y = 10 + row*10;
-			enemy->alive = true;
-			enemy->JK = false;
-			enemy->id = ID_ENEMY;
-			switch(row){
+			const unsigned char* image0;
+			const unsigned char* image1;
+			switch(row) {
 				case 0:
-					enemy->image[0] = SmallEnemy30PointA;
-					enemy->image[1] = SmallEnemy30PointB;
+					image0 = SmallEnemy30PointA;
+					image1 = SmallEnemy30PointB;
 					break;
 				case 1:
-					enemy->image[0] = SmallEnemy20PointA;
-					enemy->image[1] = SmallEnemy20PointB;
+					image0 = SmallEnemy20PointA;
+					image1 = SmallEnemy20PointB;
 					break;
 				case 2:
-					enemy->image[0] = SmallEnemy10PointA;
-					enemy->image[1] = SmallEnemy10PointB;
+					image0 = SmallEnemy10PointA;
+					image1 = SmallEnemy10PointB;
 					break;
 			}
+			Actor_init(&this->Enemy[row][column],
+				   20*column, // x
+				   10 + row*10, // y
+				   image0,
+				   image1,
+				   true, // alive
+				   false, // JK
+				   ID_ENEMY // id
+			    );
 		}
 		//initializes Estat
 		this->Estat_row[row].Epr = MAX_ENEMY_PR;
@@ -251,7 +294,7 @@ void GameEngine_enemyLaserInit(struct GameEngine *this) {
 				l->JK = false;
 				l->id = ID_E_LASER;
 				break; // terminate loop when a slot is found
-			}
+			} // otherwise laser is in use, don't issue a new one
 		}
 	}
 }
