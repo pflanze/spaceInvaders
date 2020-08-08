@@ -146,7 +146,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				this->EFcounter = (this->EFcounter + 1) & FIREDEL;
 				if (this->EFcounter >= FIREDEL) {
 					// enemy shooting frequency
-					GameEngine_enemyLaserInit(&(this->gameEngine));
+				        GameEngine_enemyLasersCreation(&(this->gameEngine), false);
 				}
 			}
 #endif

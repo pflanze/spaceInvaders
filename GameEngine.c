@@ -271,7 +271,9 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
-void GameEngine_enemyLaserInit(struct GameEngine *this) {
+void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
+        // if init == true, initializes all lasers; kinda ugly but "works for now"
+    
 	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24) % this->LiveCols;
 	// ^ generates number [0-aliveCols]
@@ -281,7 +283,7 @@ void GameEngine_enemyLaserInit(struct GameEngine *this) {
 		unsigned char i;
 		for (i=0; i < MAXLASERS; i++) {
 			struct Actor *l= &(this->Laser_enemy[i]);
-			if (l->alive == false) {
+			if (init || (l->alive == false)) {
 				unsigned char row = this->Estat_column[columnNew].Fep;
 				Actor_init
 				    (l,
@@ -1194,7 +1196,7 @@ void GameEngine_init(struct GameEngine *this,
 	// must call defaultValues and firstEPC *before* enemyLaserInit
 	GameEngine_defaultValues(this);
 	GameEngine_firstEPC_reset(this);
-	GameEngine_enemyLaserInit(this);
+	GameEngine_enemyLasersCreation(this, true);
 #endif
 
 	// must call GameEngine_shipInit before
