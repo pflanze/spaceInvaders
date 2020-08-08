@@ -355,7 +355,7 @@ void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
 	GameEngine_enemyShiftTrack(this, 0, RESET);
-	GameEngine_firstEPC(this, RESET);
+	GameEngine_firstEPC_reset(this);
 	GameEngine_firstLast(this, 0, 0, RESET);
 #endif
 }
@@ -872,7 +872,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 				GameEngine_update_lastLine(this);
 				//updates 
 				GameEngine_enemyShiftTrack(this, alive_rows, UPDATE);
-				GameEngine_firstEPC(this, UPDATE); //update point
+				GameEngine_firstEPC(this); //update point
 				break; //return????
 			}
 		}
@@ -1081,22 +1081,20 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // outputs: LiveCols
 // assumes: na
 #if DRAW_ENEMIES
-void GameEngine_firstEPC(struct GameEngine *this, unsigned int mode) {
+
+void GameEngine_firstEPC_reset(struct GameEngine *this) {
+	//sets defaults
+	unsigned char i;
+	this->LiveCols = MAX_ENEMY_PR;
+	for (i=0; i < MAX_ENEMY_PR; i++) {
+		this->AlColsMat[i] = i;
+	}
+}
+
+void GameEngine_firstEPC(struct GameEngine *this) {
 	unsigned char column = 0;
 	unsigned char aliveCol = 0;
 	
-	//sets defaults
-	switch (mode) {
-		case RESET:{
-			unsigned char i;
-			this->LiveCols = MAX_ENEMY_PR;
-			for (i=0; i < MAX_ENEMY_PR; i++) {
-				this->AlColsMat[i] = i;
-			}
-		}
-	}
-	
-	//RETURNARR will continue
 	//we are reading left>right, dowun>up
 	for (column=0; column < MAX_ENEMY_PR; column++) {
 		signed char row = this->Estat_column[column].Fep;
@@ -1192,7 +1190,7 @@ void GameEngine_init(struct GameEngine *this,
 	GameEngine_enemyInit(this);
 	// must call defaultValues and firstEPC *before* enemyLaserInit
 	GameEngine_defaultValues(this);
-	GameEngine_firstEPC(this, RESET);
+	GameEngine_firstEPC_reset(this);
 	GameEngine_enemyLaserInit(this);
 #endif
 

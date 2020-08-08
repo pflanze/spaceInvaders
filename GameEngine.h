@@ -186,7 +186,8 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 				  unsigned int column,
 				  unsigned int mode);
 // first enemy per column
-void GameEngine_firstEPC(struct GameEngine *this, unsigned int mode);
+void GameEngine_firstEPC_reset(struct GameEngine *this);
+void GameEngine_firstEPC(struct GameEngine *this);
 void GameEngine_enemyscanX(struct GameEngine *this,
 			   unsigned int row,
 			   unsigned int laserNum);
