@@ -271,6 +271,7 @@ void init_Hw(void){
 
 void SpaceInvaders_init(struct SpaceInvaders *this,
 			unsigned int max_number_of_enemy_rows) {
+    this->vtable = NULL; // XXX
 	this->SysTickFlag= 0;
 	this->gameOverFlag = STANDBY;
 	this->clickCounter = 0;
