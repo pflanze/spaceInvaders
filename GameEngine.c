@@ -123,23 +123,11 @@ const struct ObjectInterface Actor_ObjectInterface = {
 
 
 void Actor_init(struct Actor* this,
-		unsigned char x,
-		unsigned char y,
-		const unsigned char *image0,
-		const unsigned char *image1,
-		bool alive,
-		bool JK,
-		unsigned char id) {
+		struct Actor values) {
+    *this = values;
 #ifdef DEBUG
     this->vtable = (struct ObjectInterface*)&Actor_ObjectInterface; // -Wincompatible-pointer-types-discards-qualifiers
 #endif
-    this->x = x;
-    this->y = y;
-    this->image[0] = image0;
-    this->image[1] = image1;
-    this->alive = alive;
-    this->JK = JK;
-    this->id = id;
 }
 
 
@@ -173,15 +161,16 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 					image1 = SmallEnemy10PointB;
 					break;
 			}
-			Actor_init(&this->Enemy[row][column],
-				   20*column, // x
-				   10 + row*10, // y
-				   image0,
-				   image1,
-				   true, // alive
-				   false, // JK
-				   ID_ENEMY // id
-			    );
+			struct Actor vals = {
+			    .x = 20*column,
+			    .y = 10 + row*10,
+			    .image[0] = image0,
+			    .image[1] = image1,
+			    .alive = true,
+			    .JK = false,
+			    .id = ID_ENEMY
+			};
+			Actor_init(&this->Enemy[row][column], vals);
 		}
 		//initializes Estat
 		this->Estat_row[row].Epr = MAX_ENEMY_PR;

@@ -41,13 +41,7 @@ struct Actor {
 };
 
 void Actor_init(struct Actor* this,
-		unsigned char x,
-		unsigned char y,
-		const unsigned char *image0,
-		const unsigned char *image1,
-		bool alive,
-		bool JK,
-		unsigned char id);
+		struct Actor values);
 
 #ifdef DEBUG
 const char* Actor_id_string(struct Actor *this);
