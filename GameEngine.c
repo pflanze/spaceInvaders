@@ -105,6 +105,7 @@ const char* Actor_id_string(struct Actor *this) {
     return "<invalid id>";
 }
 
+static
 void Actor_pp(struct Actor* this) {
     printf("struct Actor {");
     printf(" .x = %hhu", this->x);
@@ -114,9 +115,11 @@ void Actor_pp(struct Actor* this) {
     printf("}");
 }
 
+static
+void _Actor_pp(void* this) { return Actor_pp(this); }
+    
 const struct ObjectInterface Actor_ObjectInterface = {
-    .pp = (void (*)(void *))&Actor_pp
-    // ^ ugly to have to cast but there's no way around it
+    .pp = &_Actor_pp
 };
 
 #endif
