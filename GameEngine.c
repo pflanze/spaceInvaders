@@ -362,8 +362,10 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 	this->lastLine = this->maxrows - 1;
 	//sets defaults column stats
 	for (i=0; i < MAX_ENEMY_PR; i++) {
-		this->Estat_column[i].Epc = this->maxrows;
-		this->Estat_column[i].Fep = this->lastLine;
+	    GameStatColumn_init(&this->Estat_column[i],
+				this->maxrows, // Epc
+				this->lastLine // Fep
+		);
 	}
 	for (i=0; i < MAX_ENEMY_PR; i++) {
 		this->Laser_enemy[i].alive = false;
