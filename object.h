@@ -12,7 +12,7 @@ struct ObjectInterface {
 
 
 // Shorter virtual call syntax
-#define V(method, o, ...)  (o)->vtable->method((o) __VA_OPT__(,) __VA_ARGS__)
+#define V(method, o, args...)  (o)->vtable->method((o) , ##args)
 
 
 // Helper functions for pp
