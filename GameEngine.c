@@ -353,13 +353,15 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMYBONUS	
 void GameEngine_bonusEnemyInit(struct GameEngine *this) {
-	this->EnemyBonus.x = RIGHTLIMIT;
-	this->EnemyBonus.y = TOPLIMIT;
-	this->EnemyBonus.image[0] = SmallEnemyBonus0;
-	this->EnemyBonus.alive = true;
-	this->EnemyBonus.JK = false;
-	this->EnemyBonus.id = ID_BONUS;
-	
+	Actor_init(&this->EnemyBonus,
+		   (struct Actor){
+		           .x = RIGHTLIMIT,
+			   .y = TOPLIMIT,
+			   .image[0] = SmallEnemyBonus0,
+			   .alive = true,
+			   .JK = false,
+			   .id = ID_BONUS});
+	// XX move this out of this init function?:
 	Sound_Play(&ufoLowPitch);
 }
 #endif
