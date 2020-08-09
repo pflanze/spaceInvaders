@@ -111,7 +111,7 @@ void Actor_pp(struct Actor* this) {
     printf(", .y = %hhu", this->y);
     printf(", .image = { %p, %p }", this->image[0], this->image[1]);
     printf(", .alive = %s", bool_show(this->alive));
-    printf("}\n");
+    printf("}");
 }
 
 const struct ObjectInterface Actor_ObjectInterface = {
@@ -1282,7 +1282,7 @@ void GameEngine_pp(struct GameEngine* this) {
     FLUSH; printf("}");
     FLUSH; printf(", .localCounter = %hhu", this->localCounter);
 
-    FLUSH; printf("}\n");
+    FLUSH; printf("}");
     FLUSH; 
 }
 
