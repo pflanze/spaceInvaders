@@ -1179,9 +1179,144 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 }
 
 
+#ifdef DEBUG
+
+static void flush() {
+    fflush(stdout);
+}
+
+#define FLUSH flush()
+
+void GameEngine_pp(struct GameEngine* this) {
+    int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
+
+    printf("struct GameEngine {");
+    FLUSH; printf(" .gStatus = %iu", this->gStatus);
+    FLUSH; printf(", .maxrows = %iu", this->maxrows);
+    FLUSH; printf(", .lastLine = %iu", this->lastLine);
+    FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
+
+    FLUSH; printf(", .Estat_column = {");
+    {
+	bool first= true;
+	for (int i=0; i< MAX_ENEMY_PR; i++) {
+	    if (! first) { FLUSH; printf(","); }
+	    first = false;
+	    FLUSH; V(pp, &this->Estat_column[i]);
+	}
+    }
+    FLUSH; printf("}");
+
+    FLUSH; printf(", .Estat_row = {");
+    {
+	bool first= true;
+	for (int i=0; i < maxrows; i++) {
+	    if (! first) { FLUSH; printf(","); }
+	    first = false;
+	    FLUSH; V(pp, &this->Estat_row[i]);
+	}
+    }
+    FLUSH; printf("}");
+
+    FLUSH; printf(", .Estat_row = {");
+    {
+	bool first= true;
+	for (int i=0; i < maxrows; i++) {
+	    for (int j=0; j < MAX_ENEMY_PR; j++) {
+		if (! first) { FLUSH; printf(",");}
+		first = false;
+		V(pp, &this->Enemy[i][j]);
+	    }
+	}
+    }
+    FLUSH; printf("}");
+
+    FLUSH; printf(", .Laser_enemy = {");
+    {
+	bool first= true;
+	for (int i=0; i < MAXLASERS; i++) {
+	    if (! first) { FLUSH; printf(",");}
+	    first = false;
+	    V(pp, &this->Laser_enemy[i]);
+	}
+    }
+
+    FLUSH; printf(", .Ship = ");
+    V(pp, &this->Ship);
+
+    FLUSH; printf(", .Laser_ship = {");
+    {
+	bool first= true;
+	for (int i=0; i< MAXLASERS; i++) {
+	    if (! first) {FLUSH; printf(",");}
+	    first = false;
+	    V(pp, &this->Laser_ship[i]);
+	}
+    }
+
+    FLUSH; printf(", .EnemyBonus = ");
+    V(pp, &this->EnemyBonus);
+
+    FLUSH; printf(" .right = %s", bool_show(this->right));
+    FLUSH; printf(" .down = %s", bool_show(this->down));
+    FLUSH; printf(" .FrameCount = %hhu", this->FrameCount);
+    FLUSH; printf(" .frame = %hhu", this->frame);
+
+    FLUSH; printf(", .enemyTracking = {");
+    {
+	bool first= true;
+	for (int i=0; i< 2; i++) {
+	    if (! first) {FLUSH; printf(",");}
+	    first = false;
+	    FLUSH; printf("%iu", this->enemyTracking[i]);
+	}
+    }
+
+    FLUSH; printf(", .lowest = %hhu", this->lowest);
+    FLUSH; printf(", .highest = %hhu", this->highest);
+
+    FLUSH; printf(", .AliveRows = {");
+    {
+	bool first= true;
+	for (int i=0; i < maxrows; i++) {
+	    if (! first) {FLUSH; printf(",");}
+	    first = false;
+	    FLUSH; printf("%s", bool_show(this->AliveRows[i]));
+	}
+    }
+    FLUSH; printf("}");
+
+    FLUSH; printf(", .LiveCols = %iu", this->LiveCols);
+
+    FLUSH; printf(", .AlColsMat = {");
+    {
+	bool first= true;
+	for (int i=0; i< MAX_ENEMY_PR; i++) {
+	    if (! first) {FLUSH; printf(",");}
+	    first = false;
+	    FLUSH; printf("%iu", this->AlColsMat[i]);
+	}
+    }
+    FLUSH; printf("}");
+    FLUSH; printf(", .localCounter = %hhu", this->localCounter);
+
+    FLUSH; printf("}\n");
+    FLUSH; 
+}
+
+const struct ObjectInterface GameEngine_ObjectInterface = {
+    .pp = (void (*)(void *))&GameEngine_pp  // XX ugly, ask on IRC  -Wincompatible-pointer-types-discards-qualifiers
+};
+
+#endif
+
 
 void GameEngine_init(struct GameEngine *this,
 		     unsigned int max_number_of_enemy_rows) {
+#ifdef DEBUG
+        this->vtable = &GameEngine_ObjectInterface;
+#endif
+    
 	this->gStatus = STANDBY;
 	assert(max_number_of_enemy_rows <= ALLOC_MAXROWS);
 	this->maxrows= max_number_of_enemy_rows;
