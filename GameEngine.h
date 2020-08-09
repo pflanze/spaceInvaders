@@ -66,6 +66,22 @@ struct GameStatColumn {
 	unsigned char Epc;		//"Enemies per column"
 };
 
+#ifdef DEBUG
+const struct ObjectInterface GameStatColumn_ObjectInterface;
+#endif
+
+static inline
+void GameStatColumn_init(struct GameStatColumn* this,
+			 unsigned char Fep,
+			 unsigned char Epc) {
+    this->Fep = Fep;
+    this->Epc = Epc;
+#ifdef DEBUG
+    this->vtable = &GameStatColumn_ObjectInterface;
+#endif
+}
+
+
 //game stats per row
 struct GameStatRow {
         const struct ObjectInterface* vtable;
@@ -73,6 +89,24 @@ struct GameStatRow {
 	unsigned char Lep;		//"Last enemy position"
 	unsigned char Epr;		//"Enemies per row"
 };
+
+#ifdef DEBUG
+const struct ObjectInterface GameStatRow_ObjectInterface;
+#endif
+
+static inline
+void GameStatRow_init(struct GameStatRow* this,
+		      unsigned char Fep,
+		      unsigned char Lep,
+		      unsigned char Epr) {
+    this->Fep = Fep;
+    this->Lep = Lep;
+    this->Epr = Epr;
+#ifdef DEBUG
+    this->vtable = &GameStatRow_ObjectInterface;
+#endif
+}
+
 
 struct GameEngine {
         const struct ObjectInterface* vtable;

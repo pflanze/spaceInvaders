@@ -125,6 +125,50 @@ const struct ObjectInterface Actor_ObjectInterface = {
 #endif
 
 
+//------------------------GameStatColumn----------------------------------------
+
+#ifdef DEBUG
+
+static
+void GameStatColumn_pp(struct GameStatColumn* this) {
+    printf("struct GameStatColumn {");
+    printf(" .Fep = %hhu", this->Fep);
+    printf(", .Epc = %hhu", this->Epc);
+    printf("}");
+}
+static
+void _GameStatColumn_pp(void* this) { return GameStatColumn_pp(this); }
+
+const struct ObjectInterface GameStatColumn_ObjectInterface = {
+    .pp = &_GameStatColumn_pp
+};
+
+#endif
+
+
+//------------------------GameStatRow-------------------------------------------
+
+#ifdef DEBUG
+
+static
+void GameStatRow_pp(struct GameStatRow* this) {
+    printf("struct GameStatRow {");
+    printf(" .Fep = %hhu", this->Fep);
+    printf(", .Lep = %hhu", this->Lep);
+    printf(", .Epr = %hhu", this->Epr);
+    printf("}");
+}
+static
+void _GameStatRow_pp(void* this) { return GameStatRow_pp(this); }
+
+const struct ObjectInterface GameStatRow_ObjectInterface = {
+    .pp = &_GameStatRow_pp
+};
+
+#endif
+
+
+
 //-----------------------------------------------------------INIT---------------
 //********GameEngine_enemyInit*****************
 //Initialize enemies
