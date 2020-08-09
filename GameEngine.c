@@ -1385,7 +1385,7 @@ void GameEngine_init(struct GameEngine *this,
 	// must call GameEngine_shipInit before
 	// GameEngine_shipLasersCreation and GameEngine_laserInit_ship2
 	GameEngine_shipInit(this);
-	GameEngine_shipLasersCreation(this);
+	GameEngine_shipLasers_init(this);
 	//GameEngine_laserInit_ship2(this); XX wrong?
 
 	this->right = true;
