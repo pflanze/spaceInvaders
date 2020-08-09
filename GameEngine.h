@@ -162,7 +162,8 @@ struct GameEngine {
 
 
 void GameEngine_player_move(struct GameEngine *this);
-void GameEngine_laserInit_ship(struct GameEngine *this);
+void GameEngine_shipLasers_init(struct GameEngine *this);
+void GameEngine_laserInit_ship(struct GameEngine *this, bool init);
 void GameEngine_shipInit(struct GameEngine *this);
 void GameEngine_draw(struct GameEngine *this);
 unsigned long ADC0_In(void);

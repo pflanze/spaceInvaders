@@ -241,19 +241,27 @@ void GameEngine_shipInit(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
-void GameEngine_laserInit_ship(struct GameEngine *this) {
+void GameEngine_laserInit_ship(struct GameEngine *this, bool init) {
 	unsigned char i;
 	for (i=0; i < MAXLASERS; i++) {
-		if (this->Laser_ship[i].alive == false) {
-			this->Laser_ship[i].x = this->Ship.x + SHIPMIDDLE;
-			this->Laser_ship[i].y = 39;
-			this->Laser_ship[i].image[0] = Laser0;
-			this->Laser_ship[i].alive = true;
-			this->Laser_ship[i].id = ID_S_LASER;
-			this->Laser_ship[i].JK = false;
-			break; // terminate loop when a slot is found
+	        if (init || (this->Laser_ship[i].alive == false)) {
+			Actor_init(&this->Laser_ship[i],
+				   (struct Actor){
+					   .x = this->Ship.x + SHIPMIDDLE,
+					   .y = 39,
+					   .image[0] = Laser0,
+					   .alive = true,
+					   .id = ID_S_LASER,
+					   .JK = false});
+			if (! init) {
+			    break; // terminate loop when a slot is found
+			}
 		}
 	}
+}
+
+void GameEngine_shipLasers_init(struct GameEngine *this) {
+    GameEngine_laserInit_ship(this, true);
 }
 
 //********LaserInit_ship2*****************
