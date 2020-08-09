@@ -13,7 +13,7 @@ Configure on periodic mode, down-count
 /*
 How sound are implemented
 - gameSound: should start when gameFlag==INGAME, then stop on WIN/LOOSE and BonusEnemy
-- BonusEnemy: music is a mix of gameSound and EnemyBOnus together, it should start when BonusEnemy appears and terminate when he dies... 
+- BonusEnemy: music is a mix of gameSound and BonusEnemy together, it should start when BonusEnemy appears and terminate when he dies... 
 	then the music should go back to normal
 - ExplosionSound: it should start on alive==0 or jk==0, finished at the end of the sound
 
