@@ -72,10 +72,8 @@ const struct ObjectInterface GameStatColumn_ObjectInterface;
 
 static inline
 void GameStatColumn_init(struct GameStatColumn* this,
-			 unsigned char Fep,
-			 unsigned char Epc) {
-    this->Fep = Fep;
-    this->Epc = Epc;
+			 struct GameStatColumn values) {
+    *this = values;
 #ifdef DEBUG
     this->vtable = &GameStatColumn_ObjectInterface;
 #endif
