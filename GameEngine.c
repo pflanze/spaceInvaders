@@ -1314,6 +1314,7 @@ const struct ObjectInterface GameEngine_ObjectInterface = {
 void GameEngine_init(struct GameEngine *this,
 		     unsigned int max_number_of_enemy_rows) {
 #ifdef DEBUG
+    printf("GameEngine_init\n");
         this->vtable = &GameEngine_ObjectInterface;
 #endif
     
