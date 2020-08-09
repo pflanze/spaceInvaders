@@ -94,12 +94,8 @@ const struct ObjectInterface GameStatRow_ObjectInterface;
 
 static inline
 void GameStatRow_init(struct GameStatRow* this,
-		      unsigned char Fep,
-		      unsigned char Lep,
-		      unsigned char Epr) {
-    this->Fep = Fep;
-    this->Lep = Lep;
-    this->Epr = Epr;
+		      struct GameStatRow values) {
+    *this = values;
 #ifdef DEBUG
     this->vtable = &GameStatRow_ObjectInterface;
 #endif

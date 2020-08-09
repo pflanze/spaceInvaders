@@ -210,11 +210,11 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 				    .JK = false,
 				    .id = ID_ENEMY});
 		}
-		//initializes Estat
-		this->Estat_row[row].Epr = MAX_ENEMY_PR;
-		// ^ keeps track of the amount of enemies per row
-		this->Estat_row[row].Fep = 0;	  // first end position
-		this->Estat_row[row].Lep = 3;	  // last end position
+		GameStatRow_init(&this->Estat_row[row],
+				 (struct GameStatRow){
+				     .Epr = MAX_ENEMY_PR,
+				     .Fep = 0,
+				     .Lep = 3});
 	}
 }
 #endif
