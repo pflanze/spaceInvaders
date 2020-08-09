@@ -324,11 +324,18 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				        .alive = true,
 					.JK = false,
 					.id = ID_E_LASER});
-				break; // terminate loop when a slot is found
+				if (! init) {
+				    break; // terminate loop when a slot is found
+				}
 			} // otherwise laser is in use, don't issue a new one
 		}
 	}
 }
+
+void GameEngine_enemyLasers_init(struct GameEngine *this) {
+    GameEngine_enemyLasersCreation(this, true);
+}
+
 #endif
 //********BonusEnemyInit*****************
 // Initializes Enemy bonus
@@ -1364,7 +1371,7 @@ void GameEngine_init(struct GameEngine *this,
 	// must call defaultValues and firstEPC *before* enemyLaserInit
 	GameEngine_defaultValues(this);
 	GameEngine_firstEPC_reset(this);
-	GameEngine_enemyLasersCreation(this, true);
+	GameEngine_enemyLasers_init(this);
 #endif
 
 	// must call GameEngine_shipInit before

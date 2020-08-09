@@ -194,6 +194,7 @@ void GameEngine_laserShip_move(struct GameEngine *this);
 void GameEngine_enemyDraw(struct GameEngine *this);
 void GameEngine_laserShipDraw(struct GameEngine *this);
 
+void GameEngine_enemyLasers_init(struct GameEngine *this);
 void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init);
 void GameEngine_laserEnemyDraw(struct GameEngine *this);
 void GameEngine_masterDraw(struct GameEngine *this,
