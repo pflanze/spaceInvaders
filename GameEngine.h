@@ -40,8 +40,19 @@ struct Actor {
 	unsigned char id;
 };
 
+#ifdef DEBUG
+const struct ObjectInterface Actor_ObjectInterface;
+#endif
+
+static inline
 void Actor_init(struct Actor* this,
-		struct Actor values);
+		struct Actor values) {
+    *this = values;
+#ifdef DEBUG
+    this->vtable = (struct ObjectInterface*)&Actor_ObjectInterface; // -Wincompatible-pointer-types-discards-qualifiers
+#endif
+}
+
 
 #ifdef DEBUG
 const char* Actor_id_string(struct Actor *this);
