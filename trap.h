@@ -4,7 +4,8 @@
 #include <sys/types.h>
 #include <signal.h>
 
-static void trap() {
+static inline
+void trap() {
         raise(SIGTRAP);
         // alternative: asm("int $3");
 }

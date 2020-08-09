@@ -49,7 +49,7 @@ void Actor_init(struct Actor* this,
 		struct Actor values) {
     *this = values;
 #ifdef DEBUG
-    this->vtable = (struct ObjectInterface*)&Actor_ObjectInterface; // -Wincompatible-pointer-types-discards-qualifiers
+    this->vtable = &Actor_ObjectInterface;
 #endif
 }
 
