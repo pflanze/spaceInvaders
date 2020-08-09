@@ -351,7 +351,7 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
-#if DRAW_ENEMYBONUS	
+#if DRAW_BONUSENEMY	
 void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 	Actor_init(&this->BonusEnemy,
 		   (struct Actor){
@@ -431,7 +431,7 @@ void GameEngine_moveObjects(struct GameEngine *this) {
 		GameEngine_laserEnemy_move(this);
 #endif
 
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 		GameEngine_bonusEnemy_Move(this, INGAME);
 #endif
 		GameEngine_laserShip_move(this);
@@ -546,7 +546,7 @@ void GameEngine_laserEnemy_move(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode) {
 	if (mode == RESET) {
 		this->BonusEnemy.alive = false;
@@ -581,7 +581,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	//drawing laser
 	GameEngine_laserShipDraw(this);		//uses GameEngine_masterDraw
 
-#if DRAW_ENEMYBONUS		
+#if DRAW_BONUSENEMY		
 	GameEngine_masterDraw(this, &(this->BonusEnemy), 0);
 #endif	
 		
@@ -809,7 +809,7 @@ unsigned long ADC0_In(void){
 // assumes: na
 // Note: the result pointer must be array to make the collision result homogeneous
 void GameEngine_collisions(struct GameEngine *this) {
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 	GameEngine_bonusLaserCollision(this);
 #endif
 	
@@ -1011,7 +1011,7 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 //notes: BonusLaserCollision does not need return (game does not terminate)
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 	if (this->BonusEnemy.alive) {
 		unsigned char laserNumber = 0;
@@ -1182,7 +1182,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 void GameEngine_enemyBonusCreate(struct GameEngine *this) {
 	
 	if ((this->BonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
@@ -1398,7 +1398,7 @@ void GameEngine_init(struct GameEngine *this,
 
 	// XXX AliveRows ?
 
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 	this->localCounter = 0;
 #endif
 }

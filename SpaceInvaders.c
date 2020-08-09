@@ -151,7 +151,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			}
 #endif
 			
-#if DRAW_ENEMYBONUS	
+#if DRAW_BONUSENEMY	
 			GameEngine_enemyBonusCreate(&(this->gameEngine));
 #endif	
 			GameEngine_collisions(&(this->gameEngine));
@@ -227,7 +227,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
 				GameEngine_shipInit(&(this->gameEngine));
-#if DRAW_ENEMYBONUS				
+#if DRAW_BONUSENEMY				
 				GameEngine_bonusEnemy_Move(&(this->gameEngine),
 							   RESET);
 #endif

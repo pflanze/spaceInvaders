@@ -125,7 +125,7 @@ struct GameEngine {
 	struct Actor Ship;
 	struct Actor Laser_ship[MAXLASERS];
 
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 	struct Actor BonusEnemy;
 #endif
 
@@ -154,7 +154,7 @@ struct GameEngine {
 	unsigned int LiveCols;
 	unsigned int AlColsMat[MAX_ENEMY_PR];
 
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 	// GameEngine_enemyBonusCreate:
 	unsigned char localCounter;
 #endif
@@ -184,7 +184,7 @@ void GameEngine_enemy_move(struct GameEngine *this,
 void GameEngine_defaultValues(struct GameEngine *this);
 #endif
 
-#if DRAW_ENEMYBONUS
+#if DRAW_BONUSENEMY
 void GameEngine_bonusEnemyInit(struct GameEngine *this);
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode);
 void GameEngine_enemyBonusCreate(struct GameEngine *this);
