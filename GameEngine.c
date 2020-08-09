@@ -161,16 +161,16 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 					image1 = SmallEnemy10PointB;
 					break;
 			}
-			struct Actor vals = {
-			    .x = 20*column,
-			    .y = 10 + row*10,
-			    .image[0] = image0,
-			    .image[1] = image1,
-			    .alive = true,
-			    .JK = false,
-			    .id = ID_ENEMY
-			};
-			Actor_init(&this->Enemy[row][column], vals);
+			Actor_init(&this->Enemy[row][column],
+				   // https://en.cppreference.com/w/c/language/compound_literal
+				   (struct Actor) {
+				    .x = 20*column,
+				    .y = 10 + row*10,
+				    .image[0] = image0,
+				    .image[1] = image1,
+				    .alive = true,
+				    .JK = false,
+				    .id = ID_ENEMY});
 		}
 		//initializes Estat
 		this->Estat_row[row].Epr = MAX_ENEMY_PR;
@@ -188,13 +188,14 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 // assumes: na
 void GameEngine_shipInit(struct GameEngine *this) {
     Actor_init(&this->Ship,
-	       0, // x
-	       46, // y
-	       PlayerShip0,
-	       NULL, // image1
-	       true, // alive
-	       false, // JK
-	       ID_SHIP);
+	       (struct Actor) {
+		   .x = 0,
+		   .y = 46,
+	           .image[0] = PlayerShip0,
+	           .image[1] = NULL,
+	           .alive = true,
+	           .JK = false,
+		   .id = ID_SHIP});
 }
 //********LaserInit_ship*****************
 // Function used to initialize the lasers fired by the spaceship
@@ -277,13 +278,14 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				unsigned char row = this->Estat_column[columnNew].Fep;
 				Actor_init
 				    (l,
-				     this->Enemy[row][columnNew].x + E_LASER_OFFX,
-				     this->Enemy[row][columnNew].y + E_LASER_OFFY,
-				     Laser0,
-				     NULL,
-				     true, // alive
-				     false, // JK
-				     ID_E_LASER);
+				     (struct Actor){
+					.x = this->Enemy[row][columnNew].x + E_LASER_OFFX,
+				        .y = this->Enemy[row][columnNew].y + E_LASER_OFFY,
+				        .image[0] = Laser0,
+				        .image[1] = NULL,
+				        .alive = true,
+					.JK = false,
+					.id = ID_E_LASER});
 				break; // terminate loop when a slot is found
 			} // otherwise laser is in use, don't issue a new one
 		}
