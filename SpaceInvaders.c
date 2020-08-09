@@ -131,7 +131,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	switch(this->gameOverFlag){
 		case INGAME:{
 			if (this->clickCounter) {
-				GameEngine_laserInit_ship(&(this->gameEngine));
+				GameEngine_shipLasersCreation(&(this->gameEngine));
 				Sound_Play(&shoot);
 				this->clickCounter = 0;
 			}	
@@ -179,7 +179,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			}
 			GameEngine_player_move(&(this->gameEngine));
 			if (this->clickCounter == 1) {
-				GameEngine_laserInit_ship(&(this->gameEngine));
+				GameEngine_shipLasersCreation(&(this->gameEngine));
 				this->clickCounter = 0;
 				Sound_Play(&shoot);
 				this->gameOverFlag = INGAME;

@@ -241,7 +241,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
-void GameEngine_laserInit_ship(struct GameEngine *this, bool init) {
+void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 	unsigned char i;
 	for (i=0; i < MAXLASERS; i++) {
 	        if (init || (this->Laser_ship[i].alive == false)) {
@@ -261,7 +261,7 @@ void GameEngine_laserInit_ship(struct GameEngine *this, bool init) {
 }
 
 void GameEngine_shipLasers_init(struct GameEngine *this) {
-    GameEngine_laserInit_ship(this, true);
+    GameEngine_shipLasersCreation(this, true);
 }
 
 //********LaserInit_ship2*****************
@@ -271,7 +271,7 @@ void GameEngine_shipLasers_init(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 
-// XX what is the difference to GameEngine_laserInit_ship, what is it
+// XX what is the difference to GameEngine_shipLasersCreation, what is it
 // for?
 void GameEngine_laserInit_ship2(struct GameEngine *this) {
 	unsigned char i;
@@ -1383,9 +1383,9 @@ void GameEngine_init(struct GameEngine *this,
 #endif
 
 	// must call GameEngine_shipInit before
-	// GameEngine_laserInit_ship and GameEngine_laserInit_ship2
+	// GameEngine_shipLasersCreation and GameEngine_laserInit_ship2
 	GameEngine_shipInit(this);
-	GameEngine_laserInit_ship(this);
+	GameEngine_shipLasersCreation(this);
 	//GameEngine_laserInit_ship2(this); XX wrong?
 
 	this->right = true;
