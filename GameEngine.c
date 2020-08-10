@@ -187,16 +187,16 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 			const unsigned char* image1;
 			switch(row) {
 				case 0:
-					image0 = SmallEnemy30PointA;
-					image1 = SmallEnemy30PointB;
+					image0 = smallEnemy30PointA;
+					image1 = smallEnemy30PointB;
 					break;
 				case 1:
-					image0 = SmallEnemy20PointA;
-					image1 = SmallEnemy20PointB;
+					image0 = smallEnemy20PointA;
+					image1 = smallEnemy20PointB;
 					break;
 				case 2:
-					image0 = SmallEnemy10PointA;
-					image1 = SmallEnemy10PointB;
+					image0 = smallEnemy10PointA;
+					image1 = smallEnemy10PointB;
 					break;
 			}
 			Actor_init(&this->enemy[row][column],
@@ -224,7 +224,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 	       (struct Actor) {
 		   .x = 0,
 		   .y = 46,
-	           .image[0] = PlayerShip0,
+	           .image[0] = playerShip0,
 	           .image[1] = NULL,
 	           .alive = true,
 	           .jk = false,
@@ -244,7 +244,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 				   (struct Actor){
 					   .x = this->ship.x + SHIPMIDDLE,
 					   .y = 39,
-					   .image[0] = Laser0,
+					   .image[0] = laser0,
 					   .alive = true,
 					   .id = ID_S_LASER,
 					   .jk = false});
@@ -289,7 +289,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 				
 			}
 			this->laser_ship[i].y = 39;
-			this->laser_ship[i].image[0] = Laser0;
+			this->laser_ship[i].image[0] = laser0;
 			this->laser_ship[i].alive = true;
 			this->laser_ship[i].id = ID_S_LASER;
 			this->laser_ship[i].jk = false;
@@ -322,7 +322,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				     (struct Actor){
 					.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
 				        .y = this->enemy[row][columnNew].y + E_LASER_OFFY,
-				        .image[0] = Laser0,
+				        .image[0] = laser0,
 				        .image[1] = NULL,
 				        .alive = true,
 					.jk = false,
@@ -352,7 +352,7 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 		   (struct Actor){
 		           .x = RIGHTLIMIT,
 			   .y = TOPLIMIT,
-			   .image[0] = SmallBonusEnemy0,
+			   .image[0] = smallBonusEnemy0,
 			   .alive = true,
 			   .jk = false,
 			   .id = ID_BONUS});
@@ -637,12 +637,12 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		
 		switch (this->frame) {
 			case 0:
-				s->image[0] = SmallExplosion0;
-				s->image[1] = SmallExplosion1;
+				s->image[0] = smallExplosion0;
+				s->image[1] = smallExplosion1;
 				break;
 			case 1:
-				s->image[0] = SmallExplosion0;
-				s->image[1] = SmallExplosion1;
+				s->image[0] = smallExplosion0;
+				s->image[1] = smallExplosion1;
 				break;
 			case 2:
 				s->jk = false;
