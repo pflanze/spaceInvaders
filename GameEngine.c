@@ -173,7 +173,7 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 //********GameEngine_enemyInit*****************
 //Initialize enemies
 //Enemies are counted normaly, top left 00
-// changes: Enemy[row|column].*, gameStatRow[row].*
+// changes: enemy[row|column].*, gameStatRow[row].*
 // inputs: none
 // outputs: none
 // assumes: na
@@ -199,7 +199,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 					image1 = SmallEnemy10PointB;
 					break;
 			}
-			Actor_init(&this->Enemy[row][column],
+			Actor_init(&this->enemy[row][column],
 				   // https://en.cppreference.com/w/c/language/compound_literal
 				   (struct Actor) {
 				    .x = 20*column,
@@ -325,8 +325,8 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				Actor_init
 				    (l,
 				     (struct Actor){
-					.x = this->Enemy[row][columnNew].x + E_LASER_OFFX,
-				        .y = this->Enemy[row][columnNew].y + E_LASER_OFFY,
+					.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
+				        .y = this->enemy[row][columnNew].y + E_LASER_OFFY,
 				        .image[0] = Laser0,
 				        .image[1] = NULL,
 				        .alive = true,
@@ -346,7 +346,7 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 
 #endif
 //********BonusEnemyInit*****************
-// Initializes Enemy bonus
+// Initializes enemy bonus
 // changes: BonusEnemy.*
 // inputs: none
 // outputs: none
@@ -449,8 +449,8 @@ void GameEngine_player_move(struct GameEngine *this) {
 	this->Ship.x = Convert2Distance(ADCdata);
 }
 //********GameEngine_laserEnemy_move*****************
-//updates the enemy coordinates kept in Enemy matrix
-// changes: Enemy[row][Column].[x|y]
+//updates the enemy coordinates kept in enemy matrix
+// changes: enemy[row][Column].[x|y]
 // inputs: LeftShiftColumn, RightShiftColumn
 // outputs: none
 // assumes: na
@@ -462,30 +462,30 @@ void GameEngine_enemy_move(struct GameEngine *this,
 	
 	for (row=0; row < this->maxrows; row++) {
 		// While not raching the earth
-		if (this->Enemy[this->lastLine][0].y < 40) {
+		if (this->enemy[this->lastLine][0].y < 40) {
 			signed char column;
 			//sets the switches to move down/left/right
-			if (this->Enemy[row][RightShiftColumn].x >= RIGHTLIMIT) {
+			if (this->enemy[row][RightShiftColumn].x >= RIGHTLIMIT) {
 				this->right = false;	//moves left
 				this->down = true;
 			}
-			else if (this->Enemy[row][LeftShiftColumn].x <= LEFTLIMIT) {
+			else if (this->enemy[row][LeftShiftColumn].x <= LEFTLIMIT) {
 				this->right = true;
 				this->down = true;
 			}	
 			//moves left/right using the switches
 			for (column=0; column < MAX_ENEMY_PR; column++) {
 				if (this->right) {
-					this->Enemy[row][column].x += 2; // move to right
+					this->enemy[row][column].x += 2; // move to right
 				}	
 				else {
-					this->Enemy[row][column].x -= 2; // move to left
+					this->enemy[row][column].x -= 2; // move to left
 				}	
 			}
 			//moves down using the switches
 			if (this->down) {
 				for(column=0;column<4;column++){
-					this->Enemy[row][column].y += 1;
+					this->enemy[row][column].y += 1;
 				}
 				this->down = false;
 			}
@@ -589,8 +589,8 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_DisplayBuffer();      
 }
 //********GameEngine_enemyDraw*****************
-//Sends the Enemy information to screen buffer
-//changes: Enemy[row][column].image, Enemy[row][column].JK
+//Sends the enemy information to screen buffer
+//changes: enemy[row][column].image, enemy[row][column].JK
 // inputs: none
 // outputs: none
 // assumes: na
@@ -603,7 +603,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 		if (this->gStatus == INGAME) { this->FrameCount ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			GameEngine_masterDraw(this,
-					      &(this->Enemy[row][column]),
+					      &(this->enemy[row][column]),
 					      this->FrameCount);
 		}
 	}
@@ -803,7 +803,7 @@ unsigned long ADC0_In(void){
 }
 //----------------------------------------------COLLISIONS----------------------
 //********Collisions*****************
-//Check colision detection: Enemy lasers, ship lasers, laser on laser
+//Check colision detection: enemy lasers, ship lasers, laser on laser
 // inputs: none
 // outputs: none
 // assumes: na
@@ -832,7 +832,7 @@ void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 	//each laser is checked for a collition
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		if ((this->Laser_ship[laserNum].alive) &&
-		    (this->Enemy[this->lastLine][0].y + YOFFSET >=
+		    (this->enemy[this->lastLine][0].y + YOFFSET >=
 		     this->Laser_ship[laserNum].y)) {
 			// found a line with enemies>>start calculating
 			// calculate enemy zone(grouping)
@@ -854,13 +854,13 @@ void GameEngine_enemyscanY(struct GameEngine *this,
 	unsigned char found = 0;
 	unsigned char exit = 0;
 	
-	unsigned char ELL[ALLOC_MAXROWS];		//Enemy line low
-	unsigned char ELH[ALLOC_MAXROWS];		//Enemy line high
+	unsigned char ELL[ALLOC_MAXROWS];		//enemy line low
+	unsigned char ELH[ALLOC_MAXROWS];		//enemy line high
 	
 	//it creates an array with thresholds
 	for (row= this->lastLine; row >= 0; row--) {
-		ELL[row] = this->Enemy[row][0].y + YOFFSET;
-		ELH[row] = this->Enemy[row][0].y;
+		ELL[row] = this->enemy[row][0].y + YOFFSET;
+		ELH[row] = this->enemy[row][0].y;
 	}
 	
 	row = this->lastLine;//temporal variable reset
@@ -899,7 +899,7 @@ void GameEngine_update_lastLine(struct GameEngine *this) {
 #endif
 //********GameEngine_enemyscanX*****************
 // Scans for a enemy collition on a single row (x axis)
-// changes: Laser_ship[index].alive, Enemy[row][column].alive, Enemy[row][column].JK
+// changes: Laser_ship[index].alive, enemy[row][column].alive, enemy[row][column].JK
 // inputs: row, laserNum
 // outputs: enemyDestroyed(0:1)
 // assumes: na
@@ -910,18 +910,18 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 	unsigned char column; 
 	
 	for (column=0; column <= this->gameStatRow[row].Lep; column++) {
-		if (this->Enemy[row][column].alive) {
+		if (this->enemy[row][column].alive) {
 			//checking x coordinate of each active laser against each enemy
 			signed char enemyInRange =
-				(this->Enemy[row][column].x
+				(this->enemy[row][column].x
 				 + E_LASER_OFFX
 				 - this->Laser_ship[laserNum].x);
 			enemyInRange = absValue(enemyInRange);
 			if (enemyInRange <= E_LASER_OFFX) {	
 				unsigned int alive_rows;
 				this->Laser_ship[laserNum].alive = false;
-				this->Enemy[row][column].alive = false;
-				this->Enemy[row][column].JK = true;
+				this->enemy[row][column].alive = false;
+				this->enemy[row][column].JK = true;
 				alive_rows = GameEngine_firstLast(this, row, column, UPDATE);
 				GameEngine_update_lastLine(this);
 				//updates 
@@ -1087,7 +1087,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 			unsigned char firstCheck = 0;
 			for (column=0; column < MAX_ENEMY_PR; column++) {
 				if ((firstCheck == 0) &&
-				    (this->Enemy[row][column].alive)) {
+				    (this->enemy[row][column].alive)) {
 					// ^ counts forward, check = 0 >> keeps checking
 					this->gameStatRow[row].Fep = column;
 					firstCheck = 1;
@@ -1098,7 +1098,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 				}
 				
 				if ((lastCheck == 0) &&
-				    (this->Enemy[row][REAL_MAX_EPR-column].alive)) {
+				    (this->enemy[row][REAL_MAX_EPR-column].alive)) {
 					// ^ counts backwards
 					this->gameStatRow[row].Lep = REAL_MAX_EPR-column;
 					lastCheck = 1;
@@ -1163,7 +1163,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		
 		//finds the first enemy on a column
 		while (row>=0) {
-			if (this->Enemy[row][column].alive) {
+			if (this->enemy[row][column].alive) {
 				this->gameStatColumn[column].Fep = row;
 				break;
 			}
@@ -1176,7 +1176,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 }
 #endif
 //----------------------------------Miscelaneus---------------------------------
-// Create the Enemy bonus ship, and time the reappearence
+// Create the enemy bonus ship, and time the reappearence
 // changes: na
 // inputs: none
 // outputs: none
@@ -1272,7 +1272,7 @@ void GameEngine_pp(struct GameEngine* this) {
 	    for (int j=0; j < MAX_ENEMY_PR; j++) {
 		if (! first) { FLUSH; printf(",");}
 		first = false;
-		V(pp, &this->Enemy[i][j]);
+		V(pp, &this->enemy[i][j]);
 	    }
 	}
     }

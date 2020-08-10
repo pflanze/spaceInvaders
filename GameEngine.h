@@ -118,7 +118,7 @@ struct GameEngine {
 #if DRAW_ENEMIES
 	struct GameStatColumn gameStatColumn[MAX_ENEMY_PR];
 	struct GameStatRow gameStatRow[ALLOC_MAXROWS];
-	struct Actor Enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
+	struct Actor enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
 	struct Actor Laser_enemy[MAXLASERS];
 #endif
 
