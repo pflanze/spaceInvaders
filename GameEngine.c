@@ -1346,9 +1346,10 @@ void GameEngine_pp(struct GameEngine* this) {
     FLUSH; printf(" }");
     FLUSH;
 }
+static void _GameEngine_pp(void* this) { GameEngine_pp(this); }
 
 const struct ObjectInterface GameEngine_ObjectInterface = {
-    .pp = (void (*)(void *))&GameEngine_pp  // XX ugly, ask on IRC  -Wincompatible-pointer-types-discards-qualifiers
+    .pp = &_GameEngine_pp
 };
 
 #endif
