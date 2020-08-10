@@ -321,7 +321,7 @@ int main(void){
 
 /*
 ToDO:
-	*Missing: enemyBonus explode
+	*Missing: bonusEnemy explode
 sound:
 C:\WinSSDtemp\Home\desktop\KeepUpdating\Labware\Lab15_SpaceInvaders\Lab15Files\Sounds
 
