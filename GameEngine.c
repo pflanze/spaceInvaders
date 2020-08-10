@@ -357,7 +357,7 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 		   (struct Actor){
 		           .x = RIGHTLIMIT,
 			   .y = TOPLIMIT,
-			   .image[0] = SmallEnemyBonus0,
+			   .image[0] = SmallBonusEnemy0,
 			   .alive = true,
 			   .JK = false,
 			   .id = ID_BONUS});
