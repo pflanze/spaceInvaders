@@ -314,7 +314,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24) % this->liveCols;
 	// ^ generates number [0-aliveCols]
-	unsigned char columnNew	= this->AlColsMat[randN];
+	unsigned char columnNew	= this->alColsMat[randN];
 	
 	if (this->gameStatColumn[columnNew].Epc) {
 		unsigned char i;
@@ -1129,7 +1129,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // Keep track of the first enemy per column,
 //    Used for: - knowing how far enemies should move (before switching
 //                direction)
-// changes: gameStatColumn[column].(Fep|Epc),AlColsMat[aliveCol], liveCols
+// changes: gameStatColumn[column].(Fep|Epc),alColsMat[aliveCol], liveCols
 // Callers: EnemyLaserInit, GameEngine_enemyscanX
 // inputs: mode = RETURNVAL|UPDATE|RETURNARR|RESET
 // outputs: liveCols
@@ -1141,7 +1141,7 @@ void GameEngine_firstEPC_reset(struct GameEngine *this) {
 	unsigned char i;
 	this->liveCols = MAX_ENEMY_PR;
 	for (i=0; i < MAX_ENEMY_PR; i++) {
-		this->AlColsMat[i] = i;
+		this->alColsMat[i] = i;
 	}
 }
 
@@ -1158,7 +1158,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 			continue;
 		}
 	
-		this->AlColsMat[aliveCol] = column;
+		this->alColsMat[aliveCol] = column;
 		aliveCol++;
 		
 		//finds the first enemy on a column
@@ -1335,13 +1335,13 @@ void GameEngine_pp(struct GameEngine* this) {
 
     FLUSH; printf(", .liveCols = %iu", this->liveCols);
 
-    FLUSH; printf(", .AlColsMat = {");
+    FLUSH; printf(", .alColsMat = {");
     {
 	bool first= true;
 	for (int i=0; i< MAX_ENEMY_PR; i++) {
 	    if (! first) {FLUSH; printf(",");}
 	    first = false;
-	    FLUSH; printf("%iu", this->AlColsMat[i]);
+	    FLUSH; printf("%iu", this->alColsMat[i]);
 	}
     }
     FLUSH; printf("}");

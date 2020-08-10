@@ -152,7 +152,7 @@ struct GameEngine {
 
 	// GameEngine_firstEPC:
 	unsigned int liveCols;
-	unsigned int AlColsMat[MAX_ENEMY_PR];
+	unsigned int alColsMat[MAX_ENEMY_PR];
 
 #if DRAW_BONUSENEMY
 	// GameEngine_bonusEnemyCreate:
