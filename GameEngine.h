@@ -151,7 +151,7 @@ struct GameEngine {
 	bool AliveRows[ALLOC_MAXROWS];
 
 	// GameEngine_firstEPC:
-	unsigned int LiveCols;
+	unsigned int liveCols;
 	unsigned int AlColsMat[MAX_ENEMY_PR];
 
 #if DRAW_BONUSENEMY
