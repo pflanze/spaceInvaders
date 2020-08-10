@@ -347,13 +347,13 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 #endif
 //********BonusEnemyInit*****************
 // Initializes enemy bonus
-// changes: BonusEnemy.*
+// changes: bonusEnemy.*
 // inputs: none
 // outputs: none
 // assumes: na
 #if DRAW_BONUSENEMY	
 void GameEngine_bonusEnemyInit(struct GameEngine *this) {
-	Actor_init(&this->BonusEnemy,
+	Actor_init(&this->bonusEnemy,
 		   (struct Actor){
 		           .x = RIGHTLIMIT,
 			   .y = TOPLIMIT,
@@ -549,13 +549,13 @@ void GameEngine_laserEnemy_move(struct GameEngine *this) {
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode) {
 	if (mode == RESET) {
-		this->BonusEnemy.alive = false;
+		this->bonusEnemy.alive = false;
 		return;
 	}
-	if (this->BonusEnemy.alive) {
-		this->BonusEnemy.x--;
-		if (this->BonusEnemy.x <= LEFTLIMIT) {
-			this->BonusEnemy.alive = false;
+	if (this->bonusEnemy.alive) {
+		this->bonusEnemy.x--;
+		if (this->bonusEnemy.x <= LEFTLIMIT) {
+			this->bonusEnemy.alive = false;
 		}
 	}
 }
@@ -582,7 +582,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	GameEngine_laserShipDraw(this);		//uses GameEngine_masterDraw
 
 #if DRAW_BONUSENEMY		
-	GameEngine_masterDraw(this, &(this->BonusEnemy), 0);
+	GameEngine_masterDraw(this, &(this->bonusEnemy), 0);
 #endif	
 		
 	// draw buffer
@@ -612,7 +612,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 //********functionName*****************
 // Master function to draw objects
 // changes: variablesChanged
-// inputs: &BonusEnemy, 
+// inputs: &bonusEnemy, 
 // outputs: none
 // assumes: na
 
@@ -1005,28 +1005,28 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 }
 #endif
 //********BonusLaserCollision*****************
-// Detects collision between shipLaser and BonusEnemy
-// changes: BonusEnemy (JK, alive), laser_ship (JK, alive)
+// Detects collision between shipLaser and bonusEnemy
+// changes: bonusEnemy (JK, alive), laser_ship (JK, alive)
 // inputs: none
 // outputs: none
 // assumes: na
 //notes: BonusLaserCollision does not need return (game does not terminate)
 #if DRAW_BONUSENEMY
 void GameEngine_bonusLaserCollision(struct GameEngine *this) {
-	if (this->BonusEnemy.alive) {
+	if (this->bonusEnemy.alive) {
 		unsigned char laserNumber = 0;
 		for (laserNumber=0; laserNumber < MAXLASERS; laserNumber++) {
 			if (this->laser_ship[laserNumber].alive) {
 				if (this->laser_ship[laserNumber].y <= BONUS_C_LINE) {
 					// any of the lasers passes certain threshold
 					signed char xDistance =
-						this->BonusEnemy.x
+						this->bonusEnemy.x
 						+ ENEMY_Bon_midX
 						- this->laser_ship[laserNumber].x;
 					xDistance = absValue(xDistance);
 					if (xDistance < ENEMY_Bon_midX) {
-						this->BonusEnemy.alive = false;
-						this->BonusEnemy.JK = true;
+						this->bonusEnemy.alive = false;
+						this->bonusEnemy.JK = true;
 						this->laser_ship[laserNumber].alive = false;
 						this->laser_ship[laserNumber].JK = true;
 					}
@@ -1184,12 +1184,12 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
-	if ((this->BonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
+	if ((this->bonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemyInit(this);
 		this->localCounter = 0;
 	}
 		
-	if (this->BonusEnemy.alive == false) {
+	if (this->bonusEnemy.alive == false) {
 		this->localCounter++;
 	}
 }
@@ -1301,8 +1301,8 @@ void GameEngine_pp(struct GameEngine* this) {
 	}
     }
 
-    FLUSH; printf(", .BonusEnemy = ");
-    V(pp, &this->BonusEnemy);
+    FLUSH; printf(", .bonusEnemy = ");
+    V(pp, &this->bonusEnemy);
 
     FLUSH; printf(" .right = %s", bool_show(this->right));
     FLUSH; printf(" .down = %s", bool_show(this->down));
@@ -1373,7 +1373,7 @@ void GameEngine_init(struct GameEngine *this,
 	this->enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
 #endif
 
-	// XXX gameStatColumn .. BonusEnemy
+	// XXX gameStatColumn .. bonusEnemy
 	
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
