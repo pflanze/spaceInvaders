@@ -207,7 +207,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 				    .image[0] = image0,
 				    .image[1] = image1,
 				    .alive = true,
-				    .JK = false,
+				    .jk = false,
 				    .id = ID_ENEMY});
 		}
 		GameStatRow_init(&this->gameStatRow[row],
@@ -232,7 +232,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 	           .image[0] = PlayerShip0,
 	           .image[1] = NULL,
 	           .alive = true,
-	           .JK = false,
+	           .jk = false,
 		   .id = ID_SHIP});
 }
 //********LaserInit_ship*****************
@@ -252,7 +252,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 					   .image[0] = Laser0,
 					   .alive = true,
 					   .id = ID_S_LASER,
-					   .JK = false});
+					   .jk = false});
 			if (! init) {
 			    break; // terminate loop when a slot is found
 			}
@@ -297,7 +297,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 			this->laser_ship[i].image[0] = Laser0;
 			this->laser_ship[i].alive = true;
 			this->laser_ship[i].id = ID_S_LASER;
-			this->laser_ship[i].JK = false;
+			this->laser_ship[i].jk = false;
 		}
 	}
 }
@@ -330,7 +330,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				        .image[0] = Laser0,
 				        .image[1] = NULL,
 				        .alive = true,
-					.JK = false,
+					.jk = false,
 					.id = ID_E_LASER});
 				if (! init) {
 				    break; // terminate loop when a slot is found
@@ -359,7 +359,7 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 			   .y = TOPLIMIT,
 			   .image[0] = SmallBonusEnemy0,
 			   .alive = true,
-			   .JK = false,
+			   .jk = false,
 			   .id = ID_BONUS});
 	// XX move this out of this init function?:
 	Sound_Play(&ufoLowPitch);
@@ -395,7 +395,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 #endif
 //********reset*****************
 // Set values to default using "mode" switch
-// changes: ship.(image|JK), functions: GameEngine_enemyShiftTrack, FirstLast, GameEngine_firstEPC
+// changes: ship.(image|jk), functions: GameEngine_enemyShiftTrack, FirstLast, GameEngine_firstEPC
 // Callers: 
 // inputs: none
 // outputs: none
@@ -590,7 +590,7 @@ void GameEngine_draw(struct GameEngine *this) {
 }
 //********GameEngine_enemyDraw*****************
 //Sends the enemy information to screen buffer
-//changes: enemy[row][column].image, enemy[row][column].JK
+//changes: enemy[row][column].image, enemy[row][column].jk
 // inputs: none
 // outputs: none
 // assumes: na
@@ -624,7 +624,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
-	if (s->JK) {
+	if (s->jk) {
 		//used to change explosions offset values
 		if (s->id == ID_BONUS) {	//BONUS
 			Sound_stop_all(&ufoLowPitch);
@@ -652,7 +652,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 				s->image[1] = SmallExplosion1;
 				break;
 			case 2:
-				s->JK = false;
+				s->jk = false;
 				this->frame = 0;
 				if (s->id == ID_SHIP) {
 					this->gStatus = LOOSE;
@@ -673,7 +673,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 			// frame is always 0, except for enemies
 		}	
 	}
-	else if (s->JK) {
+	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + offsetX, s->y + offsetY, s->image[this->frame], 0);
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?
 	}
@@ -899,7 +899,7 @@ void GameEngine_update_lastLine(struct GameEngine *this) {
 #endif
 //********GameEngine_enemyscanX*****************
 // Scans for a enemy collition on a single row (x axis)
-// changes: laser_ship[index].alive, enemy[row][column].alive, enemy[row][column].JK
+// changes: laser_ship[index].alive, enemy[row][column].alive, enemy[row][column].jk
 // inputs: row, laserNum
 // outputs: enemyDestroyed(0:1)
 // assumes: na
@@ -921,7 +921,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 				unsigned int alive_rows;
 				this->laser_ship[laserNum].alive = false;
 				this->enemy[row][column].alive = false;
-				this->enemy[row][column].JK = true;
+				this->enemy[row][column].jk = true;
 				alive_rows = GameEngine_firstLast(this, row, column, UPDATE);
 				GameEngine_update_lastLine(this);
 				//updates 
@@ -935,7 +935,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 #endif
 //********EnemyLaserCollisions*****************
 // Detects the collision between laserEnemy and our ship
-// changes: ship.alive, ship.JK
+// changes: ship.alive, ship.jk
 // inputs: none
 // outputs: none
 // assumes: na
@@ -954,9 +954,9 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this) {
 				collision = absValue(collision);
 				if (collision <= SHIPMIDDLE) {
 					this->laser_enemy[i].alive = false;
-					this->laser_enemy[i].JK = false;
+					this->laser_enemy[i].jk = false;
 					this->ship.alive = false;
-					this->ship.JK = true;
+					this->ship.jk = true;
 				}
 			}
 		}
@@ -992,7 +992,7 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 						if (yDistance) {
 							this->laser_enemy[lasernumEnemy].alive =
 								false;
-							this->laser_enemy[lasernumEnemy].JK =
+							this->laser_enemy[lasernumEnemy].jk =
 								true;
 							this->laser_ship[lasernumShip].alive =
 								false;
@@ -1006,7 +1006,7 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 #endif
 //********BonusLaserCollision*****************
 // Detects collision between shipLaser and bonusEnemy
-// changes: bonusEnemy (JK, alive), laser_ship (JK, alive)
+// changes: bonusEnemy (jk, alive), laser_ship (jk, alive)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -1026,9 +1026,9 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 					xDistance = absValue(xDistance);
 					if (xDistance < ENEMY_Bon_midX) {
 						this->bonusEnemy.alive = false;
-						this->bonusEnemy.JK = true;
+						this->bonusEnemy.jk = true;
 						this->laser_ship[laserNumber].alive = false;
-						this->laser_ship[laserNumber].JK = true;
+						this->laser_ship[laserNumber].jk = true;
 					}
 				}
 			}
