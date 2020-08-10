@@ -103,7 +103,7 @@ static void game_step(struct Game *game) {
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
 
-static void test_run(unsigned int max_number_of_enemy_rows) {
+static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
 
 	//memset(&game, 8, sizeof(game));
@@ -140,12 +140,15 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 				      game_screen_write(&game);
 			      });
 	       });
+
+	return &game;
 }
 
 
 int main () {
-	test_run(1);
-	test_run(2);
+    struct Game* game1= test_run(1);
+    struct Game* game2= test_run(2);
+    
 
 	/* verify that there are no differences to the committed
 	   versions of the frames */
