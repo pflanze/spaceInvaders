@@ -1176,8 +1176,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 }
 #endif
 //----------------------------------Miscelaneus---------------------------------
-//********enemyBonusCreate*****************
-// It creates the Enemy bonus ship, and times the reApereance
+// Create the Enemy bonus ship, and time the reappearence
 // changes: na
 // inputs: none
 // outputs: none
