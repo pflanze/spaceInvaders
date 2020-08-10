@@ -44,7 +44,7 @@
 #define LEFTLIMIT 0
 #define TOPLIMIT 6
 
-//Ship collision line
+//ship collision line
 
 #define SHIPCOLLISIONLINE LOWERLIMIT-PLAYERH+2
 
@@ -220,12 +220,12 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 #endif
 //********ShipInit*****************
 //It contains the position, image and life of the space ship
-// changes: Ship.*
+// changes: ship.*
 // inputs: none
 // outputs: none
 // assumes: na
 void GameEngine_shipInit(struct GameEngine *this) {
-    Actor_init(&this->Ship,
+    Actor_init(&this->ship,
 	       (struct Actor) {
 		   .x = 0,
 		   .y = 46,
@@ -247,7 +247,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 	        if (init || (this->Laser_ship[i].alive == false)) {
 			Actor_init(&this->Laser_ship[i],
 				   (struct Actor){
-					   .x = this->Ship.x + SHIPMIDDLE,
+					   .x = this->ship.x + SHIPMIDDLE,
 					   .y = 39,
 					   .image[0] = Laser0,
 					   .alive = true,
@@ -281,15 +281,15 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 		if (this->Laser_ship[i].alive == false) {
 			switch(count){
 				case 0:
-					this->Laser_ship[i].x = this->Ship.x + SHIPMIDDLE;
+					this->Laser_ship[i].x = this->ship.x + SHIPMIDDLE;
 					count++;
 					break; // terminate loop when a slot is found
 				case 1:
-					this->Laser_ship[i].x = this->Ship.x + 2 + SHIPMIDDLE;
+					this->Laser_ship[i].x = this->ship.x + 2 + SHIPMIDDLE;
 					count++;
 					break; // terminate loop when a slot is found
 				case 2:	
-					this->Laser_ship[i].x = this->Ship.x + 4 + SHIPMIDDLE;
+					this->Laser_ship[i].x = this->ship.x + 4 + SHIPMIDDLE;
 					break; // terminate loop when a slot is found
 				
 			}
@@ -395,7 +395,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 #endif
 //********reset*****************
 // Set values to default using "mode" switch
-// changes: Ship.(image|JK), functions: GameEngine_enemyShiftTrack, FirstLast, GameEngine_firstEPC
+// changes: ship.(image|JK), functions: GameEngine_enemyShiftTrack, FirstLast, GameEngine_firstEPC
 // Callers: 
 // inputs: none
 // outputs: none
@@ -439,14 +439,14 @@ void GameEngine_moveObjects(struct GameEngine *this) {
 }
 //********GameEngine_player_move*****************
 //Gets the new position value from ADC and updates the spaceShip position
-// changes: Ship.x, 
+// changes: ship.x, 
 // inputs: none
 // outputs: none
 // assumes: na
 void GameEngine_player_move(struct GameEngine *this) {
 	unsigned long ADCdata;
 	ADCdata = ADC0_In();
-	this->Ship.x = Convert2Distance(ADCdata);
+	this->ship.x = Convert2Distance(ADCdata);
 }
 //********GameEngine_laserEnemy_move*****************
 //updates the enemy coordinates kept in enemy matrix
@@ -570,7 +570,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
 	//drawing battleship
-	GameEngine_masterDraw(this, &(this->Ship), 0);
+	GameEngine_masterDraw(this, &(this->ship), 0);
 
 	//drawing enemies
 #if DRAW_ENEMIES
@@ -935,28 +935,28 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 #endif
 //********EnemyLaserCollisions*****************
 // Detects the collision between laserEnemy and our ship
-// changes: Ship.alive, Ship.JK
+// changes: ship.alive, ship.JK
 // inputs: none
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
 static
 void GameEngine_enemyLaserCollisions(struct GameEngine *this) {
-	if (this->Ship.alive) {
+	if (this->ship.alive) {
 		unsigned char i = 0;
 		for (i=0; i < MAXLASERS; i++) {
 			//check agains the ship
 			if (this->laser_enemy[i].alive &&
 			    (this->laser_enemy[i].y > SHIPCOLLISIONLINE)){
-				signed char collision = this->Ship.x
+				signed char collision = this->ship.x
 					+ SHIPMIDDLE
 					- this->laser_enemy[i].x;
 				collision = absValue(collision);
 				if (collision <= SHIPMIDDLE) {
 					this->laser_enemy[i].alive = false;
 					this->laser_enemy[i].JK = false;
-					this->Ship.alive = false;
-					this->Ship.JK = true;
+					this->ship.alive = false;
+					this->ship.JK = true;
 				}
 			}
 		}
@@ -1288,8 +1288,8 @@ void GameEngine_pp(struct GameEngine* this) {
 	}
     }
 
-    FLUSH; printf(", .Ship = ");
-    V(pp, &this->Ship);
+    FLUSH; printf(", .ship = ");
+    V(pp, &this->ship);
 
     FLUSH; printf(", .Laser_ship = {");
     {
