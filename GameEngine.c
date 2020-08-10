@@ -225,7 +225,6 @@ void GameEngine_shipInit(struct GameEngine *this) {
 		   .x = 0,
 		   .y = 46,
 	           .image[0] = playerShip0,
-	           .image[1] = NULL,
 	           .alive = true,
 	           .jk = false,
 		   .id = ID_SHIP});
@@ -323,7 +322,6 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 					.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
 				        .y = this->enemy[row][columnNew].y + E_LASER_OFFY,
 				        .image[0] = laser0,
-				        .image[1] = NULL,
 				        .alive = true,
 					.jk = false,
 					.id = ID_E_LASER});
