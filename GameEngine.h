@@ -123,7 +123,7 @@ struct GameEngine {
 #endif
 
 	struct Actor ship;
-	struct Actor Laser_ship[MAXLASERS];
+	struct Actor laser_ship[MAXLASERS];
 
 #if DRAW_BONUSENEMY
 	struct Actor BonusEnemy;
