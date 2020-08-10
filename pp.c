@@ -13,5 +13,5 @@ void flush() {
 void pp_helper(void* p, void(*_pp)(void* this)) {
     _pp(p);
     printf("\n");
-    FLUSH;
+    flush();
 }

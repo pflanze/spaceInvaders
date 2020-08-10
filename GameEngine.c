@@ -108,6 +108,7 @@ const char* Actor_id_string(struct Actor *this) {
 
 static
 void Actor_pp(struct Actor* this) {
+#define FLUSH
     printf("(struct Actor) {");
     printf(" .x = %hhu", this->x);
     printf(", .y = %hhu", this->y);
@@ -131,6 +132,7 @@ void Actor_pp(struct Actor* this) {
     printf(" }");
     printf(", .alive = %s", bool_show(this->alive));
     printf("}");
+#undef FLUSH
 }
 
 static
@@ -1227,6 +1229,7 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 #ifdef DEBUG
 
 void GameEngine_pp(struct GameEngine* this) {
+#define FLUSH 
     int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
     printf("(struct GameEngine) {");
@@ -1344,7 +1347,8 @@ void GameEngine_pp(struct GameEngine* this) {
     FLUSH; printf(", .localCounter = %hhu", this->localCounter);
 
     FLUSH; printf(" }");
-    FLUSH; 
+    FLUSH;
+#undef FLUSH
 }
 
 const struct ObjectInterface GameEngine_ObjectInterface = {

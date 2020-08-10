@@ -17,7 +17,6 @@ const char* bool_show(bool v);
 // Ugly ones?
 
 void flush();
-#define FLUSH flush()
 
 
 #endif // _PP_H
