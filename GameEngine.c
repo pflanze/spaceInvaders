@@ -600,11 +600,11 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 
 	for (row=0; row < this->maxrows; row++) {
 		unsigned char column;
-		if (this->gStatus == INGAME) { this->FrameCount ^= 0x01; }  // 0,1,0,1,...
+		if (this->gStatus == INGAME) { this->frameCount ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			GameEngine_masterDraw(this,
 					      &(this->enemy[row][column]),
-					      this->FrameCount);
+					      this->frameCount);
 		}
 	}
 }
@@ -620,7 +620,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // the GameEngine parts out.
 void GameEngine_masterDraw(struct GameEngine *this,
 			   struct Actor *s,
-			   unsigned int FrameCount) {
+			   unsigned int frameCount) {
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
@@ -665,7 +665,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		// only enemies need change between frames, unless
 		// something explodes
 		if (s->id == ID_ENEMY) {
-			Nokia5110_PrintBMP(s->x, s->y, s->image[FrameCount], 0);
+			Nokia5110_PrintBMP(s->x, s->y, s->image[frameCount], 0);
 			// ^ frame is always 0, except for enemies
 		}
 		else {
@@ -1306,7 +1306,7 @@ void GameEngine_pp(struct GameEngine* this) {
 
     FLUSH; printf(" .right = %s", bool_show(this->right));
     FLUSH; printf(" .down = %s", bool_show(this->down));
-    FLUSH; printf(" .FrameCount = %hhu", this->FrameCount);
+    FLUSH; printf(" .frameCount = %hhu", this->frameCount);
     FLUSH; printf(" .frame = %hhu", this->frame);
 
     FLUSH; printf(", .enemyTracking = {");
@@ -1391,7 +1391,7 @@ void GameEngine_init(struct GameEngine *this,
 
 	this->right = true;
 	this->down = false;
-	this->FrameCount = 0;
+	this->frameCount = 0;
 	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
 
