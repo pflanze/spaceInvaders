@@ -114,7 +114,7 @@ gameStatus: End game@: FirstLast, EnemyLaserCollisions@GameEngine_masterDraw
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 
-//********SpaceInvaders_step*****************
+
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // To be run from systick handler at 30 Hz
 void SpaceInvaders_step(struct SpaceInvaders *this) {
@@ -244,11 +244,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	}
 	this->sysTickFlag = 1;
 }
-//********init_Hw*****************
-//Multiline description
-// inputs: none
-// outputs: none
-// assumes: na
+
 void init_Hw(void){
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
@@ -295,13 +291,8 @@ void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {
 		GameEngine_draw(&(this->gameEngine)); // update the LCD
 	}
 }
-//********main*****************
-// Multiline description
-// changes: variablesChanged
-// Callers: 
-// inputs: none
-// outputs: none
-// assumes: na
+
+
 #ifndef TEST_WITHOUT_IO
 
 static struct SpaceInvaders game;
