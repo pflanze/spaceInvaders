@@ -62,5 +62,6 @@ random.o: random.h CMWC.h
 pp.o: pp.h utils.h object.h
 test.o: Buttons.h utils.h GameEngine.h debug.h object.h Init.h LED.h
 test.o: Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h
-test.o: SpaceInvaders.h
+test.o: SpaceInvaders.h trap.h
+test.o: pp.h
 test.o: assert.h

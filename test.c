@@ -148,6 +148,7 @@ static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
 int main () {
     struct Game* game1= test_run(1);
     struct Game* game2= test_run(2);
+    trap();
     
 
 	/* verify that there are no differences to the committed
