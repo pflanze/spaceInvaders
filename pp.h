@@ -5,11 +5,10 @@
 #include "object.h"
 
 #define PP(p)					\
-    {						\
-    V(pp, p);					\
-    printf("\n");				\
-    FLUSH;					\
-    }
+    pp_helper((p), (p)->vtable->pp)
+
+void pp_helper(void* p, void(*_pp)(void* this));
+
 
 // Helper functions
 

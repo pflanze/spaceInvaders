@@ -9,3 +9,9 @@ const char* bool_show(bool v) {
 void flush() {
     fflush(stdout);
 }
+
+void pp_helper(void* p, void(*_pp)(void* this)) {
+    _pp(p);
+    printf("\n");
+    FLUSH;
+}
