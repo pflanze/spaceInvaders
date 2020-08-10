@@ -22,18 +22,9 @@
 #include "Sound.h"
 #ifdef DEBUG
 #include <stdio.h>
+#include "pp.h"
 #endif
 
-
-#ifdef DEBUG
-
-static void flush() {
-    fflush(stdout);
-}
-
-#define FLUSH flush()
-
-#endif
 
 //--------------------------General definitions---------------------------------
 // (Those for Actor are grouped with the Actor implementation below)

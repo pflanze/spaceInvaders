@@ -15,9 +15,5 @@ struct ObjectInterface {
 #define V(method, o, args...)  (o)->vtable->method((o) , ##args)
 
 
-// Helper functions for pp
-
-const char* bool_show(bool v);
-
 
 #endif // _OBJECT_H
