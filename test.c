@@ -102,14 +102,15 @@ static void game_step(struct Game *game) {
 
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
-static struct Game* x[10];
-static int b = 0;
+static struct Game* stored_game[10];
+static int stored_game_i = 0;
 
 static
 void store_game(struct Game* game) {
-    if (b < 10) {
-	x[b] = game;
-	b++;
+    //stored_game[stored_game_i++] = game;
+    if (stored_game_i < 10) {
+	stored_game[stored_game_i] = game;
+	stored_game_i++;
     } else {
 	printf("out of storage space for games");
 	abort();
