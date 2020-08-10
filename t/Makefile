@@ -50,7 +50,7 @@ depend:
 
 Buttons.o: Buttons.h utils.h
 GameEngine.o: GameEngine.h debug.h utils.h object.h sprites.h Nokia5110.h
-GameEngine.o: random.h assert.h Sound.h
+GameEngine.o: random.h assert.h Sound.h pp.h
 Init.o: Init.h debug.h
 LED.o: LED.h
 Message.o: Message.h Nokia5110.h
@@ -59,7 +59,7 @@ Sound.o: Sound.h debug.h utils.h
 SpaceInvaders.o: Nokia5110.h Init.h debug.h Buttons.h utils.h GameEngine.h
 SpaceInvaders.o: object.h random.h Message.h Sound.h SpaceInvaders.h
 random.o: random.h CMWC.h
-object.o: object.h utils.h
+pp.o: pp.h utils.h object.h
 test.o: Buttons.h utils.h GameEngine.h debug.h object.h Init.h LED.h
 test.o: Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h
 test.o: SpaceInvaders.h
