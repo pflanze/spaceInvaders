@@ -25,6 +25,16 @@
 #endif
 
 
+#ifdef DEBUG
+
+static void flush() {
+    fflush(stdout);
+}
+
+#define FLUSH flush()
+
+#endif
+
 //--------------------------General definitions---------------------------------
 // (Those for Actor are grouped with the Actor implementation below)
 
@@ -110,7 +120,24 @@ void Actor_pp(struct Actor* this) {
     printf("struct Actor {");
     printf(" .x = %hhu", this->x);
     printf(", .y = %hhu", this->y);
-    printf(", .image = { %p, %p }", this->image[0], this->image[1]);
+    printf(", .image = {");
+    {
+	bool first= true;
+	for (int i=0; i<2; i++) {
+	    if (! first) { FLUSH; printf(","); }
+	    first = false;
+	    {
+		const unsigned char* p= this->image[i];
+		const char* nam= addrToSpriteName(p);
+		if (nam) {
+		    printf(" %s", nam);
+		} else {
+		    printf(" %p", p);
+		}
+	    }
+	}
+    }
+    printf(" }");
     printf(", .alive = %s", bool_show(this->alive));
     printf("}");
 }
@@ -1207,12 +1234,6 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 
 
 #ifdef DEBUG
-
-static void flush() {
-    fflush(stdout);
-}
-
-#define FLUSH flush()
 
 void GameEngine_pp(struct GameEngine* this) {
     int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
