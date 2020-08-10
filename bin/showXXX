@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=
+
+git ls-files -z | egrep -zZ -v '^(t/out/|bin/showXXX)' | xargs -0 grep XXX
