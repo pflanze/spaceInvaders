@@ -1042,7 +1042,7 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 //					the number of enemies on each row
 //					It is called by GameEngine_enemyscanX to update gameStatRow
 //					it is also used to update general game stats
-// changes: gameStatRow[row].*, gameStatColumn[column].epc, enemyCount, AliveRows[row]
+// changes: gameStatRow[row].*, gameStatColumn[column].epc, enemyCount, aliveRows[row]
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
@@ -1059,7 +1059,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{	//liverows[] defaults
 			unsigned char i;
 			for (i=0; i < this->maxrows; i++) {
-				this->AliveRows[i] = true;
+				this->aliveRows[i] = true;
 			}
 		}
 		return 0;
@@ -1070,7 +1070,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	this->enemyCount--;
 	
 	if (this->enemyCount == 0) {
-		this->AliveRows[row] = false;
+		this->aliveRows[row] = false;
 		// ^ needed only to update stats before quitting, good for debugging
 		GameEngine_setStatus(this, WIN);
 	}
@@ -1079,7 +1079,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 			lastCheck = 1;			//Does forward checking only
 		}
 		else if (this->gameStatRow[row].epr == 0) {
-			this->AliveRows[row] = false;
+			this->aliveRows[row] = false;
 		}
 
 		if (this->gameStatRow[row].epr) {
@@ -1116,7 +1116,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{
 			unsigned char i;
 			for (i=0; i <= this->maxrows - 1; i++) {
-				if (this->AliveRows[i]) {
+				if (this->aliveRows[i]) {
 					alr_counter++;
 				}
 			}
@@ -1322,13 +1322,13 @@ void GameEngine_pp(struct GameEngine* this) {
     FLUSH; printf(", .lowest = %hhu", this->lowest);
     FLUSH; printf(", .highest = %hhu", this->highest);
 
-    FLUSH; printf(", .AliveRows = {");
+    FLUSH; printf(", .aliveRows = {");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
 	    if (! first) {FLUSH; printf(",");}
 	    first = false;
-	    FLUSH; printf("%s", bool_show(this->AliveRows[i]));
+	    FLUSH; printf("%s", bool_show(this->aliveRows[i]));
 	}
     }
     FLUSH; printf("}");
@@ -1395,7 +1395,7 @@ void GameEngine_init(struct GameEngine *this,
 	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
 
-	// XXX AliveRows ?
+	// XXX aliveRows ?
 
 #if DRAW_BONUSENEMY
 	this->localCounter = 0;
