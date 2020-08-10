@@ -37,7 +37,22 @@ files (hit return for the next image):
 
     for f in out/*; do read; cat "$f"; done
 
-### make depend
+### Dependencies
+
+You need a reasonably recent version of Clang, like `apt install
+clang-10`, for the sanitizers to work. (Otherwise disable them by
+running `touch .nosan` in `t/`.)
 
 Running `make depend` requires `makedepend` which is in the
 `xutils-dev` package on Debian.
+
+If you get something like:
+
+    /usr/bin/ld: cannot find /usr/lib/llvm-10/lib/clang/10.0.0/lib/linux/libclang_rt.msan-i386.a: No such file or directory
+
+then it's because you're on a 32 bit system and msan only works on 64
+bit systems? The library would be part of the `libclang-common-9-dev`
+package for clang-9, for example, which should be installed already
+after installing clang-9.
+
+You'll want to install `gdb`.
