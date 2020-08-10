@@ -118,29 +118,29 @@ void store_game(struct Game* game) {
 }
 
 static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
-	struct Game game;
+        struct Game *game = malloc(sizeof(struct Game));
 
 	//memset(&game, 8, sizeof(game));
 
-	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
-	game.frame_number= -1;
+	game->max_number_of_enemy_rows= max_number_of_enemy_rows;
+	game->frame_number= -1;
 
-	SpaceInvaders_init(&(game.spaceInvaders),
+	SpaceInvaders_init(&(game->spaceInvaders),
 			   max_number_of_enemy_rows);
 	Random_Init(223412);
 	ADC0_SSFIFO3_R= 0;
 
-	game_step(&game);
-	game_screen_write(&game);
-	store_game(&game);
+	game_step(game);
+	game_screen_write(game);
+	store_game(game);
 
 	REPEAT(8,
 	       {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
 			      {
-				      game_step(&game);
-				      game_screen_write(&game);
+				      game_step(game);
+				      game_screen_write(game);
 			      });
 	       });
 
@@ -151,12 +151,12 @@ static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
 			      {
-				      game_step(&game);
-				      game_screen_write(&game);
+				      game_step(game);
+				      game_screen_write(game);
 			      });
 	       });
 
-	return &game;
+	return game;
 }
 
 
