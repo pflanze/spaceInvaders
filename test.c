@@ -102,6 +102,19 @@ static void game_step(struct Game *game) {
 
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
+static struct Game* x[10];
+static int b = 0;
+
+static
+void store_game(struct Game* game) {
+    if (b < 10) {
+	x[b] = game;
+	b++;
+    } else {
+	printf("out of storage space for games");
+	abort();
+    }
+}
 
 static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
@@ -118,6 +131,7 @@ static struct Game* test_run(unsigned int max_number_of_enemy_rows) {
 
 	game_step(&game);
 	game_screen_write(&game);
+	store_game(&game);
 
 	REPEAT(8,
 	       {
