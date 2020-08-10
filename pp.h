@@ -18,5 +18,11 @@ const char* bool_show(bool v);
 
 void flush();
 
+#ifdef FLUSH
+#  undef FLUSH
+#  define FLUSH flush()
+#else
+#  define FLUSH
+#endif
 
 #endif // _PP_H
