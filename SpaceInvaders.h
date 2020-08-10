@@ -8,7 +8,7 @@
 struct SpaceInvaders {
         struct ObjectInterface* vtable;
 	struct GameEngine gameEngine;
-	unsigned char SysTickFlag;
+	unsigned char sysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?
 	unsigned char clickCounter; // keeps track of clicks
 	unsigned char multishot;
