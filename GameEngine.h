@@ -179,8 +179,8 @@ void GameEngine_laserCollision(struct GameEngine *this);
 void GameEngine_laserEnemy_move(struct GameEngine *this);
 void GameEngine_playerLaserCollisions(struct GameEngine *this);
 void GameEngine_enemy_move(struct GameEngine *this,
-			   unsigned int LeftShiftColumn,
-			   unsigned int RightShiftColumn);
+			   unsigned int leftShiftColumn,
+			   unsigned int lightShiftColumn);
 void GameEngine_defaultValues(struct GameEngine *this);
 #endif
 

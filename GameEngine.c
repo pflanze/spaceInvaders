@@ -451,13 +451,13 @@ void GameEngine_player_move(struct GameEngine *this) {
 //********GameEngine_laserEnemy_move*****************
 //updates the enemy coordinates kept in enemy matrix
 // changes: enemy[row][Column].[x|y]
-// inputs: LeftShiftColumn, RightShiftColumn
+// inputs: leftShiftColumn, lightShiftColumn
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemy_move(struct GameEngine *this,
-			   unsigned int LeftShiftColumn,
-			   unsigned int RightShiftColumn) {
+			   unsigned int leftShiftColumn,
+			   unsigned int lightShiftColumn) {
 	unsigned char row;
 	
 	for (row=0; row < this->maxrows; row++) {
@@ -465,11 +465,11 @@ void GameEngine_enemy_move(struct GameEngine *this,
 		if (this->enemy[this->lastLine][0].y < 40) {
 			signed char column;
 			//sets the switches to move down/left/right
-			if (this->enemy[row][RightShiftColumn].x >= RIGHTLIMIT) {
+			if (this->enemy[row][lightShiftColumn].x >= RIGHTLIMIT) {
 				this->right = false;	//moves left
 				this->down = true;
 			}
-			else if (this->enemy[row][LeftShiftColumn].x <= LEFTLIMIT) {
+			else if (this->enemy[row][leftShiftColumn].x <= LEFTLIMIT) {
 				this->right = true;
 				this->down = true;
 			}	
