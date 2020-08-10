@@ -345,7 +345,7 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_BONUSENEMY	
-void GameEngine_bonusEnemyInit(struct GameEngine *this) {
+void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 	Actor_init(&this->bonusEnemy,
 		   (struct Actor){
 		           .x = RIGHTLIMIT,
@@ -1180,7 +1180,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
 	if ((this->bonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
-		GameEngine_bonusEnemyInit(this);
+		GameEngine_bonusEnemy_init(this);
 		this->localCounter = 0;
 	}
 		

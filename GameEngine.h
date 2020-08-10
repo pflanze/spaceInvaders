@@ -185,7 +185,7 @@ void GameEngine_defaultValues(struct GameEngine *this);
 #endif
 
 #if DRAW_BONUSENEMY
-void GameEngine_bonusEnemyInit(struct GameEngine *this);
+void GameEngine_bonusEnemy_init(struct GameEngine *this);
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode);
 void GameEngine_bonusEnemyCreate(struct GameEngine *this);
 #endif
