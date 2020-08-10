@@ -118,6 +118,9 @@ void EnableInterrupts(void);  // Enable interrupts
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // To be run from systick handler at 30 Hz
 void SpaceInvaders_step(struct SpaceInvaders *this) {
+#ifdef DEBUG
+        PP(&this->gameEngine);
+#endif
 	
 #if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
