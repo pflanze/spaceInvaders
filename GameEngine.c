@@ -170,9 +170,9 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 
 
 //-----------------------------------------------------------INIT---------------
-//********GameEngine_enemyInit*****************
-//Initialize enemies
-//Enemies are counted normaly, top left 00
+
+// Initialize enemies
+//Enemies are counted normally, top left 00
 // changes: enemy[row|column].*, gameStatRow[row].*
 // inputs: none
 // outputs: none
@@ -218,12 +218,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 	}
 }
 #endif
-//********ShipInit*****************
-//It contains the position, image and life of the space ship
-// changes: ship.*
-// inputs: none
-// outputs: none
-// assumes: na
+
 void GameEngine_shipInit(struct GameEngine *this) {
     Actor_init(&this->ship,
 	       (struct Actor) {
@@ -235,7 +230,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 	           .jk = false,
 		   .id = ID_SHIP});
 }
-//********LaserInit_ship*****************
+
 // Function used to initialize the lasers fired by the spaceship
 // changes: laser_ship[index].*
 // inputs: none
@@ -264,7 +259,7 @@ void GameEngine_shipLasers_init(struct GameEngine *this) {
     GameEngine_shipLasersCreation(this, true);
 }
 
-//********LaserInit_ship2*****************
+
 // Function used to initialize the lasers fired by the spaceship
 // changes: laser_ship[index].*
 // inputs: none
@@ -301,8 +296,8 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 		}
 	}
 }
-//********EnemyLaserInit*****************
-//Initializes the lasers fired by the enemy ship. It selects an enemy randomly to shoot.
+
+// Initialize the lasers fired by the enemy ship. It selects an enemy randomly to shoot.
 // changes: laser_enemy[index].*
 // inputs: none
 // outputs: none
@@ -345,8 +340,8 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 }
 
 #endif
-//********BonusEnemyInit*****************
-// Initializes enemy bonus
+
+// Initialize bonus enemy
 // changes: bonusEnemy.*
 // inputs: none
 // outputs: none
@@ -365,9 +360,10 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 	Sound_Play(&ufoLowPitch);
 }
 #endif
+
 //-----------------------------------------------------------DEFAULT VALUES-----
-//********defaultValues*****************
-// Resets the values to default 
+
+// Reset the values to default 
 // changes: laser_enemy[i].alive, lastLine, gameStatColumn[i].(epc|fep)
 // inputs: none
 // outputs: none
@@ -393,7 +389,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 	}
 }
 #endif
-//********reset*****************
+
 // Set values to default using "mode" switch
 // changes: ship.(image|jk), functions: GameEngine_enemyShiftTrack, FirstLast, GameEngine_firstEPC
 // Callers: 
@@ -413,9 +409,10 @@ void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_firstLast(this, 0, 0, RESET);
 #endif
 }
+
 //--------------------------------------------------------------MOVE OBJECTS----
-//********MoveObjects*****************
-//Updates the position values of the asociated objects
+
+// Update the position values of the associated objects
 // inputs: INGAME
 // outputs: none
 // assumes: na
@@ -437,8 +434,8 @@ void GameEngine_moveObjects(struct GameEngine *this) {
 		GameEngine_laserShip_move(this);
 	}
 }
-//********GameEngine_player_move*****************
-//Gets the new position value from ADC and updates the spaceShip position
+
+// Get the new position value from ADC and update the spaceShip position
 // changes: ship.x, 
 // inputs: none
 // outputs: none
@@ -448,8 +445,8 @@ void GameEngine_player_move(struct GameEngine *this) {
 	ADCdata = ADC0_In();
 	this->ship.x = Convert2Distance(ADCdata);
 }
-//********GameEngine_laserEnemy_move*****************
-//updates the enemy coordinates kept in enemy matrix
+
+// Update the enemy coordinates kept in enemy matrix
 // changes: enemy[row][Column].[x|y]
 // inputs: leftShiftColumn, lightShiftColumn
 // outputs: none
@@ -497,8 +494,8 @@ void GameEngine_enemy_move(struct GameEngine *this,
 	}
 }
 #endif
-//********GameEngine_laserShip_move*****************
-//Updates the spaceShip'2 laser coordinates
+
+// Update the spaceShip'2 laser coordinates
 // changes: laser_ship[index].y, laser_ship[index].alive 
 // inputs: none
 // outputs: none
@@ -517,8 +514,8 @@ void GameEngine_laserShip_move(struct GameEngine *this) {
 		}
 	}
 }
-//********LaserEnemy_Move*****************
-//Updates the laser's friendly ship position 
+
+// Update the laser's friendly ship position 
 // changes: laser_enemy[index].y, laser_enemy[index].alive
 // inputs: none
 // outputs: none
@@ -540,12 +537,7 @@ void GameEngine_laserEnemy_move(struct GameEngine *this) {
 	}
 }
 #endif
-//********GameEngine_bonusEnemy_Move*****************
-// Multiline description
-// changes: variablesChanged
-// inputs: none
-// outputs: none
-// assumes: na
+
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode) {
 	if (mode == RESET) {
@@ -560,9 +552,10 @@ void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode) {
 	}
 }
 #endif
+
 //-------------------------------------------DRAWING----------------------------
-//********Draw*****************
-// Updates the objects positions and sends the data to the screen
+
+// Update the object positions and send the data to the screen
 // inputs: none
 // outputs: none
 // assumes: na
@@ -588,8 +581,8 @@ void GameEngine_draw(struct GameEngine *this) {
 	// draw buffer
 	Nokia5110_DisplayBuffer();      
 }
-//********GameEngine_enemyDraw*****************
-//Sends the enemy information to screen buffer
+
+// Send the enemy information to screen buffer
 //changes: enemy[row][column].image, enemy[row][column].jk
 // inputs: none
 // outputs: none
@@ -609,7 +602,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 	}
 }
 #endif
-//********functionName*****************
+
 // Master function to draw objects
 // changes: variablesChanged
 // inputs: &bonusEnemy, 
@@ -678,8 +671,8 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?
 	}
 }
-//********GameEngine_laserShipDraw*****************
-//Updates position of alive lasers
+
+// Update position of alive lasers
 // inputs: none
 // outputs: none
 // assumes: na
@@ -693,8 +686,8 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 		}
 	}
 }
-//********GameEngine_laserEnemyDraw*****************
-//Send current position to buffer
+
+// Send current position to buffer
 // inputs: none
 // outputs: none
 // assumes: na
@@ -708,8 +701,7 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	}
 }
 #endif
-//********GameEngine_enemyShiftTrack*****************
-//Keeps track if the leftmost and right most Enemies.
+
 #if DRAW_ENEMIES
 void
 GameEngine_enemyTracking_reset(struct GameEngine *this) {
@@ -719,6 +711,7 @@ GameEngine_enemyTracking_reset(struct GameEngine *this) {
 	this->highest = LAST_E;
 }
 
+// Keep track of the leftmost and rightmost Enemies.
 unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
 					  unsigned int localAliveRows,
 					  unsigned int mode) {
@@ -771,15 +764,15 @@ unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
 
 //-----------------------------------------------------ADC----------------------
 
-//********Convert2Distance*****************
-// Converts the sample value to an equivalent distance
+// Convert the sample value to an equivalent distance
 // inputs: sample
 // outputs: none
 // assumes: na
 unsigned long Convert2Distance(unsigned long sample){
 	return (Avalue*(sample) >> 10)+Bvalue; // Needs recalibration
 }
-//********ADC0_In*****************
+
+
 // ADC converter
 // inputs: none
 // outputs: result (of the conversion)
@@ -801,9 +794,10 @@ unsigned long ADC0_In(void){
   return ADC0_SSFIFO3_R;
 #endif
 }
+
 //----------------------------------------------COLLISIONS----------------------
-//********Collisions*****************
-//Check colision detection: enemy lasers, ship lasers, laser on laser
+
+// Check collision detection: enemy lasers, ship lasers, laser on laser
 // inputs: none
 // outputs: none
 // assumes: na
@@ -821,8 +815,8 @@ void GameEngine_collisions(struct GameEngine *this) {
 	GameEngine_laserCollision(this);
 #endif
 }
-//********PlayerLaserCollisions*****************
-//Checks if the laser have a hit to an enemy (for every laser)
+
+// Check if the laser have a hit to an enemy (for every laser)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -841,9 +835,9 @@ void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 	}
 }
 #endif
-//********GameEngine_enemyscanY*****************
-//scans for an enemy line (y-axis), then sends a request to scan for
-//an enemy on the x-axis. Updates the enemy line values
+
+// Scans for an enemy line (y-axis), then send a request to scan for
+// an enemy on the x-axis. Update the enemy line values
 // inputs: lastLine, laserNum
 // outputs: none
 // assumes: na
@@ -881,8 +875,8 @@ void GameEngine_enemyscanY(struct GameEngine *this,
 	}
 }	
 #endif
-//********Verify_lastLine*****************
-//Keeps track of the last enemy line
+
+// Keep track of the last enemy line
 // changes: lastLine
 // inputs: none
 // outputs: lastLine
@@ -897,8 +891,8 @@ void GameEngine_update_lastLine(struct GameEngine *this) {
 	}
 }
 #endif
-//********GameEngine_enemyscanX*****************
-// Scans for a enemy collition on a single row (x axis)
+
+// Scan for a enemy collition on a single row (x axis)
 // changes: laser_ship[index].alive, enemy[row][column].alive, enemy[row][column].jk
 // inputs: row, laserNum
 // outputs: enemyDestroyed(0:1)
@@ -933,8 +927,8 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 	}	
 }
 #endif
-//********EnemyLaserCollisions*****************
-// Detects the collision between laserEnemy and our ship
+
+// Detect the collision between laserEnemy and our ship
 // changes: ship.alive, ship.jk
 // inputs: none
 // outputs: none
@@ -963,8 +957,8 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this) {
 	}
 }
 #endif
-//********LaserCollision*****************
-// Detects collisions between lasers
+
+// Detect collisions between lasers
 // changes: variablesChanged
 // inputs: none
 // outputs: none
@@ -1004,8 +998,8 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 	}
 }
 #endif
-//********BonusLaserCollision*****************
-// Detects collision between shipLaser and bonusEnemy
+
+// Detect collision between shipLaser and bonusEnemy
 // changes: bonusEnemy (jk, alive), laser_ship (jk, alive)
 // inputs: none
 // outputs: none
@@ -1036,8 +1030,9 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 	}
 }
 #endif
+
 //-----------------------------------------GAME STATS---------------------------
-//********FirstLast*****************
+
 //this function should keep track of:
 //					the number of enemies on each row
 //					It is called by GameEngine_enemyscanX to update gameStatRow
@@ -1125,7 +1120,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	}
 }
 #endif
-//********GameEngine_firstEPC*****************
+
 // Keep track of the first enemy per column,
 //    Used for: - knowing how far enemies should move (before switching
 //                direction)
@@ -1175,7 +1170,9 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 	this->liveCols = aliveCol;
 }
 #endif
+
 //----------------------------------Miscelaneus---------------------------------
+
 // Create the enemy bonus ship, and time the reappearence
 // changes: na
 // inputs: none
@@ -1194,33 +1191,18 @@ void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	}
 }
 #endif
+
 //----------------------------------------------Utilities-----------------------
-//********absValue*****************
-// Returns positive value
-// changes: value
-// inputs: value
-// outputs: value
-// assumes: na
+
 signed int absValue(signed int value){
 	return ((value<0) ? -value:value);
 }
-//********GameEngine_setStatus*****************
+
 // Systick sets the game status on the Engine
-// changes: na
 // Callers: systick, FirstLast, EnemyLaserCollisions
-// inputs: none
-// outputs: none
-// assumes: na
 void GameEngine_setStatus(struct GameEngine *this, const unsigned int v){
 	this->gStatus = v;
 }
-//********getStatus*****************
-// Returns the current game status
-// changes: na
-// Callers: systick
-// inputs: none
-// outputs: none
-// assumes: na
 unsigned int GameEngine_getStatus(struct GameEngine *this) {
 	return this->gStatus;
 }
