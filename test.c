@@ -12,6 +12,8 @@
 #include "SpaceInvaders.h"
 // #include "sprites.h"
 #include "utils.h"
+#include "trap.h"
+#include "pp.h"
 
 
 #include <stdio.h>
