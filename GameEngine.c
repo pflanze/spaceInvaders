@@ -1239,116 +1239,120 @@ void GameEngine_pp(struct GameEngine* this) {
     int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
     printf("struct GameEngine {");
-    FLUSH; printf(" .gStatus = %iu", this->gStatus);
-    FLUSH; printf(", .maxrows = %iu", this->maxrows);
-    FLUSH; printf(", .lastLine = %iu", this->lastLine);
+    FLUSH; printf(" .gStatus = %u", this->gStatus);
+    FLUSH; printf(", .maxrows = %u", this->maxrows);
+    FLUSH; printf(", .lastLine = %u", this->lastLine);
     FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
 
-    FLUSH; printf(", .gameStatColumn = {");
+    FLUSH; printf(", .gameStatColumn = { ");
     {
 	bool first= true;
 	for (int i=0; i< MAX_ENEMY_PR; i++) {
-	    if (! first) { FLUSH; printf(","); }
+	    if (! first) { FLUSH; printf(", "); }
 	    first = false;
 	    FLUSH; V(pp, &this->gameStatColumn[i]);
 	}
     }
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
 
-    FLUSH; printf(", .gameStatRow = {");
+    FLUSH; printf(", .gameStatRow = { ");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
-	    if (! first) { FLUSH; printf(","); }
+	    if (! first) { FLUSH; printf(", "); }
 	    first = false;
 	    FLUSH; V(pp, &this->gameStatRow[i]);
 	}
     }
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
 
-    FLUSH; printf(", .gameStatRow = {");
+    FLUSH; printf(", .gameStatRow = { ");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
 	    for (int j=0; j < MAX_ENEMY_PR; j++) {
-		if (! first) { FLUSH; printf(",");}
+		if (! first) { FLUSH; printf(", ");}
 		first = false;
 		V(pp, &this->enemy[i][j]);
 	    }
 	}
     }
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
 
-    FLUSH; printf(", .laser_enemy = {");
+    FLUSH; printf(", .laser_enemy = { ");
     {
 	bool first= true;
 	for (int i=0; i < MAXLASERS; i++) {
-	    if (! first) { FLUSH; printf(",");}
+	    if (! first) { FLUSH; printf(", ");}
 	    first = false;
 	    V(pp, &this->laser_enemy[i]);
 	}
     }
+    FLUSH; printf(" }");
 
     FLUSH; printf(", .ship = ");
     V(pp, &this->ship);
 
-    FLUSH; printf(", .laser_ship = {");
+    FLUSH; printf(", .laser_ship = { ");
     {
 	bool first= true;
 	for (int i=0; i< MAXLASERS; i++) {
-	    if (! first) {FLUSH; printf(",");}
+	    if (! first) {FLUSH; printf(", ");}
 	    first = false;
 	    V(pp, &this->laser_ship[i]);
 	}
     }
+    FLUSH; printf(" }");
 
     FLUSH; printf(", .bonusEnemy = ");
     V(pp, &this->bonusEnemy);
 
-    FLUSH; printf(" .right = %s", bool_show(this->right));
-    FLUSH; printf(" .down = %s", bool_show(this->down));
-    FLUSH; printf(" .frameCount = %hhu", this->frameCount);
-    FLUSH; printf(" .frame = %hhu", this->frame);
+    FLUSH; printf(", .right = %s", bool_show(this->right));
+    FLUSH; printf(", .down = %s", bool_show(this->down));
+    FLUSH; printf(", .frameCount = %hhu", this->frameCount);
+    FLUSH; printf(", .frame = %hhu", this->frame);
 
-    FLUSH; printf(", .enemyTracking = {");
+    FLUSH; printf(", .enemyTracking = { ");
     {
 	bool first= true;
 	for (int i=0; i< 2; i++) {
-	    if (! first) {FLUSH; printf(",");}
+	    if (! first) {FLUSH; printf(", ");}
 	    first = false;
-	    FLUSH; printf("%iu", this->enemyTracking[i]);
+	    FLUSH; printf("%u", this->enemyTracking[i]);
 	}
     }
+    FLUSH; printf(" }");
 
     FLUSH; printf(", .lowest = %hhu", this->lowest);
     FLUSH; printf(", .highest = %hhu", this->highest);
 
-    FLUSH; printf(", .aliveRows = {");
+    FLUSH; printf(", .aliveRows = { ");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
-	    if (! first) {FLUSH; printf(",");}
+	    if (! first) {FLUSH; printf(", ");}
 	    first = false;
 	    FLUSH; printf("%s", bool_show(this->aliveRows[i]));
 	}
     }
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
 
-    FLUSH; printf(", .liveCols = %iu", this->liveCols);
+    FLUSH; printf(", .liveCols = %u", this->liveCols);
 
-    FLUSH; printf(", .alColsMat = {");
+    FLUSH; printf(", .alColsMat = { ");
     {
 	bool first= true;
 	for (int i=0; i< MAX_ENEMY_PR; i++) {
-	    if (! first) {FLUSH; printf(",");}
+	    if (! first) {FLUSH; printf(", ");}
 	    first = false;
-	    FLUSH; printf("%iu", this->alColsMat[i]);
+	    FLUSH; printf("%u", this->alColsMat[i]);
 	}
     }
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
+
     FLUSH; printf(", .localCounter = %hhu", this->localCounter);
 
-    FLUSH; printf("}");
+    FLUSH; printf(" }");
     FLUSH; 
 }
 
