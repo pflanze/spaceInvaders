@@ -351,11 +351,9 @@ void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 		           .x = RIGHTLIMIT,
 			   .y = TOPLIMIT,
 			   .image[0] = smallBonusEnemy0,
-			   .alive = true,
+			   .alive = false,
 			   .jk = false,
 			   .id = ID_BONUS});
-	// XX move this out of this init function?:
-	Sound_Play(&ufoLowPitch);
 }
 #endif
 
@@ -1181,6 +1179,8 @@ void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
 	if ((this->bonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemy_init(this);
+		this->bonusEnemy.alive = true;
+		Sound_Play(&ufoLowPitch);
 		this->localCounter = 0;
 	}
 		
@@ -1361,6 +1361,9 @@ void GameEngine_init(struct GameEngine *this,
 	GameEngine_defaultValues(this);
 	GameEngine_firstEPC_reset(this);
 	GameEngine_enemyLasers_init(this);
+#endif
+#if DRAW_BONUSENEMY
+	GameEngine_bonusEnemy_init(this);
 #endif
 
 	// must call GameEngine_shipInit before
