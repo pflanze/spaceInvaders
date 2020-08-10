@@ -303,7 +303,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 }
 //********EnemyLaserInit*****************
 //Initializes the lasers fired by the enemy ship. It selects an enemy randomly to shoot.
-// changes: Laser_enemy[index].*
+// changes: laser_enemy[index].*
 // inputs: none
 // outputs: none
 // assumes: na
@@ -319,7 +319,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	if (this->gameStatColumn[columnNew].Epc) {
 		unsigned char i;
 		for (i=0; i < MAXLASERS; i++) {
-			struct Actor *l= &(this->Laser_enemy[i]);
+			struct Actor *l= &(this->laser_enemy[i]);
 			if (init || (l->alive == false)) {
 				unsigned char row = this->gameStatColumn[columnNew].Fep;
 				Actor_init
@@ -368,7 +368,7 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 //-----------------------------------------------------------DEFAULT VALUES-----
 //********defaultValues*****************
 // Resets the values to default 
-// changes: Laser_enemy[i].alive, lastLine, gameStatColumn[i].(Epc|Fep)
+// changes: laser_enemy[i].alive, lastLine, gameStatColumn[i].(Epc|Fep)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -385,7 +385,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 				    .Fep = this->lastLine});
 	}
 	for (i=0; i < MAX_ENEMY_PR; i++) {
-		this->Laser_enemy[i].alive = false;
+		this->laser_enemy[i].alive = false;
 	}
 
 	for (i=0; i < MAXLASERS; i++) {
@@ -519,21 +519,21 @@ void GameEngine_laserShip_move(struct GameEngine *this) {
 }
 //********LaserEnemy_Move*****************
 //Updates the laser's friendly ship position 
-// changes: Laser_enemy[index].y, Laser_enemy[index].alive
+// changes: laser_enemy[index].y, laser_enemy[index].alive
 // inputs: none
 // outputs: none
 // assumes: na
-//Laser_enemy[i]
+//laser_enemy[i]
 #if DRAW_ENEMIES
 void GameEngine_laserEnemy_move(struct GameEngine *this) {
  	unsigned char i;
 	
 	for (i=0; i < MAXLASERS; i++) { // XXX use runtime value not MAXLASERS, RIGHT?
-		if (this->Laser_enemy[i].alive) {
-			this->Laser_enemy[i].y++;
+		if (this->laser_enemy[i].alive) {
+			this->laser_enemy[i].y++;
 			//laser out of range
-			if (this->Laser_enemy[i].y > LOWERLIMIT) {//update
-				this->Laser_enemy[i].alive = false;
+			if (this->laser_enemy[i].y > LOWERLIMIT) {//update
+				this->laser_enemy[i].alive = false;
 				break;
 			}
 		}
@@ -703,7 +703,7 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		GameEngine_masterDraw(this,
-				      &(this->Laser_enemy[laserNum]),
+				      &(this->laser_enemy[laserNum]),
 				      0);
 	}
 }
@@ -946,15 +946,15 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this) {
 		unsigned char i = 0;
 		for (i=0; i < MAXLASERS; i++) {
 			//check agains the ship
-			if (this->Laser_enemy[i].alive &&
-			    (this->Laser_enemy[i].y > SHIPCOLLISIONLINE)){
+			if (this->laser_enemy[i].alive &&
+			    (this->laser_enemy[i].y > SHIPCOLLISIONLINE)){
 				signed char collision = this->Ship.x
 					+ SHIPMIDDLE
-					- this->Laser_enemy[i].x;
+					- this->laser_enemy[i].x;
 				collision = absValue(collision);
 				if (collision <= SHIPMIDDLE) {
-					this->Laser_enemy[i].alive = false;
-					this->Laser_enemy[i].JK = false;
+					this->laser_enemy[i].alive = false;
+					this->laser_enemy[i].JK = false;
 					this->Ship.alive = false;
 					this->Ship.JK = true;
 				}
@@ -974,25 +974,25 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 	unsigned char lasernumEnemy;
 	//checks collision course
 	for (lasernumEnemy=0; lasernumEnemy < MAXLASERS; lasernumEnemy++) {
-		if (this->Laser_enemy[lasernumEnemy].alive) {
+		if (this->laser_enemy[lasernumEnemy].alive) {
 			unsigned char lasernumShip = 0; //avoids unnecessary comparison
 			for (lasernumShip=0; lasernumShip < MAXLASERS; lasernumShip++) {
 				// avoid unnecessary comparison
 				if (this->Laser_ship[lasernumShip].alive) {
 					signed char xDistance =
-						this->Laser_enemy[lasernumEnemy].x
+						this->laser_enemy[lasernumEnemy].x
 						- this->Laser_ship[lasernumShip].x;
 					if ((absValue(xDistance)<2) &&
 					    (this->Laser_ship[lasernumShip].alive)) {
 						signed char yDistance =
-							(this->Laser_enemy[lasernumEnemy].y
+							(this->laser_enemy[lasernumEnemy].y
 							 + LASERH)
 							> this->Laser_ship[lasernumShip].y;
 						// ^ crossOver each other
 						if (yDistance) {
-							this->Laser_enemy[lasernumEnemy].alive =
+							this->laser_enemy[lasernumEnemy].alive =
 								false;
-							this->Laser_enemy[lasernumEnemy].JK =
+							this->laser_enemy[lasernumEnemy].JK =
 								true;
 							this->Laser_ship[lasernumShip].alive =
 								false;
@@ -1278,13 +1278,13 @@ void GameEngine_pp(struct GameEngine* this) {
     }
     FLUSH; printf("}");
 
-    FLUSH; printf(", .Laser_enemy = {");
+    FLUSH; printf(", .laser_enemy = {");
     {
 	bool first= true;
 	for (int i=0; i < MAXLASERS; i++) {
 	    if (! first) { FLUSH; printf(",");}
 	    first = false;
-	    V(pp, &this->Laser_enemy[i]);
+	    V(pp, &this->laser_enemy[i]);
 	}
     }
 

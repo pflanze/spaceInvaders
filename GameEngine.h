@@ -119,7 +119,7 @@ struct GameEngine {
 	struct GameStatColumn gameStatColumn[MAX_ENEMY_PR];
 	struct GameStatRow gameStatRow[ALLOC_MAXROWS];
 	struct Actor enemy[ALLOC_MAXROWS][MAX_ENEMY_PR];
-	struct Actor Laser_enemy[MAXLASERS];
+	struct Actor laser_enemy[MAXLASERS];
 #endif
 
 	struct Actor Ship;
