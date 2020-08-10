@@ -1368,8 +1368,6 @@ void GameEngine_init(struct GameEngine *this,
 	this->enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
 #endif
 
-	// XXX gameStatColumn .. bonusEnemy
-	
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
 	// must call defaultValues and firstEPC *before* enemyLaserInit
