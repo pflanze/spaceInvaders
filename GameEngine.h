@@ -62,8 +62,8 @@ const char* Actor_id_string(struct Actor *this);
 
 struct GameStatColumn {
         const struct ObjectInterface* vtable;
-	unsigned char Fep;		//"First enemy position"
-	unsigned char Epc;		//"Enemies per column"
+	unsigned char fep;		//"First enemy position"
+	unsigned char epc;		//"Enemies per column"
 };
 
 #ifdef DEBUG
@@ -83,9 +83,9 @@ void GameStatColumn_init(struct GameStatColumn* this,
 //game stats per row
 struct GameStatRow {
         const struct ObjectInterface* vtable;
-	unsigned char Fep;		//"First enemy position"
-	unsigned char Lep;		//"Last enemy position"
-	unsigned char Epr;		//"Enemies per row"
+	unsigned char fep;		//"First enemy position"
+	unsigned char lep;		//"Last enemy position"
+	unsigned char epr;		//"Enemies per row"
 };
 
 #ifdef DEBUG
