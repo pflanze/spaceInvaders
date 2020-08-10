@@ -117,7 +117,7 @@ const char* Actor_id_string(struct Actor *this) {
 
 static
 void Actor_pp(struct Actor* this) {
-    printf("struct Actor {");
+    printf("(struct Actor) {");
     printf(" .x = %hhu", this->x);
     printf(", .y = %hhu", this->y);
     printf(", .image = {");
@@ -158,7 +158,7 @@ const struct ObjectInterface Actor_ObjectInterface = {
 
 static
 void GameStatColumn_pp(struct GameStatColumn* this) {
-    printf("struct GameStatColumn {");
+    printf("(struct GameStatColumn) {");
     printf(" .fep = %hhu", this->fep);
     printf(", .epc = %hhu", this->epc);
     printf("}");
@@ -179,7 +179,7 @@ const struct ObjectInterface GameStatColumn_ObjectInterface = {
 
 static
 void GameStatRow_pp(struct GameStatRow* this) {
-    printf("struct GameStatRow {");
+    printf("(struct GameStatRow) {");
     printf(" .fep = %hhu", this->fep);
     printf(", .lep = %hhu", this->lep);
     printf(", .epr = %hhu", this->epr);
@@ -1238,7 +1238,7 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 void GameEngine_pp(struct GameEngine* this) {
     int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
-    printf("struct GameEngine {");
+    printf("(struct GameEngine) {");
     FLUSH; printf(" .gStatus = %u", this->gStatus);
     FLUSH; printf(", .maxrows = %u", this->maxrows);
     FLUSH; printf(", .lastLine = %u", this->lastLine);
