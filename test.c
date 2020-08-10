@@ -164,7 +164,8 @@ int main () {
     struct Game* game1= test_run(1);
     struct Game* game2= test_run(2);
     trap();
-    
+    free(game1);
+    free(game2);
 
 	/* verify that there are no differences to the committed
 	   versions of the frames */
