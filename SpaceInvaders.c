@@ -46,6 +46,9 @@
 #include "Sound.h"
 #include "debug.h"
 #include "SpaceInvaders.h"
+#ifdef DEBUG
+#include "pp.h"
+#endif
 
 
 /*	Required Hardware I/O connections
