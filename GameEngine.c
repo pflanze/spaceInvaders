@@ -58,7 +58,7 @@
 #define OFFSETEXPLOSIONY 4
 
 //BonusShip midPoint xCoordinate
-#define ENEMY_Bon_midX (ENEMYBONUSW>>1)
+#define ENEMY_Bon_midX (BONUSENEMYW>>1)
 
 //enemy midPoint xCoordinate
 #define E_LASER_OFFX ((ENEMY30W>>1)-1)

@@ -236,7 +236,7 @@ static const unsigned char Laser0[] = {
 #define ENEMY20H    ((unsigned char)SmallEnemy20PointA[22])
 #define ENEMY10W    ((unsigned char)SmallEnemy10PointA[18])
 #define ENEMY10H    ((unsigned char)SmallEnemy10PointA[22])
-#define ENEMYBONUSW ((unsigned char)SmallEnemyBonus0[18])
+#define BONUSENEMYW ((unsigned char)SmallEnemyBonus0[18])
 #define BONUSENEMYH ((unsigned char)SmallEnemyBonus0[22])
 #define LASERW      ((unsigned char)Laser0[18])
 #define LASERH      ((unsigned char)Laser0[22])
