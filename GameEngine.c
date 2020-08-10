@@ -173,7 +173,7 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 //********GameEngine_enemyInit*****************
 //Initialize enemies
 //Enemies are counted normaly, top left 00
-// changes: Enemy[row|column].*, Estat_row[row].*
+// changes: Enemy[row|column].*, gameStatRow[row].*
 // inputs: none
 // outputs: none
 // assumes: na
@@ -210,7 +210,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 				    .JK = false,
 				    .id = ID_ENEMY});
 		}
-		GameStatRow_init(&this->Estat_row[row],
+		GameStatRow_init(&this->gameStatRow[row],
 				 (struct GameStatRow){
 				     .Epr = MAX_ENEMY_PR,
 				     .Fep = 0,
@@ -738,26 +738,26 @@ unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
 	
 	switch(localAliveRows){
 		case 1:
-			if (this->Estat_row[this->lastLine].Epr == 1) {
-				this->enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
-				this->enemyTracking[1] = this->Estat_row[this->lastLine].Fep;
+			if (this->gameStatRow[this->lastLine].Epr == 1) {
+				this->enemyTracking[0] = this->gameStatRow[this->lastLine].Fep;
+				this->enemyTracking[1] = this->gameStatRow[this->lastLine].Fep;
 			}
 			else {
-				this->enemyTracking[1] = this->Estat_row[this->lastLine].Lep;
-				this->enemyTracking[0] = this->Estat_row[this->lastLine].Fep;
+				this->enemyTracking[1] = this->gameStatRow[this->lastLine].Lep;
+				this->enemyTracking[0] = this->gameStatRow[this->lastLine].Fep;
 			}
 			break;
 		default:{
 			signed char row = 0;
-			this->lowest 	= this->Estat_row[row].Fep;
-			this->highest	= this->Estat_row[row].Lep;
+			this->lowest 	= this->gameStatRow[row].Fep;
+			this->highest	= this->gameStatRow[row].Lep;
 			row = 1;
 			while (row <= this->maxrows - 1) {//change
-				if (this->Estat_row[row].Fep < this->lowest) {
-					this->lowest = this->Estat_row[row].Fep;
+				if (this->gameStatRow[row].Fep < this->lowest) {
+					this->lowest = this->gameStatRow[row].Fep;
 				}
-				if (this->Estat_row[row].Lep > this->highest) {
-					this->highest = this->Estat_row[row].Lep;
+				if (this->gameStatRow[row].Lep > this->highest) {
+					this->highest = this->gameStatRow[row].Lep;
 				}
 				row++;
 			}
@@ -890,7 +890,7 @@ void GameEngine_enemyscanY(struct GameEngine *this,
 #if DRAW_ENEMIES
 static
 void GameEngine_update_lastLine(struct GameEngine *this) {
-	while (this->Estat_row[this->lastLine].Epr == 0) {
+	while (this->gameStatRow[this->lastLine].Epr == 0) {
 		if (this->lastLine == 0)
 			break; // correct?
 		this->lastLine--;
@@ -909,7 +909,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 			   unsigned int laserNum) {
 	unsigned char column; 
 	
-	for (column=0; column <= this->Estat_row[row].Lep; column++) {
+	for (column=0; column <= this->gameStatRow[row].Lep; column++) {
 		if (this->Enemy[row][column].alive) {
 			//checking x coordinate of each active laser against each enemy
 			signed char enemyInRange =
@@ -1040,9 +1040,9 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 //********FirstLast*****************
 //this function should keep track of:
 //					the number of enemies on each row
-//					It is called by GameEngine_enemyscanX to update Estat_row
+//					It is called by GameEngine_enemyscanX to update gameStatRow
 //					it is also used to update general game stats
-// changes: Estat_row[row].*, gameStatColumn[column].Epc, enemyCount, AliveRows[row]
+// changes: gameStatRow[row].*, gameStatColumn[column].Epc, enemyCount, AliveRows[row]
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
@@ -1065,7 +1065,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		return 0;
 	}
 	
-	this->Estat_row[row].Epr--;
+	this->gameStatRow[row].Epr--;
 	this->gameStatColumn[column].Epc--;
 	this->enemyCount--;
 	
@@ -1075,32 +1075,32 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		GameEngine_setStatus(this, WIN);
 	}
 	else {
-		if (this->Estat_row[row].Epr == 1) {
+		if (this->gameStatRow[row].Epr == 1) {
 			lastCheck = 1;			//Does forward checking only
 		}
-		else if (this->Estat_row[row].Epr == 0) {
+		else if (this->gameStatRow[row].Epr == 0) {
 			this->AliveRows[row] = false;
 		}
 
-		if (this->Estat_row[row].Epr) {
+		if (this->gameStatRow[row].Epr) {
 			unsigned char column=0;
 			unsigned char firstCheck = 0;
 			for (column=0; column < MAX_ENEMY_PR; column++) {
 				if ((firstCheck == 0) &&
 				    (this->Enemy[row][column].alive)) {
 					// ^ counts forward, check = 0 >> keeps checking
-					this->Estat_row[row].Fep = column;
+					this->gameStatRow[row].Fep = column;
 					firstCheck = 1;
-					if (this->Estat_row[row].Epr == 1) {
-						this->Estat_row[row].Lep =
-							this->Estat_row[row].Fep;
+					if (this->gameStatRow[row].Epr == 1) {
+						this->gameStatRow[row].Lep =
+							this->gameStatRow[row].Fep;
 					}
 				}
 				
 				if ((lastCheck == 0) &&
 				    (this->Enemy[row][REAL_MAX_EPR-column].alive)) {
 					// ^ counts backwards
-					this->Estat_row[row].Lep = REAL_MAX_EPR-column;
+					this->gameStatRow[row].Lep = REAL_MAX_EPR-column;
 					lastCheck = 1;
 				}
 				
@@ -1254,18 +1254,18 @@ void GameEngine_pp(struct GameEngine* this) {
     }
     FLUSH; printf("}");
 
-    FLUSH; printf(", .Estat_row = {");
+    FLUSH; printf(", .gameStatRow = {");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
 	    if (! first) { FLUSH; printf(","); }
 	    first = false;
-	    FLUSH; V(pp, &this->Estat_row[i]);
+	    FLUSH; V(pp, &this->gameStatRow[i]);
 	}
     }
     FLUSH; printf("}");
 
-    FLUSH; printf(", .Estat_row = {");
+    FLUSH; printf(", .gameStatRow = {");
     {
 	bool first= true;
 	for (int i=0; i < maxrows; i++) {
