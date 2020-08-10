@@ -316,12 +316,12 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	// ^ generates number [0-aliveCols]
 	unsigned char columnNew	= this->AlColsMat[randN];
 	
-	if (this->Estat_column[columnNew].Epc) {
+	if (this->gameStatColumn[columnNew].Epc) {
 		unsigned char i;
 		for (i=0; i < MAXLASERS; i++) {
 			struct Actor *l= &(this->Laser_enemy[i]);
 			if (init || (l->alive == false)) {
-				unsigned char row = this->Estat_column[columnNew].Fep;
+				unsigned char row = this->gameStatColumn[columnNew].Fep;
 				Actor_init
 				    (l,
 				     (struct Actor){
@@ -368,7 +368,7 @@ void GameEngine_bonusEnemyInit(struct GameEngine *this) {
 //-----------------------------------------------------------DEFAULT VALUES-----
 //********defaultValues*****************
 // Resets the values to default 
-// changes: Laser_enemy[i].alive, lastLine, Estat_column[i].(Epc|Fep)
+// changes: Laser_enemy[i].alive, lastLine, gameStatColumn[i].(Epc|Fep)
 // inputs: none
 // outputs: none
 // assumes: na
@@ -379,7 +379,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 	this->lastLine = this->maxrows - 1;
 	//sets defaults column stats
 	for (i=0; i < MAX_ENEMY_PR; i++) {
-	    GameStatColumn_init(&this->Estat_column[i],
+	    GameStatColumn_init(&this->gameStatColumn[i],
 				(struct GameStatColumn){
 				    .Epc = this->maxrows,
 				    .Fep = this->lastLine});
@@ -1042,7 +1042,7 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 //					the number of enemies on each row
 //					It is called by GameEngine_enemyscanX to update Estat_row
 //					it is also used to update general game stats
-// changes: Estat_row[row].*, Estat_column[column].Epc, enemyCount, AliveRows[row]
+// changes: Estat_row[row].*, gameStatColumn[column].Epc, enemyCount, AliveRows[row]
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
@@ -1066,7 +1066,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	}
 	
 	this->Estat_row[row].Epr--;
-	this->Estat_column[column].Epc--;
+	this->gameStatColumn[column].Epc--;
 	this->enemyCount--;
 	
 	if (this->enemyCount == 0) {
@@ -1129,7 +1129,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // Keep track of the first enemy per column,
 //    Used for: - knowing how far enemies should move (before switching
 //                direction)
-// changes: Estat_column[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
+// changes: gameStatColumn[column].(Fep|Epc),AlColsMat[aliveCol], LiveCols
 // Callers: EnemyLaserInit, GameEngine_enemyscanX
 // inputs: mode = RETURNVAL|UPDATE|RETURNARR|RESET
 // outputs: LiveCols
@@ -1151,10 +1151,10 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 	
 	//we are reading left>right, dowun>up
 	for (column=0; column < MAX_ENEMY_PR; column++) {
-		signed char row = this->Estat_column[column].Fep;
+		signed char row = this->gameStatColumn[column].Fep;
 		// ^ start from last known position
 		assert(row < this->maxrows);
-		if (this->Estat_column[column].Epc == 0) {
+		if (this->gameStatColumn[column].Epc == 0) {
 			continue;
 		}
 	
@@ -1164,7 +1164,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		//finds the first enemy on a column
 		while (row>=0) {
 			if (this->Enemy[row][column].alive) {
-				this->Estat_column[column].Fep = row;
+				this->gameStatColumn[column].Fep = row;
 				break;
 			}
 			else {
@@ -1243,13 +1243,13 @@ void GameEngine_pp(struct GameEngine* this) {
     FLUSH; printf(", .lastLine = %iu", this->lastLine);
     FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
 
-    FLUSH; printf(", .Estat_column = {");
+    FLUSH; printf(", .gameStatColumn = {");
     {
 	bool first= true;
 	for (int i=0; i< MAX_ENEMY_PR; i++) {
 	    if (! first) { FLUSH; printf(","); }
 	    first = false;
-	    FLUSH; V(pp, &this->Estat_column[i]);
+	    FLUSH; V(pp, &this->gameStatColumn[i]);
 	}
     }
     FLUSH; printf("}");
@@ -1373,7 +1373,7 @@ void GameEngine_init(struct GameEngine *this,
 	this->enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
 #endif
 
-	// XXX Estat_column .. BonusEnemy
+	// XXX gameStatColumn .. BonusEnemy
 	
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
