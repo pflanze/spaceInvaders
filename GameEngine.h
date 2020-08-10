@@ -155,7 +155,7 @@ struct GameEngine {
 	unsigned int AlColsMat[MAX_ENEMY_PR];
 
 #if DRAW_BONUSENEMY
-	// GameEngine_enemyBonusCreate:
+	// GameEngine_bonusEnemyCreate:
 	unsigned char localCounter;
 #endif
 };
@@ -187,7 +187,7 @@ void GameEngine_defaultValues(struct GameEngine *this);
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemyInit(struct GameEngine *this);
 void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode);
-void GameEngine_enemyBonusCreate(struct GameEngine *this);
+void GameEngine_bonusEnemyCreate(struct GameEngine *this);
 #endif
 
 void GameEngine_bonusLaserCollision(struct GameEngine *this);

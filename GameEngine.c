@@ -1183,7 +1183,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_BONUSENEMY
-void GameEngine_enemyBonusCreate(struct GameEngine *this) {
+void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
 	if ((this->BonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemyInit(this);

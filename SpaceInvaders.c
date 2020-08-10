@@ -152,7 +152,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 #endif
 			
 #if DRAW_BONUSENEMY	
-			GameEngine_enemyBonusCreate(&(this->gameEngine));
+			GameEngine_bonusEnemyCreate(&(this->gameEngine));
 #endif	
 			GameEngine_collisions(&(this->gameEngine));
 			{
