@@ -6,12 +6,9 @@ const char* bool_show(bool v) {
     return v ? "true" : "false";
 }
 
-void flush() {
-    fflush(stdout);
-}
-
-void pp_helper(void* p, void(*_pp)(void* this)) {
-    _pp(p);
+void pp_helper(void* p,
+			   void(*_pp)(void* this, FILE* out)) {
+    _pp(p, stdout);
     printf("\n");
-    flush();
+    fflush(stdout);
 }

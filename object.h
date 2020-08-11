@@ -1,13 +1,14 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
+#include <stdio.h>
 #include "utils.h" /* bool */
 
 
 // Top of the object hierarchy
 
 struct ObjectInterface {
-	void(*pp)(void* this); // pretty-print
+	void(*pp)(void* this, FILE* out); // pretty-print
 };
 
 

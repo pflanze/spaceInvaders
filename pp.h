@@ -7,22 +7,22 @@
 #define PP(p)					\
 	pp_helper((p), (p)->vtable->pp)
 
-void pp_helper(void* p, void(*_pp)(void* this));
+void pp_helper(void* p,
+			   void(*_pp)(void* this, FILE* out));
 
 
 // Helper functions
 
 const char* bool_show(bool v);
 
-// Ugly ones?
-
-void flush();
+// Ugly? Unhygienic, but at least name-prefixed:
 
 #ifdef FLUSH
-#  undef FLUSH
-#  define FLUSH flush()
+#  define PP_FLUSH fflush(out)
+#  define PP_PRINTF(fmt, args...) { fprintf(out, fmt, ##args); PP_FLUSH; }
 #else
-#  define FLUSH
+#  define PP_FLUSH
+#  define PP_PRINTF(fmt, args...) { fprintf(out, fmt, ##args); }
 #endif
 
 #endif // _PP_H

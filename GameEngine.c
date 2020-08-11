@@ -107,34 +107,34 @@ const char* Actor_id_string(struct Actor *this) {
 }
 
 static
-void Actor_pp(struct Actor* this) {
-	printf("(struct Actor) {");
-	printf(" .x = %hhu", this->x);
-	printf(", .y = %hhu", this->y);
-	printf(", .image = {");
+void Actor_pp(struct Actor* this, FILE* out) {
+	PP_PRINTF("(struct Actor) {");
+	PP_PRINTF(" .x = %hhu", this->x);
+	PP_PRINTF(", .y = %hhu", this->y);
+	PP_PRINTF(", .image = {");
 	{
 		bool first= true;
 		for (int i=0; i<2; i++) {
-			if (! first) { FLUSH; printf(","); }
+			if (! first) { PP_PRINTF(","); }
 			first = false;
 			{
 				const unsigned char* p= this->image[i];
 				const char* nam= addrToSpriteName(p);
 				if (nam) {
-					printf(" %s", nam);
+					PP_PRINTF(" %s", nam);
 				} else {
-					printf(" %p", p);
+					PP_PRINTF(" %p", p);
 				}
 			}
 		}
 	}
-	printf(" }");
-	printf(", .alive = %s", bool_show(this->alive));
-	printf("}");
+	PP_PRINTF(" }");
+	PP_PRINTF(", .alive = %s", bool_show(this->alive));
+	PP_PRINTF("}");
 }
 
 static
-void _Actor_pp(void* this) { return Actor_pp(this); }
+void _Actor_pp(void* this, FILE* out) { Actor_pp(this, out); }
     
 const struct ObjectInterface Actor_ObjectInterface = {
 	.pp = &_Actor_pp
@@ -148,14 +148,14 @@ const struct ObjectInterface Actor_ObjectInterface = {
 #ifdef DEBUG
 
 static
-void GameStatColumn_pp(struct GameStatColumn* this) {
-	printf("(struct GameStatColumn) {");
-	printf(" .fep = %hhu", this->fep);
-	printf(", .epc = %hhu", this->epc);
-	printf("}");
+void GameStatColumn_pp(struct GameStatColumn* this, FILE* out) {
+	PP_PRINTF("(struct GameStatColumn) {");
+	PP_PRINTF(" .fep = %hhu", this->fep);
+	PP_PRINTF(", .epc = %hhu", this->epc);
+	PP_PRINTF("}");
 }
 static
-void _GameStatColumn_pp(void* this) { return GameStatColumn_pp(this); }
+void _GameStatColumn_pp(void* this, FILE* out) { GameStatColumn_pp(this, out); }
 
 const struct ObjectInterface GameStatColumn_ObjectInterface = {
 	.pp = &_GameStatColumn_pp
@@ -169,15 +169,15 @@ const struct ObjectInterface GameStatColumn_ObjectInterface = {
 #ifdef DEBUG
 
 static
-void GameStatRow_pp(struct GameStatRow* this) {
-	printf("(struct GameStatRow) {");
-	printf(" .fep = %hhu", this->fep);
-	printf(", .lep = %hhu", this->lep);
-	printf(", .epr = %hhu", this->epr);
-	printf("}");
+void GameStatRow_pp(struct GameStatRow* this, FILE* out) {
+	PP_PRINTF("(struct GameStatRow) {");
+	PP_PRINTF(" .fep = %hhu", this->fep);
+	PP_PRINTF(", .lep = %hhu", this->lep);
+	PP_PRINTF(", .epr = %hhu", this->epr);
+	PP_PRINTF("}");
 }
 static
-void _GameStatRow_pp(void* this) { return GameStatRow_pp(this); }
+void _GameStatRow_pp(void* this, FILE* out) { GameStatRow_pp(this, out); }
 
 const struct ObjectInterface GameStatRow_ObjectInterface = {
 	.pp = &_GameStatRow_pp
@@ -1235,127 +1235,126 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 
 #ifdef DEBUG
 
-void GameEngine_pp(struct GameEngine* this) {
+void GameEngine_pp(struct GameEngine* this, FILE* out) {
 	int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
-	printf("(struct GameEngine) {");
-	FLUSH; printf(" .gStatus = %u", this->gStatus);
-	FLUSH; printf(", .maxrows = %u", this->maxrows);
-	FLUSH; printf(", .lastLine = %u", this->lastLine);
-	FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
+	PP_PRINTF("(struct GameEngine) {");
+	PP_PRINTF(" .gStatus = %u", this->gStatus);
+	PP_PRINTF(", .maxrows = %u", this->maxrows);
+	PP_PRINTF(", .lastLine = %u", this->lastLine);
+	PP_PRINTF(", .enemyCount = %hhu", this->enemyCount);
 
-	FLUSH; printf(", .gameStatColumn = { ");
+	PP_PRINTF(", .gameStatColumn = { ");
 	{
 		bool first= true;
 		for (int i=0; i< MAX_ENEMY_PR; i++) {
-			if (! first) { FLUSH; printf(", "); }
+			if (! first) { PP_PRINTF(", "); }
 			first = false;
-			FLUSH; V(pp, &this->gameStatColumn[i]);
+			V(pp, &this->gameStatColumn[i], out);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .gameStatRow = { ");
+	PP_PRINTF(", .gameStatRow = { ");
 	{
 		bool first= true;
 		for (int i=0; i < maxrows; i++) {
-			if (! first) { FLUSH; printf(", "); }
+			if (! first) { PP_PRINTF(", "); }
 			first = false;
-			FLUSH; V(pp, &this->gameStatRow[i]);
+			V(pp, &this->gameStatRow[i], out);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .gameStatRow = { ");
+	PP_PRINTF(", .gameStatRow = { ");
 	{
 		bool first= true;
 		for (int i=0; i < maxrows; i++) {
 			for (int j=0; j < MAX_ENEMY_PR; j++) {
-				if (! first) { FLUSH; printf(", ");}
+				if (! first) { PP_PRINTF(", ");}
 				first = false;
-				V(pp, &this->enemy[i][j]);
+				V(pp, &this->enemy[i][j], out);
 			}
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .laser_enemy = { ");
+	PP_PRINTF(", .laser_enemy = { ");
 	{
 		bool first= true;
 		for (int i=0; i < MAXLASERS; i++) {
-			if (! first) { FLUSH; printf(", ");}
+			if (! first) { PP_PRINTF(", ");}
 			first = false;
-			V(pp, &this->laser_enemy[i]);
+			V(pp, &this->laser_enemy[i], out);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 	
-	FLUSH; printf(", .ship = ");
-	V(pp, &this->ship);
+	PP_PRINTF(", .ship = ");
+	V(pp, &this->ship, out);
 
-	FLUSH; printf(", .laser_ship = { ");
+	PP_PRINTF(", .laser_ship = { ");
 	{
 		bool first= true;
 		for (int i=0; i< MAXLASERS; i++) {
-			if (! first) {FLUSH; printf(", ");}
+			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			V(pp, &this->laser_ship[i]);
+			V(pp, &this->laser_ship[i], out);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .bonusEnemy = ");
-	V(pp, &this->bonusEnemy);
+	PP_PRINTF(", .bonusEnemy = ");
+	V(pp, &this->bonusEnemy, out);
 
-	FLUSH; printf(", .right = %s", bool_show(this->right));
-	FLUSH; printf(", .down = %s", bool_show(this->down));
-	FLUSH; printf(", .frameCount = %hhu", this->frameCount);
-	FLUSH; printf(", .frame = %hhu", this->frame);
+	PP_PRINTF(", .right = %s", bool_show(this->right));
+	PP_PRINTF(", .down = %s", bool_show(this->down));
+	PP_PRINTF(", .frameCount = %hhu", this->frameCount);
+	PP_PRINTF(", .frame = %hhu", this->frame);
 
-	FLUSH; printf(", .enemyTracking = { ");
+	PP_PRINTF(", .enemyTracking = { ");
 	{
 		bool first= true;
 		for (int i=0; i< 2; i++) {
-			if (! first) {FLUSH; printf(", ");}
+			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			FLUSH; printf("%u", this->enemyTracking[i]);
+			PP_PRINTF("%u", this->enemyTracking[i]);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .lowest = %hhu", this->lowest);
-	FLUSH; printf(", .highest = %hhu", this->highest);
+	PP_PRINTF(", .lowest = %hhu", this->lowest);
+	PP_PRINTF(", .highest = %hhu", this->highest);
 
-	FLUSH; printf(", .aliveRows = { ");
+	PP_PRINTF(", .aliveRows = { ");
 	{
 		bool first= true;
 		for (int i=0; i < maxrows; i++) {
-			if (! first) {FLUSH; printf(", ");}
+			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			FLUSH; printf("%s", bool_show(this->aliveRows[i]));
+			PP_PRINTF("%s", bool_show(this->aliveRows[i]));
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .liveCols = %u", this->liveCols);
+	PP_PRINTF(", .liveCols = %u", this->liveCols);
 
-	FLUSH; printf(", .alColsMat = { ");
+	PP_PRINTF(", .alColsMat = { ");
 	{
 		bool first= true;
 		for (int i=0; i< MAX_ENEMY_PR; i++) {
-			if (! first) {FLUSH; printf(", ");}
+			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			FLUSH; printf("%u", this->alColsMat[i]);
+			PP_PRINTF("%u", this->alColsMat[i]);
 		}
 	}
-	FLUSH; printf(" }");
+	PP_PRINTF(" }");
 
-	FLUSH; printf(", .localCounter = %hhu", this->localCounter);
+	PP_PRINTF(", .localCounter = %hhu", this->localCounter);
 
-	FLUSH; printf(" }");
-	FLUSH;
+	PP_PRINTF(" }");
 }
-static void _GameEngine_pp(void* this) { GameEngine_pp(this); }
+static void _GameEngine_pp(void* this, FILE* out) { GameEngine_pp(this, out); }
 
 const struct ObjectInterface GameEngine_ObjectInterface = {
 	.pp = &_GameEngine_pp
