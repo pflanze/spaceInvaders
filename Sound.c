@@ -602,7 +602,10 @@ void outputSounds() {
 // assumes: na
 //Used by: Function name
 void soundStateInit(struct SoundState *soundState) {
-	soundState->frameIndex = 0, soundState->sampleIndex = 0, soundState->currentSample = 0, soundState->frame = 0;
+	soundState->frameIndex = 0;
+	soundState->sampleIndex = 0;
+	soundState->currentSample = 0;
+	soundState->frame = 0;
 }
 //********functionName*****************
 // Multiline description
