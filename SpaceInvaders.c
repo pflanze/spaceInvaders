@@ -137,13 +137,13 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	switch(this->gameOverFlag){
 		case INGAME:{
 			if (this->clickCounter) {
-			        GameEngine_shipLasersCreation(&(this->gameEngine), false);
+			        GameEngine_shipLasersCreation(&this->gameEngine, false);
 				Sound_Play(&shoot);
 				this->clickCounter = 0;
 			}	
 			
 			if (this->multishot) {
-				GameEngine_laserInit_ship2(&(this->gameEngine));
+				GameEngine_laserInit_ship2(&this->gameEngine);
 				Sound_Play(&shoot);
 				this->multishot = 0;
 			}
@@ -152,47 +152,47 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				this->EFcounter = (this->EFcounter + 1) & FIREDEL;
 				if (this->EFcounter >= FIREDEL) {
 					// enemy shooting frequency
-				        GameEngine_enemyLasersCreation(&(this->gameEngine), false);
+				        GameEngine_enemyLasersCreation(&this->gameEngine, false);
 				}
 			}
 #endif
 			
 #if DRAW_BONUSENEMY	
-			GameEngine_bonusEnemyCreate(&(this->gameEngine));
+			GameEngine_bonusEnemyCreate(&this->gameEngine);
 #endif	
-			GameEngine_collisions(&(this->gameEngine));
+			GameEngine_collisions(&this->gameEngine);
 			{
 				//update gameOverFlag only if different
 				unsigned int status=
-					GameEngine_getStatus(&(this->gameEngine));
+					GameEngine_getStatus(&this->gameEngine);
 				if (this->gameOverFlag != status) {
 					this->gameOverFlag = status;
 				}
 				// it seems that there is need of a loop here
 			}
-			GameEngine_moveObjects(&(this->gameEngine));
+			GameEngine_moveObjects(&this->gameEngine);
 			break;
 		}
 		case STANDBY:{
 			{//sets defaults
 				unsigned char rst = true;
-				GameEngine_setStatus(&(this->gameEngine),
+				GameEngine_setStatus(&this->gameEngine,
 						     this->gameOverFlag);
 				if (rst) {
-					GameEngine_reset(&(this->gameEngine));
+					GameEngine_reset(&this->gameEngine);
 					rst=false;
 				}
 			}
-			GameEngine_player_move(&(this->gameEngine));
+			GameEngine_player_move(&this->gameEngine);
 			if (this->clickCounter == 1) {
-			        GameEngine_shipLasersCreation(&(this->gameEngine), false);
+			        GameEngine_shipLasersCreation(&this->gameEngine, false);
 				this->clickCounter = 0;
 				Sound_Play(&shoot);
 				this->gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					unsigned char done = true;
 					if (done) {
-						GameEngine_setStatus(&(this->gameEngine),
+						GameEngine_setStatus(&this->gameEngine,
 								     this->gameOverFlag);
 						done = false;
 					}
@@ -226,15 +226,15 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			this->swapMessage++;
 			if (this->clickCounter) {
 #if DRAW_ENEMIES
-				GameEngine_enemyInit(&(this->gameEngine));
-				GameEngine_defaultValues(&(this->gameEngine));
+				GameEngine_enemyInit(&this->gameEngine);
+				GameEngine_defaultValues(&this->gameEngine);
 #endif
 #ifndef TEST_WITHOUT_IO
 				Random_Init(NVIC_ST_CURRENT_R);
 #endif
-				GameEngine_shipInit(&(this->gameEngine));
+				GameEngine_shipInit(&this->gameEngine);
 #if DRAW_BONUSENEMY				
-				GameEngine_bonusEnemy_Move(&(this->gameEngine),
+				GameEngine_bonusEnemy_Move(&this->gameEngine,
 							   RESET);
 #endif
 				this->clickCounter = 0;
@@ -280,7 +280,7 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 	this->multishot = 0;
 	this->EFcounter = 0;
 	this->swapMessage = 0;
-	GameEngine_init(&(this->gameEngine), max_number_of_enemy_rows);
+	GameEngine_init(&this->gameEngine, max_number_of_enemy_rows);
 	init_Hw(); // call all initializing functions; XX could this
 		   // call be moved outside SpaceInvaders_init?
 	//Create initial message
@@ -291,7 +291,7 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 
 void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {
 	if ((this->gameOverFlag == INGAME) || (this->gameOverFlag == STANDBY)) {
-		GameEngine_draw(&(this->gameEngine)); // update the LCD
+		GameEngine_draw(&this->gameEngine); // update the LCD
 	}
 }
 

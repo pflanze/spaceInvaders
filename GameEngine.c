@@ -331,7 +331,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	if (this->gameStatColumn[columnNew].epc) {
 		unsigned char i;
 		for (i=0; i < MAXLASERS; i++) {
-			struct Actor *l= &(this->laser_enemy[i]);
+			struct Actor *l= &this->laser_enemy[i];
 			if (init || (l->alive == false)) {
 				unsigned char row = this->gameStatColumn[columnNew].fep;
 				Actor_init
@@ -577,7 +577,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
 	//drawing battleship
-	GameEngine_masterDraw(this, &(this->ship), 0);
+	GameEngine_masterDraw(this, &this->ship, 0);
 
 	//drawing enemies
 #if DRAW_ENEMIES
@@ -589,7 +589,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	GameEngine_laserShipDraw(this);		//uses GameEngine_masterDraw
 
 #if DRAW_BONUSENEMY		
-	GameEngine_masterDraw(this, &(this->bonusEnemy), 0);
+	GameEngine_masterDraw(this, &this->bonusEnemy, 0);
 #endif	
 		
 	// draw buffer
@@ -610,7 +610,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 		if (this->gStatus == INGAME) { this->frameCount ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			GameEngine_masterDraw(this,
-					      &(this->enemy[row][column]),
+					      &this->enemy[row][column],
 					      this->frameCount);
 		}
 	}
@@ -695,7 +695,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		if (this->laser_ship[laserNum].alive) {
 			GameEngine_masterDraw(this,
-					      &(this->laser_ship[laserNum]),
+					      &this->laser_ship[laserNum],
 					      0);
 		}
 	}
@@ -710,7 +710,7 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		GameEngine_masterDraw(this,
-				      &(this->laser_enemy[laserNum]),
+				      &this->laser_enemy[laserNum],
 				      0);
 	}
 }
