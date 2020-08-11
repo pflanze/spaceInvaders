@@ -120,9 +120,10 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
 
+	Random_Init(223412);
+
 	SpaceInvaders_init(&game.spaceInvaders,
 					   max_number_of_enemy_rows);
-	Random_Init(223412);
 	ADC0_SSFIFO3_R= 0;
 
 	game_step(&game, step_dump_fh);
