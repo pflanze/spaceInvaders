@@ -87,7 +87,7 @@ struct Game {
 static void game_screen_write(struct Game *game) {
 	char basepath[100];
 	XSNPRINTF(basepath, 100, "out/%i-%04i",
-		  game->max_number_of_enemy_rows, game->frame_number);
+			  game->max_number_of_enemy_rows, game->frame_number);
 	screen_write_xpm(Screen, basepath);
 }
 
@@ -110,7 +110,7 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	game.frame_number= -1;
 
 	SpaceInvaders_init(&game.spaceInvaders,
-			   max_number_of_enemy_rows);
+					   max_number_of_enemy_rows);
 	Random_Init(223412);
 	ADC0_SSFIFO3_R= 0;
 
@@ -121,10 +121,10 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	       {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
-			      {
-				      game_step(&game);
-				      game_screen_write(&game);
-			      });
+					  {
+						  game_step(&game);
+						  game_screen_write(&game);
+					  });
 	       });
 
 	ADC0_SSFIFO3_R= 2000;
@@ -133,10 +133,10 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	       {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
-			      {
-				      game_step(&game);
-				      game_screen_write(&game);
-			      });
+					  {
+						  game_step(&game);
+						  game_screen_write(&game);
+					  });
 	       });
 }
 

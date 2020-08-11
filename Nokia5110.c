@@ -122,15 +122,16 @@ enum typeOfWrite{
 // outputs: none
 // assumes: SSI0 and port A have already been initialized and enabled
 void static lcdwrite(enum typeOfWrite type, char message) {
-	if(type == COMMAND){
+	if (type == COMMAND) {
 		// wait until SSI0 not busy/transmit FIFO empty
-		while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
+		while ((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY) {};
 		DC = DC_COMMAND;
 		SSI0_DR_R = message;                // command out
 		// wait until SSI0 not busy/transmit FIFO empty
-		while((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY){};
+		while ((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY) {};
 	} else {
-		while((SSI0_SR_R&SSI_SR_TNF)==0){}; // wait until transmit FIFO not full
+		while ((SSI0_SR_R&SSI_SR_TNF)==0) {};
+		// ^ wait until transmit FIFO not full
 		DC = DC_DATA;
 		SSI0_DR_R = message;                // data out
 	}
@@ -172,8 +173,8 @@ void Nokia5110_Init(void) {
 	// 80/(24*(1+0)) = 3.33 MHz (slower than 4 MHz)
 	SSI0_CPSR_R = (SSI0_CPSR_R&~SSI_CPSR_CPSDVSR_M)+24; // must be even number
 	SSI0_CR0_R &= ~(SSI_CR0_SCR_M |       // SCR = 0 (3.33 Mbps data rate)
-			SSI_CR0_SPH |         // SPH = 0
-			SSI_CR0_SPO);         // SPO = 0
+					SSI_CR0_SPH |         // SPH = 0
+					SSI_CR0_SPO);         // SPO = 0
 	// FRF = Freescale format
 	SSI0_CR0_R = (SSI0_CR0_R&~SSI_CR0_FRF_M)+SSI_CR0_FRF_MOTO;
 	// DSS = 8-bit data
@@ -305,11 +306,11 @@ void Nokia5110_SetCursor(unsigned char newX, unsigned char newY) {
 // outputs: none
 void Nokia5110_Clear(void){
 #ifndef TEST_WITHOUT_IO
-  int i;
-  for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
-    lcdwrite(DATA, 0x00);
-  }
-  Nokia5110_SetCursor(0, 0);
+	int i;
+	for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
+		lcdwrite(DATA, 0x00);
+	}
+	Nokia5110_SetCursor(0, 0);
 #endif
 }
 
@@ -320,11 +321,11 @@ void Nokia5110_Clear(void){
 // assumes: LCD is in default horizontal addressing mode (V = 0)
 void Nokia5110_DrawFullImage(const char *ptr){
 #ifndef TEST_WITHOUT_IO
-  int i;
-  Nokia5110_SetCursor(0, 0);
-  for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
-    lcdwrite(DATA, ptr[i]);
-  }
+	int i;
+	Nokia5110_SetCursor(0, 0);
+	for(i=0; i<(MAX_X*MAX_Y/8); i=i+1){
+		lcdwrite(DATA, ptr[i]);
+	}
 #endif
 }
 
@@ -353,9 +354,9 @@ char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be printed on
 //                     0 is fine for ships, explosions, projectiles, and bunkers
 // outputs: none
 void Nokia5110_PrintBMP(unsigned char xpos,
-			unsigned char ypos,
-			const unsigned char *ptr,
-			unsigned char threshold) {
+						unsigned char ypos,
+						const unsigned char *ptr,
+						unsigned char threshold) {
 
 	long width = ptr[18], height = ptr[22], i, j;
 	unsigned short screenx, screeny;

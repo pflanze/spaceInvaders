@@ -11,16 +11,16 @@ unsigned char GPIO_PORTB_DATA_R=0;
 
 static unsigned char n;
 
-void Red(void){
+void Red(void) {
 	unsigned char i;
 	for(i=0;n<4;n++){
-	 GPIO_PORTB_DATA_R ^= 0x10;
+		GPIO_PORTB_DATA_R ^= 0x10;
 	}
 }
 
-void Green(void){
+void Green(void) {
 	unsigned char i;
 	for(i=0;n<4;n++){
-	 GPIO_PORTB_DATA_R ^= 0x20;
+		GPIO_PORTB_DATA_R ^= 0x20;
 	}
 }

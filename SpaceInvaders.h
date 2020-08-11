@@ -6,7 +6,7 @@
 
 
 struct SpaceInvaders {
-        struct ObjectInterface* vtable;
+	struct ObjectInterface* vtable;
 	struct GameEngine gameEngine;
 	unsigned char sysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?
@@ -17,7 +17,7 @@ struct SpaceInvaders {
 };
 
 void SpaceInvaders_init(struct SpaceInvaders *this,
-			unsigned int max_number_of_enemy_rows);
+						unsigned int max_number_of_enemy_rows);
 void SpaceInvaders_step(struct SpaceInvaders *this);
 void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this);
 

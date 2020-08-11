@@ -11,10 +11,10 @@ bool GPIO_PORTE_DATA_R = 0;
 bool Pressfire_B1(void){
 	static bool Fire_Bool,Prev_Fire;
 	
-	if((GPIO_PORTE_DATA_R&0x01) && (Prev_Fire == 0)){ // just pressed
+	if ((GPIO_PORTE_DATA_R&0x01) && (Prev_Fire == 0)) { // just pressed
 		Fire_Bool = true;
 	}
-	else{
+	else {
 		Fire_Bool = false;
 	}
 	Prev_Fire = (bool)(GPIO_PORTE_DATA_R&0x01);
@@ -25,10 +25,10 @@ bool Pressfire_B1(void){
 bool Pressfire_B2(void){
 	static bool Fire_Bool_2,Prev_Fire_2;
 	
-	if((GPIO_PORTE_DATA_R&0x02) && (Prev_Fire_2 == 0)){ // just pressed
+	if ((GPIO_PORTE_DATA_R&0x02) && (Prev_Fire_2 == 0)) { // just pressed
 		Fire_Bool_2 = true;
 	}
-	else{
+	else {
 			Fire_Bool_2 = false;
 	}
 	Prev_Fire_2 = (bool)(GPIO_PORTE_DATA_R&0x02);

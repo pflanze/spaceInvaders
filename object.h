@@ -7,7 +7,7 @@
 // Top of the object hierarchy
 
 struct ObjectInterface {
-    void(*pp)(void* this); // pretty-print
+	void(*pp)(void* this); // pretty-print
 };
 
 

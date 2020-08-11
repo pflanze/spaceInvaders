@@ -96,48 +96,48 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #ifdef DEBUG
 
 const char* Actor_id_string(struct Actor *this) {
-    switch (this->id) {
-    case ID_SHIP: return "ID_SHIP";
-    case ID_ENEMY: return "ID_ENEMY";
-    case ID_BONUS: return "ID_BONUS";
-    case ID_E_LASER: return "ID_E_LASER";
-    case ID_S_LASER: return "ID_S_LASER";
-    }
-    return "<invalid id>";
+	switch (this->id) {
+	case ID_SHIP: return "ID_SHIP";
+	case ID_ENEMY: return "ID_ENEMY";
+	case ID_BONUS: return "ID_BONUS";
+	case ID_E_LASER: return "ID_E_LASER";
+	case ID_S_LASER: return "ID_S_LASER";
+	}
+	return "<invalid id>";
 }
 
 static
 void Actor_pp(struct Actor* this) {
-    printf("(struct Actor) {");
-    printf(" .x = %hhu", this->x);
-    printf(", .y = %hhu", this->y);
-    printf(", .image = {");
-    {
-	bool first= true;
-	for (int i=0; i<2; i++) {
-	    if (! first) { FLUSH; printf(","); }
-	    first = false;
-	    {
-		const unsigned char* p= this->image[i];
-		const char* nam= addrToSpriteName(p);
-		if (nam) {
-		    printf(" %s", nam);
-		} else {
-		    printf(" %p", p);
+	printf("(struct Actor) {");
+	printf(" .x = %hhu", this->x);
+	printf(", .y = %hhu", this->y);
+	printf(", .image = {");
+	{
+		bool first= true;
+		for (int i=0; i<2; i++) {
+			if (! first) { FLUSH; printf(","); }
+			first = false;
+			{
+				const unsigned char* p= this->image[i];
+				const char* nam= addrToSpriteName(p);
+				if (nam) {
+					printf(" %s", nam);
+				} else {
+					printf(" %p", p);
+				}
+			}
 		}
-	    }
 	}
-    }
-    printf(" }");
-    printf(", .alive = %s", bool_show(this->alive));
-    printf("}");
+	printf(" }");
+	printf(", .alive = %s", bool_show(this->alive));
+	printf("}");
 }
 
 static
 void _Actor_pp(void* this) { return Actor_pp(this); }
     
 const struct ObjectInterface Actor_ObjectInterface = {
-    .pp = &_Actor_pp
+	.pp = &_Actor_pp
 };
 
 #endif
@@ -149,16 +149,16 @@ const struct ObjectInterface Actor_ObjectInterface = {
 
 static
 void GameStatColumn_pp(struct GameStatColumn* this) {
-    printf("(struct GameStatColumn) {");
-    printf(" .fep = %hhu", this->fep);
-    printf(", .epc = %hhu", this->epc);
-    printf("}");
+	printf("(struct GameStatColumn) {");
+	printf(" .fep = %hhu", this->fep);
+	printf(", .epc = %hhu", this->epc);
+	printf("}");
 }
 static
 void _GameStatColumn_pp(void* this) { return GameStatColumn_pp(this); }
 
 const struct ObjectInterface GameStatColumn_ObjectInterface = {
-    .pp = &_GameStatColumn_pp
+	.pp = &_GameStatColumn_pp
 };
 
 #endif
@@ -170,17 +170,17 @@ const struct ObjectInterface GameStatColumn_ObjectInterface = {
 
 static
 void GameStatRow_pp(struct GameStatRow* this) {
-    printf("(struct GameStatRow) {");
-    printf(" .fep = %hhu", this->fep);
-    printf(", .lep = %hhu", this->lep);
-    printf(", .epr = %hhu", this->epr);
-    printf("}");
+	printf("(struct GameStatRow) {");
+	printf(" .fep = %hhu", this->fep);
+	printf(", .lep = %hhu", this->lep);
+	printf(", .epr = %hhu", this->epr);
+	printf("}");
 }
 static
 void _GameStatRow_pp(void* this) { return GameStatRow_pp(this); }
 
 const struct ObjectInterface GameStatRow_ObjectInterface = {
-    .pp = &_GameStatRow_pp
+	.pp = &_GameStatRow_pp
 };
 
 #endif
@@ -217,35 +217,38 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 					image1 = smallEnemy10PointB;
 					break;
 			}
-			Actor_init(&this->enemy[row][column],
-				   // https://en.cppreference.com/w/c/language/compound_literal
-				   (struct Actor) {
-				    .x = 20*column,
-				    .y = 10 + row*10,
-				    .image[0] = image0,
-				    .image[1] = image1,
-				    .alive = true,
-				    .jk = false,
-				    .id = ID_ENEMY});
+			Actor_init(
+				&this->enemy[row][column],
+				// https://en.cppreference.com/w/c/language/compound_literal
+				(struct Actor) {
+						.x = 20*column,
+						.y = 10 + row*10,
+						.image[0] = image0,
+						.image[1] = image1,
+						.alive = true,
+						.jk = false,
+						.id = ID_ENEMY});
 		}
-		GameStatRow_init(&this->gameStatRow[row],
-				 (struct GameStatRow){
-				     .epr = MAX_ENEMY_PR,
-				     .fep = 0,
-				     .lep = 3});
+		GameStatRow_init(
+			&this->gameStatRow[row],
+			(struct GameStatRow) {
+					.epr = MAX_ENEMY_PR,
+					.fep = 0,
+					.lep = 3});
 	}
 }
 #endif
 
 void GameEngine_shipInit(struct GameEngine *this) {
-    Actor_init(&this->ship,
-	       (struct Actor) {
-		   .x = 0,
-		   .y = 46,
-	           .image[0] = playerShip0,
-	           .alive = true,
-	           .jk = false,
-		   .id = ID_SHIP});
+	Actor_init(
+		&this->ship,
+		(struct Actor) {
+				.x = 0,
+				.y = 46,
+				.image[0] = playerShip0,
+				.alive = true,
+				.jk = false,
+				.id = ID_SHIP});
 }
 
 // Function used to initialize the lasers fired by the spaceship
@@ -256,15 +259,16 @@ void GameEngine_shipInit(struct GameEngine *this) {
 void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 	unsigned char i;
 	for (i=0; i < MAXLASERS; i++) {
-	        if (init || (this->laser_ship[i].alive == false)) {
-			Actor_init(&this->laser_ship[i],
-				   (struct Actor){
-					   .x = this->ship.x + SHIPMIDDLE,
-					   .y = 39,
-					   .image[0] = laser0,
-					   .alive = true,
-					   .id = ID_S_LASER,
-					   .jk = false});
+		if (init || (this->laser_ship[i].alive == false)) {
+			Actor_init(
+				&this->laser_ship[i],
+				(struct Actor){
+						.x = this->ship.x + SHIPMIDDLE,
+						.y = 39,
+						.image[0] = laser0,
+						.alive = true,
+						.id = ID_S_LASER,
+						.jk = false});
 			if (! init) {
 			    break; // terminate loop when a slot is found
 			}
@@ -273,7 +277,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 }
 
 void GameEngine_shipLasers_init(struct GameEngine *this) {
-    GameEngine_shipLasersCreation(this, true);
+	GameEngine_shipLasersCreation(this, true);
 }
 
 
@@ -321,7 +325,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
-        // if init == true, initializes all lasers; kinda ugly but "works for now"
+	// if init == true, initializes all lasers; kinda ugly but "works for now"
     
 	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24) % this->liveCols;
@@ -334,17 +338,17 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 			struct Actor *l= &this->laser_enemy[i];
 			if (init || (l->alive == false)) {
 				unsigned char row = this->gameStatColumn[columnNew].fep;
-				Actor_init
-				    (l,
-				     (struct Actor){
-					.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
-				        .y = this->enemy[row][columnNew].y + E_LASER_OFFY,
-				        .image[0] = laser0,
-				        .alive = true,
-					.jk = false,
-					.id = ID_E_LASER});
+				Actor_init(
+					l,
+					(struct Actor){
+							.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
+							.y = this->enemy[row][columnNew].y + E_LASER_OFFY,
+							.image[0] = laser0,
+							.alive = true,
+							.jk = false,
+							.id = ID_E_LASER});
 				if (! init) {
-				    break; // terminate loop when a slot is found
+					break; // terminate loop when a slot is found
 				}
 			} // otherwise laser is in use, don't issue a new one
 		}
@@ -352,7 +356,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 }
 
 void GameEngine_enemyLasers_init(struct GameEngine *this) {
-    GameEngine_enemyLasersCreation(this, true);
+	GameEngine_enemyLasersCreation(this, true);
 }
 
 #endif
@@ -364,14 +368,15 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 // assumes: na
 #if DRAW_BONUSENEMY	
 void GameEngine_bonusEnemy_init(struct GameEngine *this) {
-	Actor_init(&this->bonusEnemy,
-		   (struct Actor){
-		           .x = RIGHTLIMIT,
-			   .y = TOPLIMIT,
-			   .image[0] = smallBonusEnemy0,
-			   .alive = false,
-			   .jk = false,
-			   .id = ID_BONUS});
+	Actor_init(
+		&this->bonusEnemy,
+		(struct Actor){
+				.x = RIGHTLIMIT,
+				.y = TOPLIMIT,
+				.image[0] = smallBonusEnemy0,
+				.alive = false,
+				.jk = false,
+				.id = ID_BONUS});
 }
 #endif
 
@@ -390,9 +395,9 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 	//sets defaults column stats
 	for (i=0; i < MAX_ENEMY_PR; i++) {
 	    GameStatColumn_init(&this->gameStatColumn[i],
-				(struct GameStatColumn){
-				    .epc = this->maxrows,
-				    .fep = this->lastLine});
+							(struct GameStatColumn){
+									.epc = this->maxrows,
+									.fep = this->lastLine});
 	}
 	for (i=0; i < MAX_ENEMY_PR; i++) {
 		this->laser_enemy[i].alive = false;
@@ -467,8 +472,8 @@ void GameEngine_player_move(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemy_move(struct GameEngine *this,
-			   unsigned int leftShiftColumn,
-			   unsigned int lightShiftColumn) {
+						   unsigned int leftShiftColumn,
+						   unsigned int lightShiftColumn) {
 	unsigned char row;
 	
 	for (row=0; row < this->maxrows; row++) {
@@ -610,8 +615,8 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 		if (this->gStatus == INGAME) { this->frameCount ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			GameEngine_masterDraw(this,
-					      &this->enemy[row][column],
-					      this->frameCount);
+								  &this->enemy[row][column],
+								  this->frameCount);
 		}
 	}
 }
@@ -626,8 +631,8 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // XX should probably change this into a Actor_draw procedure and move
 // the GameEngine parts out.
 void GameEngine_masterDraw(struct GameEngine *this,
-			   struct Actor *s,
-			   unsigned int frameCount) {
+						   struct Actor *s,
+						   unsigned int frameCount) {
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
@@ -681,7 +686,10 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		}	
 	}
 	else if (s->jk) {
-		Nokia5110_PrintBMP(s->x + offsetX, s->y + offsetY, s->image[this->frame], 0);
+		Nokia5110_PrintBMP(s->x + offsetX,
+						   s->y + offsetY,
+						   s->image[this->frame],
+						   0);
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?
 	}
 }
@@ -695,8 +703,8 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		if (this->laser_ship[laserNum].alive) {
 			GameEngine_masterDraw(this,
-					      &this->laser_ship[laserNum],
-					      0);
+								  &this->laser_ship[laserNum],
+								  0);
 		}
 	}
 }
@@ -710,8 +718,8 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		GameEngine_masterDraw(this,
-				      &this->laser_enemy[laserNum],
-				      0);
+							  &this->laser_enemy[laserNum],
+							  0);
 	}
 }
 #endif
@@ -727,8 +735,8 @@ GameEngine_enemyTracking_reset(struct GameEngine *this) {
 
 // Keep track of the leftmost and rightmost Enemies.
 unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
-					  unsigned int localAliveRows,
-					  unsigned int mode) {
+										  unsigned int localAliveRows,
+										  unsigned int mode) {
 
 	switch(mode){
 		case RESET:{
@@ -798,14 +806,14 @@ unsigned long ADC0_SSFIFO3_R=0;
 
 unsigned long ADC0_In(void){
 #ifndef TEST_WITHOUT_IO
-  unsigned long result;
-  ADC0_PSSI_R = 0x0008;            // 1) initiate SS3
-  while((ADC0_RIS_R&0x08)==0){};   // 2) wait for conversion done
-  result = ADC0_SSFIFO3_R & 0xFFF; // 3) read result
-  ADC0_ISC_R = 0x0008;             // 4) acknowledge completion
-  return result;
+	unsigned long result;
+	ADC0_PSSI_R = 0x0008;            // 1) initiate SS3
+	while((ADC0_RIS_R&0x08)==0){};   // 2) wait for conversion done
+	result = ADC0_SSFIFO3_R & 0xFFF; // 3) read result
+	ADC0_ISC_R = 0x0008;             // 4) acknowledge completion
+	return result;
 #else
-  return ADC0_SSFIFO3_R;
+	return ADC0_SSFIFO3_R;
 #endif
 }
 
@@ -857,7 +865,7 @@ void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemyscanY(struct GameEngine *this,
-			   unsigned int laserNum) {
+						   unsigned int laserNum) {
 	signed char row = this->lastLine;
 	unsigned char found = 0;
 	unsigned char exit = 0;
@@ -913,8 +921,8 @@ void GameEngine_update_lastLine(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 void GameEngine_enemyscanX(struct GameEngine *this,
-			   unsigned int row,
-			   unsigned int laserNum) {
+						   unsigned int row,
+						   unsigned int laserNum) {
 	unsigned char column; 
 	
 	for (column=0; column <= this->gameStatRow[row].lep; column++) {
@@ -1057,9 +1065,9 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 // assumes: na
 #if DRAW_ENEMIES
 unsigned int GameEngine_firstLast(struct GameEngine *this,
-				  unsigned int row,
-				  unsigned int column,
-				  unsigned int mode) {
+								  unsigned int row,
+								  unsigned int column,
+								  unsigned int mode) {
 	unsigned char lastCheck = 0;
 	
 	//setting defaults
@@ -1195,7 +1203,8 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
-	if ((this->bonusEnemy.alive == false) && (this->localCounter >= BONUSTIMING)){
+	if ((this->bonusEnemy.alive == false) &&
+		(this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemy_init(this);
 		this->bonusEnemy.alive = true;
 		Sound_Play(&ufoLowPitch);
@@ -1216,7 +1225,7 @@ signed int absValue(signed int value){
 
 // Systick sets the game status on the Engine
 // Callers: systick, FirstLast, EnemyLaserCollisions
-void GameEngine_setStatus(struct GameEngine *this, const unsigned int v){
+void GameEngine_setStatus(struct GameEngine *this, const unsigned int v) {
 	this->gStatus = v;
 }
 unsigned int GameEngine_getStatus(struct GameEngine *this) {
@@ -1227,138 +1236,138 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 #ifdef DEBUG
 
 void GameEngine_pp(struct GameEngine* this) {
-    int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
+	int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
-    printf("(struct GameEngine) {");
-    FLUSH; printf(" .gStatus = %u", this->gStatus);
-    FLUSH; printf(", .maxrows = %u", this->maxrows);
-    FLUSH; printf(", .lastLine = %u", this->lastLine);
-    FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
+	printf("(struct GameEngine) {");
+	FLUSH; printf(" .gStatus = %u", this->gStatus);
+	FLUSH; printf(", .maxrows = %u", this->maxrows);
+	FLUSH; printf(", .lastLine = %u", this->lastLine);
+	FLUSH; printf(", .enemyCount = %hhu", this->enemyCount);
 
-    FLUSH; printf(", .gameStatColumn = { ");
-    {
-	bool first= true;
-	for (int i=0; i< MAX_ENEMY_PR; i++) {
-	    if (! first) { FLUSH; printf(", "); }
-	    first = false;
-	    FLUSH; V(pp, &this->gameStatColumn[i]);
+	FLUSH; printf(", .gameStatColumn = { ");
+	{
+		bool first= true;
+		for (int i=0; i< MAX_ENEMY_PR; i++) {
+			if (! first) { FLUSH; printf(", "); }
+			first = false;
+			FLUSH; V(pp, &this->gameStatColumn[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .gameStatRow = { ");
-    {
-	bool first= true;
-	for (int i=0; i < maxrows; i++) {
-	    if (! first) { FLUSH; printf(", "); }
-	    first = false;
-	    FLUSH; V(pp, &this->gameStatRow[i]);
+	FLUSH; printf(", .gameStatRow = { ");
+	{
+		bool first= true;
+		for (int i=0; i < maxrows; i++) {
+			if (! first) { FLUSH; printf(", "); }
+			first = false;
+			FLUSH; V(pp, &this->gameStatRow[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .gameStatRow = { ");
-    {
-	bool first= true;
-	for (int i=0; i < maxrows; i++) {
-	    for (int j=0; j < MAX_ENEMY_PR; j++) {
-		if (! first) { FLUSH; printf(", ");}
-		first = false;
-		V(pp, &this->enemy[i][j]);
-	    }
+	FLUSH; printf(", .gameStatRow = { ");
+	{
+		bool first= true;
+		for (int i=0; i < maxrows; i++) {
+			for (int j=0; j < MAX_ENEMY_PR; j++) {
+				if (! first) { FLUSH; printf(", ");}
+				first = false;
+				V(pp, &this->enemy[i][j]);
+			}
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .laser_enemy = { ");
-    {
-	bool first= true;
-	for (int i=0; i < MAXLASERS; i++) {
-	    if (! first) { FLUSH; printf(", ");}
-	    first = false;
-	    V(pp, &this->laser_enemy[i]);
+	FLUSH; printf(", .laser_enemy = { ");
+	{
+		bool first= true;
+		for (int i=0; i < MAXLASERS; i++) {
+			if (! first) { FLUSH; printf(", ");}
+			first = false;
+			V(pp, &this->laser_enemy[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
+	
+	FLUSH; printf(", .ship = ");
+	V(pp, &this->ship);
 
-    FLUSH; printf(", .ship = ");
-    V(pp, &this->ship);
-
-    FLUSH; printf(", .laser_ship = { ");
-    {
-	bool first= true;
-	for (int i=0; i< MAXLASERS; i++) {
-	    if (! first) {FLUSH; printf(", ");}
-	    first = false;
-	    V(pp, &this->laser_ship[i]);
+	FLUSH; printf(", .laser_ship = { ");
+	{
+		bool first= true;
+		for (int i=0; i< MAXLASERS; i++) {
+			if (! first) {FLUSH; printf(", ");}
+			first = false;
+			V(pp, &this->laser_ship[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .bonusEnemy = ");
-    V(pp, &this->bonusEnemy);
+	FLUSH; printf(", .bonusEnemy = ");
+	V(pp, &this->bonusEnemy);
 
-    FLUSH; printf(", .right = %s", bool_show(this->right));
-    FLUSH; printf(", .down = %s", bool_show(this->down));
-    FLUSH; printf(", .frameCount = %hhu", this->frameCount);
-    FLUSH; printf(", .frame = %hhu", this->frame);
+	FLUSH; printf(", .right = %s", bool_show(this->right));
+	FLUSH; printf(", .down = %s", bool_show(this->down));
+	FLUSH; printf(", .frameCount = %hhu", this->frameCount);
+	FLUSH; printf(", .frame = %hhu", this->frame);
 
-    FLUSH; printf(", .enemyTracking = { ");
-    {
-	bool first= true;
-	for (int i=0; i< 2; i++) {
-	    if (! first) {FLUSH; printf(", ");}
-	    first = false;
-	    FLUSH; printf("%u", this->enemyTracking[i]);
+	FLUSH; printf(", .enemyTracking = { ");
+	{
+		bool first= true;
+		for (int i=0; i< 2; i++) {
+			if (! first) {FLUSH; printf(", ");}
+			first = false;
+			FLUSH; printf("%u", this->enemyTracking[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .lowest = %hhu", this->lowest);
-    FLUSH; printf(", .highest = %hhu", this->highest);
+	FLUSH; printf(", .lowest = %hhu", this->lowest);
+	FLUSH; printf(", .highest = %hhu", this->highest);
 
-    FLUSH; printf(", .aliveRows = { ");
-    {
-	bool first= true;
-	for (int i=0; i < maxrows; i++) {
-	    if (! first) {FLUSH; printf(", ");}
-	    first = false;
-	    FLUSH; printf("%s", bool_show(this->aliveRows[i]));
+	FLUSH; printf(", .aliveRows = { ");
+	{
+		bool first= true;
+		for (int i=0; i < maxrows; i++) {
+			if (! first) {FLUSH; printf(", ");}
+			first = false;
+			FLUSH; printf("%s", bool_show(this->aliveRows[i]));
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .liveCols = %u", this->liveCols);
+	FLUSH; printf(", .liveCols = %u", this->liveCols);
 
-    FLUSH; printf(", .alColsMat = { ");
-    {
-	bool first= true;
-	for (int i=0; i< MAX_ENEMY_PR; i++) {
-	    if (! first) {FLUSH; printf(", ");}
-	    first = false;
-	    FLUSH; printf("%u", this->alColsMat[i]);
+	FLUSH; printf(", .alColsMat = { ");
+	{
+		bool first= true;
+		for (int i=0; i< MAX_ENEMY_PR; i++) {
+			if (! first) {FLUSH; printf(", ");}
+			first = false;
+			FLUSH; printf("%u", this->alColsMat[i]);
+		}
 	}
-    }
-    FLUSH; printf(" }");
+	FLUSH; printf(" }");
 
-    FLUSH; printf(", .localCounter = %hhu", this->localCounter);
+	FLUSH; printf(", .localCounter = %hhu", this->localCounter);
 
-    FLUSH; printf(" }");
-    FLUSH;
+	FLUSH; printf(" }");
+	FLUSH;
 }
 static void _GameEngine_pp(void* this) { GameEngine_pp(this); }
 
 const struct ObjectInterface GameEngine_ObjectInterface = {
-    .pp = &_GameEngine_pp
+	.pp = &_GameEngine_pp
 };
 
 #endif
 
 
 void GameEngine_init(struct GameEngine *this,
-		     unsigned int max_number_of_enemy_rows) {
+					 unsigned int max_number_of_enemy_rows) {
 #ifdef DEBUG
-        this->vtable = &GameEngine_ObjectInterface;
+	this->vtable = &GameEngine_ObjectInterface;
 #endif
     
 	this->gStatus = STANDBY;

@@ -503,7 +503,7 @@ const struct Sound ufoLowPitch = {
 // assumes: na
 void Timer1A_Stop(void){
 #ifndef TEST_WITHOUT_IO
-  TIMER1_CTL_R &= ~0x00000001; // disable
+	TIMER1_CTL_R &= ~0x00000001; // disable
 #endif
 }
 //********functionName*****************
@@ -515,7 +515,7 @@ void Timer1A_Stop(void){
 // assumes: na
 void Timer1A_Start(void){
 #ifndef TEST_WITHOUT_IO
-  TIMER1_CTL_R |= 0x00000001;   // enable
+	TIMER1_CTL_R |= 0x00000001;   // enable
 #endif
 }	
 //********functionName*****************
@@ -527,7 +527,7 @@ void Timer1A_Start(void){
 // assumes: na
 void Timer2A_Stop(void){
 #ifndef TEST_WITHOUT_IO
-  TIMER2_CTL_R &= ~0x00000001; // disable
+	TIMER2_CTL_R &= ~0x00000001; // disable
 #endif
 }
 //********functionName*****************
@@ -539,7 +539,7 @@ void Timer2A_Stop(void){
 // assumes: na
 void Timer2A_Start(void){
 #ifndef TEST_WITHOUT_IO
-  TIMER2_CTL_R |= 0x00000001;   // enable
+	TIMER2_CTL_R |= 0x00000001;   // enable
 #endif
 }
 
@@ -587,7 +587,7 @@ static struct SoundState soundState2 = {2};
 
 unsigned int average;
 
-void outputSounds(){
+void outputSounds() {
 	average = (soundState1.currentSample + soundState2.currentSample) / 2;
 #ifndef TEST_WITHOUT_IO
 	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | average;
@@ -601,7 +601,7 @@ void outputSounds(){
 // outputs: none
 // assumes: na
 //Used by: Function name
-void soundStateInit(struct SoundState *soundState){
+void soundStateInit(struct SoundState *soundState) {
 	soundState->frameIndex = 0, soundState->sampleIndex = 0, soundState->currentSample = 0, soundState->frame = 0;
 }
 //********functionName*****************
@@ -612,7 +612,7 @@ void soundStateInit(struct SoundState *soundState){
 // outputs: none
 // assumes: na
 //Used by: Function name
-void soundUpdate(struct SoundState *soundState){
+void soundUpdate(struct SoundState *soundState) {
 	
 	if(soundState->sampleIndex == 8){
 		soundState->frameIndex++;
@@ -650,7 +650,7 @@ void soundUpdate(struct SoundState *soundState){
 // outputs: none
 // assumes: na
 //Used by: Function name
-void Timer1A_Handler(void){
+void Timer1A_Handler(void) {
 #ifndef TEST_WITHOUT_IO
 	TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
 #endif
@@ -667,7 +667,7 @@ void Timer1A_Handler(void){
 
 //static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
-void Timer2A_Handler(void){
+void Timer2A_Handler(void) {
 #ifndef TEST_WITHOUT_IO
 	TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
 #endif
@@ -683,7 +683,7 @@ void Timer2A_Handler(void){
 // inputs: *ptArraySound
 // outputs: none
 // assumes: na
-void Sound_Play(const struct Sound *ptSound){
+void Sound_Play(const struct Sound *ptSound) {
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned char timer1 = TIMER1_CTL_R&0x01;
 	if (timer1 == 0 ) {
@@ -700,7 +700,7 @@ void Sound_Play(const struct Sound *ptSound){
 }
 
 
-void Sound_stop_all(const struct Sound *sp){
+void Sound_stop_all(const struct Sound *sp) {
 	if(soundState1.sound == sp){
 		Timer1A_Stop();
 		soundStateInit(&soundState1);

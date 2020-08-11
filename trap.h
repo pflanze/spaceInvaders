@@ -6,8 +6,8 @@
 
 static inline
 void trap() {
-        raise(SIGTRAP);
-        // alternative: asm("int $3");
+	raise(SIGTRAP);
+	// alternative: asm("int $3");
 }
 
 #ifdef DEBUG
