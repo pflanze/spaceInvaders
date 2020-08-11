@@ -867,8 +867,8 @@ void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 void GameEngine_enemyscanY(struct GameEngine *this,
 						   unsigned int laserNum) {
 	signed char row = this->lastLine;
-	unsigned char found = 0;
-	unsigned char exit = 0;
+	bool found = false;
+	bool exit = false;
 	
 	unsigned char ELL[ALLOC_MAXROWS];		//enemy line low
 	unsigned char ELH[ALLOC_MAXROWS];		//enemy line high
@@ -881,19 +881,19 @@ void GameEngine_enemyscanY(struct GameEngine *this,
 	
 	row = this->lastLine;//temporal variable reset
 		
-	while((found == 0) && (exit == 0)) {
+	while((! found) && (! exit)) {
 		assert(row >= 0);
 		if (this->laser_ship[laserNum].y > ELL[row]) {
-			exit = 1;
+			exit = true;
 		}
 		else if (this->laser_ship[laserNum].y < ELH[row]) {
 			row--;
 		}
 		else {
 			GameEngine_enemyscanX(this, row, laserNum);
-			found = 1;
+			found = true;
 		}
-		exit = 1;
+		exit = true;
 	}
 }	
 #endif
@@ -1068,7 +1068,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 								  unsigned int row,
 								  unsigned int column,
 								  unsigned int mode) {
-	unsigned char lastCheck = 0;
+	bool lastCheck = false;
 	
 	//setting defaults
 	if (mode == RESET) {
@@ -1093,7 +1093,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	}
 	else {
 		if (this->gameStatRow[row].epr == 1) {
-			lastCheck = 1;			//Does forward checking only
+			lastCheck = true;			//Does forward checking only
 		}
 		else if (this->gameStatRow[row].epr == 0) {
 			this->aliveRows[row] = false;
@@ -1101,24 +1101,24 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 
 		if (this->gameStatRow[row].epr) {
 			unsigned char column=0;
-			unsigned char firstCheck = 0;
+			bool firstCheck = false;
 			for (column=0; column < MAX_ENEMY_PR; column++) {
-				if ((firstCheck == 0) &&
+				if ((! firstCheck) &&
 				    (this->enemy[row][column].alive)) {
 					// ^ counts forward, check = 0 >> keeps checking
 					this->gameStatRow[row].fep = column;
-					firstCheck = 1;
+					firstCheck = true;
 					if (this->gameStatRow[row].epr == 1) {
 						this->gameStatRow[row].lep =
 							this->gameStatRow[row].fep;
 					}
 				}
 				
-				if ((lastCheck == 0) &&
+				if ((! lastCheck) &&
 				    (this->enemy[row][REAL_MAX_EPR-column].alive)) {
 					// ^ counts backwards
 					this->gameStatRow[row].lep = REAL_MAX_EPR-column;
-					lastCheck = 1;
+					lastCheck = true;
 				}
 				
 				if (firstCheck && lastCheck) {
