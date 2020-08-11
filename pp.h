@@ -5,10 +5,14 @@
 #include "object.h"
 
 #define PP(p)					\
-	pp_helper((p), (p)->vtable->pp)
+	pp_helper((p), (p)->vtable->pp, stdout)
+
+#define PP2(p, out)									\
+	pp_helper((p), (p)->vtable->pp, out)
 
 void pp_helper(void* p,
-			   void(*_pp)(void* this, FILE* out));
+			   void(*_pp)(void* this, FILE* out),
+			   FILE* out);
 
 
 // Helper functions
