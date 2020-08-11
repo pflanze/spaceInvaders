@@ -873,7 +873,7 @@ void GameEngine_enemyscanY(struct GameEngine *this,
 	
 	row = this->lastLine;//temporal variable reset
 		
-	while((found == 0)&&(exit == 0)){
+	while((found == 0) && (exit == 0)) {
 		assert(row >= 0);
 		if (this->laser_ship[laserNum].y > ELL[row]) {
 			exit = 1;
