@@ -3,7 +3,9 @@
 
 #include "SpaceInvaders.h"
 #include "object.h"
-
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 
 struct SpaceInvaders {
 	struct ObjectInterface* vtable;
@@ -18,7 +20,12 @@ struct SpaceInvaders {
 
 void SpaceInvaders_init(struct SpaceInvaders *this,
 						unsigned int max_number_of_enemy_rows);
-void SpaceInvaders_step(struct SpaceInvaders *this);
+void SpaceInvaders_step(struct SpaceInvaders *this
+#ifdef DEBUG
+						// evil? But want to avoid depending on FILE.
+						, FILE* step_dump_fh
+#endif
+	);
 void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this);
 
 

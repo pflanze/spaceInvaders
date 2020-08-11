@@ -91,8 +91,8 @@ static void game_screen_write(struct Game *game) {
 	screen_write_xpm(Screen, basepath);
 }
 
-static void game_step(struct Game *game) {
-	SpaceInvaders_step(&game->spaceInvaders);
+static void game_step(struct Game *game, FILE* step_dump_fh) {
+	SpaceInvaders_step(&game->spaceInvaders, step_dump_fh);
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 	game->frame_number++;
@@ -106,6 +106,15 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 
 	//memset(&game, 8, sizeof(game));
 
+#define PATHSIZ 100
+	char path[PATHSIZ];
+	snprintf(path, PATHSIZ, "%i-step.dump", max_number_of_enemy_rows);
+#undef PATHSIZ
+	FILE* step_dump_fh = fopen(path, "w");
+	if (! step_dump_fh) {
+		die_errno("open", path);
+	}
+
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
 
@@ -114,7 +123,7 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 	Random_Init(223412);
 	ADC0_SSFIFO3_R= 0;
 
-	game_step(&game);
+	game_step(&game, step_dump_fh);
 	game_screen_write(&game);
 
 	REPEAT(8,
@@ -122,7 +131,7 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
 					  {
-						  game_step(&game);
+						  game_step(&game, step_dump_fh);
 						  game_screen_write(&game);
 					  });
 	       });
@@ -134,10 +143,14 @@ static void test_run(unsigned int max_number_of_enemy_rows) {
 		       GPIO_PORTE_DATA_R=1;
 		       REPEAT(10,
 					  {
-						  game_step(&game);
+						  game_step(&game, step_dump_fh);
 						  game_screen_write(&game);
 					  });
 	       });
+
+	if (fclose(step_dump_fh) != 0) {
+		die_errno("close", path);
+	}
 }
 
 
