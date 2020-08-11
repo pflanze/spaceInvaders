@@ -46,9 +46,6 @@
 #include "Sound.h"
 #include "debug.h"
 #include "SpaceInvaders.h"
-#ifdef DEBUG
-#include "pp.h"
-#endif
 
 
 /*	Required Hardware I/O connections
@@ -117,14 +114,7 @@ void EnableInterrupts(void);  // Enable interrupts
 
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // To be run from systick handler at 30 Hz
-void SpaceInvaders_step(struct SpaceInvaders *this
-#ifdef DEBUG
-						, FILE* step_dump_fh
-#endif
-	) {
-#ifdef DEBUG
-	PP2(&this->gameEngine, step_dump_fh);
-#endif
+void SpaceInvaders_step(struct SpaceInvaders *this) {
 	
 #if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only

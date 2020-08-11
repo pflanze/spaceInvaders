@@ -12,6 +12,7 @@
 #include "SpaceInvaders.h"
 // #include "sprites.h"
 #include "utils.h"
+#include "pp.h"
 
 
 #include <stdio.h>
@@ -92,7 +93,8 @@ static void game_screen_write(struct Game *game) {
 }
 
 static void game_step(struct Game *game, FILE* step_dump_fh) {
-	SpaceInvaders_step(&game->spaceInvaders, step_dump_fh);
+	PP2(&game->spaceInvaders.gameEngine, step_dump_fh);
+	SpaceInvaders_step(&game->spaceInvaders);
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 	game->frame_number++;
