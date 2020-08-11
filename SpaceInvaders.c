@@ -179,7 +179,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this
 		}
 		case STANDBY:{
 			{//sets defaults
-				unsigned char rst = true;
+				bool rst = true;
 				GameEngine_setStatus(&this->gameEngine,
 									 this->gameOverFlag);
 				if (rst) {
@@ -194,7 +194,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this
 				Sound_Play(&shoot);
 				this->gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
-					unsigned char done = true;
+					bool done = true;
 					if (done) {
 						GameEngine_setStatus(&this->gameEngine,
 											 this->gameOverFlag);
