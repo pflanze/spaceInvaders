@@ -31,6 +31,13 @@ GetOptions("verbose"=> \$verbose,
 	   ) or exit 1;
 usage unless @ARGV;
 
+sub trim {
+    my ($str)= @_;
+    $str=~ s/^\s+//s;
+    $str=~ s/\s+\z//s;
+    $str
+}
+
 sub clean {
     my ($path)= @_;
 
@@ -52,12 +59,26 @@ sub clean {
     # remove now empty directives:
     $post=~ s{^\S+:\s*\n}{}mg;
 
+    my @dirs= split /\n/, $post;
+    my %dirs;
+    for my $dir (@dirs) {
+        next if $dir=~ /^\s*\z/;
+        my @p= map { trim $_ } split /:/, $dir;
+        @p == 2 or die "more than one : in: '$dir'";
+        my ($k, $v)= @p;
+        push @{$dirs{$k}}, map { trim $_ } split /\s+/, $v;
+    }
+
     open my $o, ">", $path
-      or die "open '$path': $!";
-    print $o $pre,$post
-      or die "print to '$path': $!";
+        or die "open '$path': $!";
+    print $o $pre, "\n\n"
+        or die "print to '$path': $!";
+    for my $k (sort keys %dirs) {
+        print $o $k, ": ", join(" ", @{$dirs{$k}}), "\n"
+            or die "print to '$path': $!";
+    }
     close $o
-      or die "close '$path': $!";
+        or die "close '$path': $!";
 }
 
 
