@@ -125,7 +125,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	}
 	
 	if(Pressfire_B2()){
-		this->multishot = 1;
+		this->multishot = true;
 	}
 	
 	switch(this->gameOverFlag){
@@ -139,7 +139,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			if (this->multishot) {
 				GameEngine_laserInit_ship2(&this->gameEngine);
 				Sound_Play(&shoot);
-				this->multishot = 0;
+				this->multishot = false;
 			}
 #if DRAW_ENEMIES
 			{
@@ -271,7 +271,7 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 	this->sysTickFlag= 0;
 	this->gameOverFlag = STANDBY;
 	this->clickCounter = 0;
-	this->multishot = 0;
+	this->multishot = false;
 	this->EFcounter = 0;
 	this->swapMessage = 0;
 	GameEngine_init(&this->gameEngine, max_number_of_enemy_rows);

@@ -11,7 +11,7 @@ struct SpaceInvaders {
 	unsigned char sysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?
 	unsigned char clickCounter; // keeps track of clicks
-	unsigned char multishot;
+	bool multishot;
 	unsigned char EFcounter;
 	char swapMessage;
 };
