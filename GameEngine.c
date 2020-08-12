@@ -1061,7 +1061,7 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 //					the number of enemies on each row
 //					It is called by GameEngine_enemyscanX to update gameStatRow
 //					it is also used to update general game stats
-// changes: gameStatRow[row].*, gameStatColumn[column].epc, enemyCount, aliveRows[row]
+// changes: gameStatRow[row].*, gameStatColumn[column].epc, enemyCount, rowAlive[row]
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
@@ -1078,7 +1078,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{	//liverows[] defaults
 			unsigned char i;
 			for (i=0; i < this->maxrows; i++) {
-				this->aliveRows[i] = true;
+				this->rowAlive[i] = true;
 			}
 		}
 		return 0;
@@ -1089,7 +1089,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 	this->enemyCount--;
 	
 	if (this->enemyCount == 0) {
-		this->aliveRows[row] = false;
+		this->rowAlive[row] = false;
 		// ^ needed only to update stats before quitting, good for debugging
 		GameEngine_setStatus(this, WIN);
 	}
@@ -1098,7 +1098,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 			lastCheck = true;			//Does forward checking only
 		}
 		else if (this->gameStatRow[row].epr == 0) {
-			this->aliveRows[row] = false;
+			this->rowAlive[row] = false;
 		}
 
 		if (this->gameStatRow[row].epr) {
@@ -1135,7 +1135,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 		{
 			unsigned char i;
 			for (i=0; i <= this->maxrows - 1; i++) {
-				if (this->aliveRows[i]) {
+				if (this->rowAlive[i]) {
 					alr_counter++;
 				}
 			}
@@ -1328,13 +1328,13 @@ void GameEngine_pp(struct GameEngine* this, FILE* out) {
 	PP_PRINTF(", .lowest = %hhu", this->lowest);
 	PP_PRINTF(", .highest = %hhu", this->highest);
 
-	PP_PRINTF(", .aliveRows = { ");
+	PP_PRINTF(", .rowAlive = { ");
 	{
 		bool first= true;
 		for (int i=0; i < maxrows; i++) {
 			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			PP_PRINTF("%s", bool_show(this->aliveRows[i]));
+			PP_PRINTF("%s", bool_show(this->rowAlive[i]));
 		}
 	}
 	PP_PRINTF(" }");
