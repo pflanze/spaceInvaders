@@ -239,7 +239,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			}
 		}
 	}
-	this->sysTickFlag = 1;
+	this->sysTickFlag = true;
 }
 
 void init_Hw(void) {
@@ -268,7 +268,7 @@ void init_Hw(void) {
 void SpaceInvaders_init(struct SpaceInvaders *this,
 						unsigned int max_number_of_enemy_rows) {
     this->vtable = NULL; // XXX
-	this->sysTickFlag= 0;
+	this->sysTickFlag= false;
 	this->gameOverFlag = STANDBY;
 	this->clickCounter = 0;
 	this->multishot = false;
@@ -302,10 +302,10 @@ int main(void) {
 	Random_Init(1);
 	SpaceInvaders_init(&game, 2 /* max_number_of_enemy_rows */);
 	
-	while(1){
-		while(sysTickFlag == 0){};
+	while (1) {
+		while (sysTickFlag == false) {};
 		SpaceInvaders_main_update_LCD(&game);
-		sysTickFlag = 0;
+		sysTickFlag = false;
 	}
 }
 #endif
