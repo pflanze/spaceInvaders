@@ -130,7 +130,9 @@ void Actor_pp(struct Actor* this, FILE* out) {
 	}
 	PP_PRINTF(" }");
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
-	PP_PRINTF("}");
+	PP_PRINTF(", .jk = %s", bool_show(this->jk));
+	PP_PRINTF(", .id = %s", Actor_id_string(this));
+	PP_PRINTF(" }");
 }
 
 static
@@ -152,7 +154,7 @@ void GameStatColumn_pp(struct GameStatColumn* this, FILE* out) {
 	PP_PRINTF("(struct GameStatColumn) {");
 	PP_PRINTF(" .fep = %hhu", this->fep);
 	PP_PRINTF(", .epc = %hhu", this->epc);
-	PP_PRINTF("}");
+	PP_PRINTF(" }");
 }
 static
 void _GameStatColumn_pp(void* this, FILE* out) { GameStatColumn_pp(this, out); }
@@ -174,7 +176,7 @@ void GameStatRow_pp(struct GameStatRow* this, FILE* out) {
 	PP_PRINTF(" .fep = %hhu", this->fep);
 	PP_PRINTF(", .lep = %hhu", this->lep);
 	PP_PRINTF(", .epr = %hhu", this->epr);
-	PP_PRINTF("}");
+	PP_PRINTF(" }");
 }
 static
 void _GameStatRow_pp(void* this, FILE* out) { GameStatRow_pp(this, out); }
@@ -1266,7 +1268,7 @@ void GameEngine_pp(struct GameEngine* this, FILE* out) {
 	}
 	PP_PRINTF(" }");
 
-	PP_PRINTF(", .gameStatRow = { ");
+	PP_PRINTF(", .enemy = { ");
 	{
 		bool first= true;
 		for (int i=0; i < maxrows; i++) {
