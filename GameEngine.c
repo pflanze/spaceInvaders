@@ -1379,6 +1379,7 @@ void GameEngine_init(struct GameEngine *this,
 	this->enemyCount= this->maxrows * MAX_ENEMY_PR; // COPYPASTE
 #endif
 
+	GameEngine_reset(this);
 #if DRAW_ENEMIES
 	GameEngine_enemyInit(this);
 	// must call defaultValues and firstEPC *before* enemyLaserInit
@@ -1401,8 +1402,6 @@ void GameEngine_init(struct GameEngine *this,
 	this->frameCount = 0;
 	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
-
-	// XXX aliveRows ?
 
 #if DRAW_BONUSENEMY
 	this->localCounter = 0;
