@@ -72,10 +72,6 @@
 
 //Return vs update (mode)
 #define UPDATE		1
-#define RETURNARR	3
-
-//Miselaneus
-#define NA 1
 
 
 
@@ -425,7 +421,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
-	GameEngine_enemyShiftTrack(this, 0, RESET);
+	GameEngine_enemyTracking_reset(this);
 	GameEngine_firstEPC_reset(this);
 	GameEngine_firstLast(this, 0, 0, RESET);
 #endif
@@ -438,13 +434,12 @@ void GameEngine_reset(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 void GameEngine_moveObjects(struct GameEngine *this) {
-#if DRAW_ENEMIES
-	unsigned int *ETracking = GameEngine_enemyShiftTrack(this, NA, RETURNARR);
-#endif
 	GameEngine_player_move(this); // calls ADC0_in, Convert2Distance
 	if (this->gStatus == INGAME) {
 #if DRAW_ENEMIES
-		GameEngine_enemy_move(this, ETracking[0], ETracking[1]);
+		GameEngine_enemy_move(this,
+							  this->enemyTracking[0],
+							  this->enemyTracking[1]);
 		// ^ updates enemy coordinate
 		GameEngine_laserEnemy_move(this);
 #endif
@@ -736,23 +731,9 @@ GameEngine_enemyTracking_reset(struct GameEngine *this) {
 }
 
 // Keep track of the leftmost and rightmost Enemies.
-unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
-										  unsigned int localAliveRows,
-										  unsigned int mode) {
-
-	switch(mode){
-		case RESET:{
-			GameEngine_enemyTracking_reset(this);
-			break;
-			// XXX is this still necessary as opposed to
-			// simply using GameEngine_enemyTracking_reset
-			// directly now (i.e. is there magic in
-			// continuing to run here?)
-		}
-		case RETURNARR:
-			return this->enemyTracking;
-	}
-	
+void
+GameEngine_enemyShiftTrack(struct GameEngine *this,
+						   unsigned int localAliveRows) {
 	switch(localAliveRows){
 		case 1:
 			if (this->gameStatRow[this->lastLine].epr == 1) {
@@ -782,7 +763,6 @@ unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
 			this->enemyTracking[0] = this->lowest;
 		}	
 	}
-	return NULL;
 }
 #endif
 
@@ -943,7 +923,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 				alive_rows = GameEngine_firstLast(this, row, column, UPDATE);
 				GameEngine_update_lastLine(this);
 				//updates 
-				GameEngine_enemyShiftTrack(this, alive_rows, UPDATE);
+				GameEngine_enemyShiftTrack(this, alive_rows);
 				GameEngine_firstEPC(this); //update point
 				break; //return????
 			}
@@ -1150,7 +1130,6 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 //                direction)
 // changes: gameStatColumn[column].(fep|epc),alColsMat[aliveCol], liveCols
 // Callers: EnemyLaserInit, GameEngine_enemyscanX
-// inputs: mode = RETURNVAL|UPDATE|RETURNARR|RESET
 // outputs: liveCols
 // assumes: na
 #if DRAW_ENEMIES

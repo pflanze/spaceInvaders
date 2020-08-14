@@ -213,9 +213,11 @@ void GameEngine_moveObjects(struct GameEngine *this);
 void GameEngine_collisions(struct GameEngine *this);
 void GameEngine_reset(struct GameEngine *this);
 
-unsigned int * GameEngine_enemyShiftTrack(struct GameEngine *this,
-										  unsigned int localAliveRows,
-										  unsigned int mode);
+#if DRAW_ENEMIES
+void GameEngine_enemyTracking_reset(struct GameEngine *this);
+void GameEngine_enemyShiftTrack(struct GameEngine *this,
+								unsigned int localAliveRows);
+#endif
 unsigned int GameEngine_firstLast(struct GameEngine *this,
 								  unsigned int row,
 								  unsigned int column,
