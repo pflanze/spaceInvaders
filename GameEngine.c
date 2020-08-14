@@ -441,7 +441,7 @@ void GameEngine_moveObjects(struct GameEngine *this) {
 #endif
 
 #if DRAW_BONUSENEMY
-		GameEngine_bonusEnemy_Move(this, INGAME);
+		GameEngine_bonusEnemy_move(this);
 #endif
 		GameEngine_laserShip_move(this);
 	}
@@ -551,11 +551,12 @@ void GameEngine_laserEnemy_move(struct GameEngine *this) {
 #endif
 
 #if DRAW_BONUSENEMY
-void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode) {
-	if (mode == RESET) {
-		this->bonusEnemy.alive = false;
-		return;
-	}
+
+void GameEngine_bonusEnemy_move_reset(struct GameEngine *this) {
+	this->bonusEnemy.alive = false;
+}
+
+void GameEngine_bonusEnemy_move(struct GameEngine *this) {
 	if (this->bonusEnemy.alive) {
 		this->bonusEnemy.x--;
 		if (this->bonusEnemy.x <= LEFTLIMIT) {

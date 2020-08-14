@@ -228,8 +228,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 #endif
 				GameEngine_shipInit(&this->gameEngine);
 #if DRAW_BONUSENEMY				
-				GameEngine_bonusEnemy_Move(&this->gameEngine,
-							   RESET);
+				GameEngine_bonusEnemy_move_reset(&this->gameEngine);
 #endif
 				this->clickCounter = 0;
 #ifndef TEST_WITHOUT_IO

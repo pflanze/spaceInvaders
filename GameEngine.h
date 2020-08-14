@@ -11,7 +11,6 @@
 #define LOOSE		1
 #define WIN			2
 #define STANDBY		3
-#define RESET		4
 //0: In game
 //1: Game Over (you loose)
 //2: Just Won
@@ -186,7 +185,8 @@ void GameEngine_defaultValues(struct GameEngine *this);
 
 #if DRAW_BONUSENEMY
 void GameEngine_bonusEnemy_init(struct GameEngine *this);
-void GameEngine_bonusEnemy_Move(struct GameEngine *this, unsigned int mode);
+void GameEngine_bonusEnemy_move_reset(struct GameEngine *this);
+void GameEngine_bonusEnemy_move(struct GameEngine *this);
 void GameEngine_bonusEnemyCreate(struct GameEngine *this);
 #endif
 
