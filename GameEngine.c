@@ -70,10 +70,6 @@
 #define	FIRST_E	0
 #define	LAST_E	3
 
-//Return vs update (mode)
-#define UPDATE		1
-
-
 
 #if DRAW_ENEMIES
 static
@@ -423,7 +419,7 @@ void GameEngine_reset(struct GameEngine *this) {
 #if DRAW_ENEMIES
 	GameEngine_enemyTracking_reset(this);
 	GameEngine_firstEPC_reset(this);
-	GameEngine_firstLast(this, 0, 0, RESET);
+	GameEngine_firstLast_reset(this);
 #endif
 }
 
@@ -920,7 +916,7 @@ void GameEngine_enemyscanX(struct GameEngine *this,
 				this->laser_ship[laserNum].alive = false;
 				this->enemy[row][column].alive = false;
 				this->enemy[row][column].jk = true;
-				alive_rows = GameEngine_firstLast(this, row, column, UPDATE);
+				alive_rows = GameEngine_firstLast(this, row, column);
 				GameEngine_update_lastLine(this);
 				//updates 
 				GameEngine_enemyShiftTrack(this, alive_rows);
@@ -1037,6 +1033,18 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 
 //-----------------------------------------GAME STATS---------------------------
 
+#if DRAW_ENEMIES
+
+void GameEngine_firstLast_reset(struct GameEngine *this) {
+	this->enemyCount = this->maxrows * MAX_ENEMY_PR; // see COPYPASTE
+	{	//liverows[] defaults
+		unsigned char i;
+		for (i=0; i < this->maxrows; i++) {
+			this->rowAlive[i] = true;
+		}
+	}
+}
+
 //this function should keep track of:
 //					the number of enemies on each row
 //					It is called by GameEngine_enemyscanX to update gameStatRow
@@ -1045,24 +1053,10 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
-#if DRAW_ENEMIES
 unsigned int GameEngine_firstLast(struct GameEngine *this,
 								  unsigned int row,
-								  unsigned int column,
-								  unsigned int mode) {
+								  unsigned int column) {
 	bool lastCheck = false;
-	
-	//setting defaults
-	if (mode == RESET) {
-		this->enemyCount = this->maxrows * MAX_ENEMY_PR; // see COPYPASTE
-		{	//liverows[] defaults
-			unsigned char i;
-			for (i=0; i < this->maxrows; i++) {
-				this->rowAlive[i] = true;
-			}
-		}
-		return 0;
-	}
 	
 	this->gameStatRow[row].epr--;
 	this->gameStatColumn[column].epc--;

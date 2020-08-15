@@ -217,14 +217,14 @@ void GameEngine_reset(struct GameEngine *this);
 void GameEngine_enemyTracking_reset(struct GameEngine *this);
 void GameEngine_enemyShiftTrack(struct GameEngine *this,
 								unsigned int localAliveRows);
-#endif
+void GameEngine_firstLast_reset(struct GameEngine *this);
 unsigned int GameEngine_firstLast(struct GameEngine *this,
 								  unsigned int row,
-								  unsigned int column,
-								  unsigned int mode);
+								  unsigned int column);
 // first enemy per column
 void GameEngine_firstEPC_reset(struct GameEngine *this);
 void GameEngine_firstEPC(struct GameEngine *this);
+#endif
 void GameEngine_enemyscanX(struct GameEngine *this,
 						   unsigned int row,
 						   unsigned int laserNum);
