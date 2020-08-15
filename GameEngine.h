@@ -133,7 +133,7 @@ struct GameEngine {
 	bool down; //moves the enemies, 1: moves down
 
 	// GameEngine_enemyDraw:
-	unsigned char frameCount;  // 0,1,0,1,...
+	unsigned char frameIndex;  // 0,1,0,1,...
 
 	// GameEngine_masterDraw:
 	unsigned char frame;
@@ -200,7 +200,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init);
 void GameEngine_laserEnemyDraw(struct GameEngine *this);
 void GameEngine_masterDraw(struct GameEngine *this,
 						   struct Actor *s,
-						   unsigned int frameCount);
+						   unsigned int frameIndex);
 
 void GameEngine_enemyscanY(struct GameEngine *this,
 						   unsigned int laserNum);

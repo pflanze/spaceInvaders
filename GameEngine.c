@@ -606,11 +606,11 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 
 	for (row=0; row < this->maxrows; row++) {
 		unsigned char column;
-		if (this->gStatus == INGAME) { this->frameCount ^= 0x01; }  // 0,1,0,1,...
+		if (this->gStatus == INGAME) { this->frameIndex ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			GameEngine_masterDraw(this,
 								  &this->enemy[row][column],
-								  this->frameCount);
+								  this->frameIndex);
 		}
 	}
 }
@@ -626,7 +626,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // the GameEngine parts out.
 void GameEngine_masterDraw(struct GameEngine *this,
 						   struct Actor *s,
-						   unsigned int frameCount) {
+						   unsigned int frameIndex) {
 	signed char offsetX = 0;
 	signed char offsetY = 0;
 	
@@ -666,8 +666,8 @@ void GameEngine_masterDraw(struct GameEngine *this,
 	// Only enemies need change between frames, unless
 	// something explodes.
 	if (s->alive) {
-		unsigned int frameIndex = (s->id == ID_ENEMY) ? frameCount : 0;
-		Nokia5110_PrintBMP(s->x, s->y, s->image[frameIndex], 0);
+		unsigned int i = (s->id == ID_ENEMY) ? frameIndex : 0;
+		Nokia5110_PrintBMP(s->x, s->y, s->image[i], 0);
 	}
 	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + offsetX,
@@ -1275,7 +1275,7 @@ void GameEngine_pp(struct GameEngine* this, FILE* out) {
 
 	PP_PRINTF(", .right = %s", bool_show(this->right));
 	PP_PRINTF(", .down = %s", bool_show(this->down));
-	PP_PRINTF(", .frameCount = %hhu", this->frameCount);
+	PP_PRINTF(", .frameIndex = %hhu", this->frameIndex);
 	PP_PRINTF(", .frame = %hhu", this->frame);
 
 	PP_PRINTF(", .enemyTracking = { ");
@@ -1363,7 +1363,7 @@ void GameEngine_init(struct GameEngine *this,
 
 	this->right = true;
 	this->down = false;
-	this->frameCount = 0;
+	this->frameIndex = 0;
 	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
 
