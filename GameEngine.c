@@ -649,21 +649,18 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		}
 		
 		switch (this->frame) {
-			case 0:
-				s->image[0] = smallExplosion0;
-				s->image[1] = smallExplosion1;
-				break;
-			case 1:
-				s->image[0] = smallExplosion0;
-				s->image[1] = smallExplosion1;
-				break;
-			case 2:
-				s->jk = false;
-				this->frame = 0;
-				if (s->id == ID_SHIP) {
-					this->gStatus = LOOSE;
-				}
-				break;
+		case 0:
+		case 1:
+			s->image[0] = smallExplosion0;
+			s->image[1] = smallExplosion1;
+			break;
+		case 2:
+			s->jk = false;
+			this->frame = 0;
+			if (s->id == ID_SHIP) {
+				this->gStatus = LOOSE;
+			}
+			break;
 		}
 	}
 	// Only enemies need change between frames, unless
