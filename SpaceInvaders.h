@@ -6,7 +6,9 @@
 
 
 struct SpaceInvaders {
+#ifdef DEBUG
 	struct ObjectInterface* vtable;
+#endif
 	struct GameEngine gameEngine;
 	bool sysTickFlag;
 	unsigned int gameOverFlag; // XX why is this a copy of GameEngine_getStatus ?

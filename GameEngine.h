@@ -29,7 +29,9 @@
 
 
 struct Actor {
+#ifdef DEBUG
 	const struct ObjectInterface* vtable;
+#endif
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
 	const unsigned char *image[2]; // two pointers to images
@@ -60,7 +62,9 @@ const char* Actor_id_string(struct Actor *this);
 
 
 struct GameStatColumn {
+#ifdef DEBUG
 	const struct ObjectInterface* vtable;
+#endif
 	unsigned char fep;		//"First enemy position"
 	unsigned char epc;		//"Enemies per column"
 };
@@ -81,7 +85,9 @@ void GameStatColumn_init(struct GameStatColumn* this,
 
 //game stats per row
 struct GameStatRow {
+#ifdef DEBUG
 	const struct ObjectInterface* vtable;
+#endif
 	unsigned char fep;		//"First enemy position"
 	unsigned char lep;		//"Last enemy position"
 	unsigned char epr;		//"Enemies per row"
@@ -102,7 +108,9 @@ void GameStatRow_init(struct GameStatRow* this,
 
 
 struct GameEngine {
+#ifdef DEBUG
 	const struct ObjectInterface* vtable;
+#endif
 	unsigned int gStatus;
 	unsigned int maxrows;
 
