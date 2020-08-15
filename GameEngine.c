@@ -666,18 +666,11 @@ void GameEngine_masterDraw(struct GameEngine *this,
 				break;
 		}
 	}
+	// Only enemies need change between frames, unless
+	// something explodes.
 	if (s->alive) {
-
-		// only enemies need change between frames, unless
-		// something explodes
-		if (s->id == ID_ENEMY) {
-			Nokia5110_PrintBMP(s->x, s->y, s->image[frameCount], 0);
-			// ^ frame is always 0, except for enemies
-		}
-		else {
-			Nokia5110_PrintBMP(s->x, s->y, s->image[0], 0);
-			// frame is always 0, except for enemies
-		}	
+		unsigned int frameIndex = (s->id == ID_ENEMY) ? frameCount : 0;
+		Nokia5110_PrintBMP(s->x, s->y, s->image[frameIndex], 0);
 	}
 	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + offsetX,
