@@ -7,7 +7,7 @@
 //Timer2a
 #define PERIOD 7273
 
-void init_Hw(void);							//Initializes the system (help to keep main clean)
+// void init_Hw(void);  -- now in SpaceInvaders.c
 void Systick_Init(unsigned long periodSystick);
 void Timer1A_Init(void);
 void Timer2A_Init(void);
