@@ -266,6 +266,6 @@ const char* addrToSpriteName(const unsigned char* p) {
 	C(missile0);
 	C(laser0);
 #undef C
-	return NULL;
+	return "<unknown sprite image>";
 }
 #endif

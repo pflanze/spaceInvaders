@@ -131,7 +131,7 @@ const char* addrToActorConstName(const struct ActorConsts* p) {
 	C(enemy10Consts);
 	C(smallExplosionConsts);
 #undef C
-	return NULL;
+	return "<unknown ActorConst>";
 }
 
 //-----------------------------Actor--------------------------------------------
