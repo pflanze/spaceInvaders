@@ -571,7 +571,7 @@ void GameEngine_laserShip_move(struct GameEngine *this) {
 void GameEngine_laserEnemy_move(struct GameEngine *this) {
  	unsigned char i;
 	
-	for (i=0; i < MAXLASERS; i++) { // XXX use runtime value not MAXLASERS, RIGHT?
+	for (i=0; i < MAXLASERS; i++) {
 		if (this->laser_enemy[i].alive) {
 			this->laser_enemy[i].y++;
 			//laser out of range
