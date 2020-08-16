@@ -1,3 +1,5 @@
+#ifndef _NOKIA5110_FONT_H
+#define _NOKIA5110_FONT_H
 
 // This table contains the hex values that represent pixels
 // for a font that is 5 pixels wide and 8 pixels high
@@ -100,3 +102,5 @@ static const char ASCII[][5] = {
 //  ,{0x78, 0x46, 0x41, 0x46, 0x78} // 7f DEL
   ,{0x1f, 0x24, 0x7c, 0x24, 0x1f} // 7f UT sign
 };
+
+#endif

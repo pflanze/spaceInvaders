@@ -1,4 +1,5 @@
-//sound.h
+#ifndef _SOUND_H
+#define _SOUND_H
 
 
 //Used to set the sound frequency
@@ -18,3 +19,5 @@ void DAC_Out(unsigned int data);
 void Sound_Play(const struct Sound *ptSound);
 void Sound_stop_all(const struct Sound *sp);
 
+
+#endif /* _SOUND_H */
