@@ -31,7 +31,7 @@ runtest: test t/out
 	./test
 
 t/out:
-	mkdir out
+	mkdir -p out
 
 test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
