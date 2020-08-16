@@ -84,7 +84,9 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #define ID_BONUS       2
 #define ID_E_LASER     3
 #define ID_S_LASER     4
-#define ID_EXPLOSION   99 /* XX HACK? */
+// When an actor explodes, it turns into an explosion actor (leaving no trace or
+// knowledge of what it was before)
+#define ID_EXPLOSION   99
 
 #ifdef DEBUG
 
@@ -95,7 +97,7 @@ const char* Actor_id_string(struct Actor *this) {
 	case ID_BONUS: return "ID_BONUS";
 	case ID_E_LASER: return "ID_E_LASER";
 	case ID_S_LASER: return "ID_S_LASER";
-	case ID_EXPLOSION: return "ID_EXPLOSION"; // XX HACK?
+	case ID_EXPLOSION: return "ID_EXPLOSION";
 	}
 	return "<invalid id>";
 }
