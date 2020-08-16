@@ -18,7 +18,7 @@
 #endif
 #include "random.h"
 #include "utils.h"
-#include "assert.h"
+#include "perhaps_assert.h"
 #include "Sound.h"
 #ifdef DEBUG
 #include <stdio.h>

@@ -19,7 +19,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <assert.h>
+#include "perhaps_assert.h"
 
 #define XSNPRINTF(str, n, ...) \
 	assert(snprintf(str, n, __VA_ARGS__) < n)
