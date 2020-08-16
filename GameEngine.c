@@ -718,7 +718,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 						   s->y + s->origConsts->offsetY,
 						   s->consts->image[this->frame],
 						   0);
-		this->frame++; // XXX is it a bug that there's no check for wraparound here?
+		this->frame++; // wrap-around check is under "case 2:" above
 	}
 }
 
