@@ -27,18 +27,23 @@
 #define ALLOC_MAXROWS	2
 
 
+struct ActorConsts {
+	unsigned char behaviour; // ID_ constants, XX rename those to BEHAVIOUR_
+	const unsigned char *image[2]; // two pointers to images
+	// XX offsets
+};
+
 
 struct Actor {
 #ifdef DEBUG
 	const struct ObjectInterface* vtable;
 #endif
+	const struct ActorConsts* consts;
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
-	const unsigned char *image[2]; // two pointers to images
 	bool alive;
 	bool jk;                       // status for image replacement,
 	                               // represents "Just Killed", needs updating
-	unsigned char id;
 };
 
 #ifdef DEBUG

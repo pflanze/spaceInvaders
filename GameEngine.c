@@ -84,16 +84,18 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #define ID_BONUS       2
 #define ID_E_LASER     3
 #define ID_S_LASER     4
+#define ID_EXPLOSION   99 /* XX HACK? */
 
 #ifdef DEBUG
 
 const char* Actor_id_string(struct Actor *this) {
-	switch (this->id) {
+	switch (this->consts->behaviour) {
 	case ID_SHIP: return "ID_SHIP";
 	case ID_ENEMY: return "ID_ENEMY";
 	case ID_BONUS: return "ID_BONUS";
 	case ID_E_LASER: return "ID_E_LASER";
 	case ID_S_LASER: return "ID_S_LASER";
+	case ID_EXPLOSION: return "ID_EXPLOSION"; // XX HACK?
 	}
 	return "<invalid id>";
 }
@@ -110,7 +112,7 @@ void Actor_pp(struct Actor* this, FILE* out) {
 			if (! first) { PP_PRINTF(","); }
 			first = false;
 			{
-				const unsigned char* p= this->image[i];
+				const unsigned char* p= this->consts->image[i];
 				const char* nam= addrToSpriteName(p);
 				if (nam) {
 					PP_PRINTF(" %s", nam);
@@ -136,6 +138,46 @@ const struct ObjectInterface Actor_ObjectInterface = {
 
 #endif
 
+
+//------------------------ActorConsts-------------------------------------------
+
+const struct ActorConsts shipConsts = {
+	.behaviour = ID_SHIP
+	, .image[0] = playerShip0
+};
+
+const struct ActorConsts shipLaserConsts = {
+	.behaviour = ID_S_LASER
+	, .image[0] = laser0
+};
+
+const struct ActorConsts enemyLaserConsts = {
+	.behaviour = ID_E_LASER
+	, .image[0] = laser0
+};
+
+const struct ActorConsts bonusEnemyConsts = {
+	.behaviour = ID_BONUS
+	, .image[0] = smallBonusEnemy0
+};
+
+const struct ActorConsts enemy30Consts = {
+	.behaviour = ID_ENEMY
+	, { smallEnemy30PointA, smallEnemy30PointB }
+};
+const struct ActorConsts enemy20Consts = {
+	.behaviour = ID_ENEMY
+	, { smallEnemy20PointA, smallEnemy20PointB }
+};
+const struct ActorConsts enemy10Consts = {
+	.behaviour = ID_ENEMY
+	, { smallEnemy10PointA, smallEnemy10PointB }
+};
+
+const struct ActorConsts smallExplosionConsts = {
+	.behaviour = ID_EXPLOSION
+	, { smallExplosion0, smallExplosion1 }
+};
 
 //------------------------GameStatColumn----------------------------------------
 
@@ -195,33 +237,27 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 	for (row=0; row < this->maxrows; row++) {
 		unsigned int column;
 		for (column=0; column < MAX_ENEMY_PR; column++) {
-			const unsigned char* image0;
-			const unsigned char* image1;
+			const struct ActorConsts *ac; 
 			switch(row) {
 				case 0:
-					image0 = smallEnemy30PointA;
-					image1 = smallEnemy30PointB;
+					ac = &enemy30Consts;
 					break;
 				case 1:
-					image0 = smallEnemy20PointA;
-					image1 = smallEnemy20PointB;
+					ac = &enemy20Consts;
 					break;
 				case 2:
-					image0 = smallEnemy10PointA;
-					image1 = smallEnemy10PointB;
+					ac = &enemy10Consts;
 					break;
 			}
 			Actor_init(
 				&this->enemy[row][column],
 				// https://en.cppreference.com/w/c/language/compound_literal
 				(struct Actor) {
+						.consts = ac,
 						.x = 20*column,
 						.y = 10 + row*10,
-						.image[0] = image0,
-						.image[1] = image1,
 						.alive = true,
-						.jk = false,
-						.id = ID_ENEMY});
+						.jk = false});
 		}
 		GameStatRow_init(
 			&this->gameStatRow[row],
@@ -237,12 +273,11 @@ void GameEngine_shipInit(struct GameEngine *this) {
 	Actor_init(
 		&this->ship,
 		(struct Actor) {
+				.consts = &shipConsts,
 				.x = 0,
 				.y = 46,
-				.image[0] = playerShip0,
 				.alive = true,
-				.jk = false,
-				.id = ID_SHIP});
+				.jk = false});
 }
 
 // Function used to initialize the lasers fired by the spaceship
@@ -256,12 +291,11 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 		if (init || (this->laser_ship[i].alive == false)) {
 			Actor_init(
 				&this->laser_ship[i],
-				(struct Actor){
+				(struct Actor) {
+						.consts = &shipLaserConsts,
 						.x = this->ship.x + SHIPMIDDLE,
 						.y = 39,
-						.image[0] = laser0,
 						.alive = true,
-						.id = ID_S_LASER,
 						.jk = false});
 			if (! init) {
 			    break; // terminate loop when a slot is found
@@ -303,10 +337,10 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 					break; // terminate loop when a slot is found
 				
 			}
+			// XX should use Actor_init, no ?
+			this->laser_ship[i].consts = &shipLaserConsts;
 			this->laser_ship[i].y = 39;
-			this->laser_ship[i].image[0] = laser0;
 			this->laser_ship[i].alive = true;
-			this->laser_ship[i].id = ID_S_LASER;
 			this->laser_ship[i].jk = false;
 		}
 	}
@@ -334,13 +368,12 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 				unsigned char row = this->gameStatColumn[columnNew].fep;
 				Actor_init(
 					l,
-					(struct Actor){
+					(struct Actor) {
+							.consts = &enemyLaserConsts,
 							.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
 							.y = this->enemy[row][columnNew].y + E_LASER_OFFY,
-							.image[0] = laser0,
 							.alive = true,
-							.jk = false,
-							.id = ID_E_LASER});
+							.jk = false});
 				if (! init) {
 					break; // terminate loop when a slot is found
 				}
@@ -364,13 +397,12 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 	Actor_init(
 		&this->bonusEnemy,
-		(struct Actor){
+		(struct Actor) {
+				.consts = &bonusEnemyConsts,
 				.x = RIGHTLIMIT,
 				.y = TOPLIMIT,
-				.image[0] = smallBonusEnemy0,
 				.alive = false,
-				.jk = false,
-				.id = ID_BONUS});
+				.jk = false});
 }
 #endif
 
@@ -627,37 +659,37 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 void GameEngine_masterDraw(struct GameEngine *this,
 						   struct Actor *s,
 						   unsigned int frameIndex) {
+	unsigned char behaviour = s->consts->behaviour;
 	signed char offsetX = 0;
 	signed char offsetY = 0;
-	
 	if (s->jk) {
 		//used to change explosions offset values
-		if (s->id == ID_BONUS) {	//BONUS
+		//XX use switch?
+		if (behaviour == ID_BONUS) {
 			Sound_stop_all(&ufoLowPitch);
 			Sound_Play(&smallExplosion);
 			offsetX = OFFSETEXPLOSIONX;
 			offsetY = OFFSETEXPLOSIONY;
 		}
-		else if (s->id == ID_SHIP) {
+		else if (behaviour == ID_SHIP) {
 			Sound_Play(&smallExplosion);
 		}
-		else if (s->id == ID_E_LASER) {
+		else if (behaviour == ID_E_LASER) {
 			offsetX = -5;
 		}
-		else if (s->id == ID_ENEMY) {
+		else if (behaviour == ID_ENEMY) {
 			Sound_Play(&smallExplosion);
 		}
 		
 		switch (this->frame) {
 		case 0:
 		case 1:
-			s->image[0] = smallExplosion0;
-			s->image[1] = smallExplosion1;
+			s->consts = &smallExplosionConsts; // XX changes .behaviour, too!!
 			break;
 		case 2:
 			s->jk = false;
 			this->frame = 0;
-			if (s->id == ID_SHIP) {
+			if (behaviour == ID_SHIP) {
 				this->gStatus = LOOSE;
 			}
 			break;
@@ -666,13 +698,14 @@ void GameEngine_masterDraw(struct GameEngine *this,
 	// Only enemies need change between frames, unless
 	// something explodes.
 	if (s->alive) {
-		unsigned int i = (s->id == ID_ENEMY) ? frameIndex : 0;
-		Nokia5110_PrintBMP(s->x, s->y, s->image[i], 0);
+		unsigned int i = (behaviour == ID_ENEMY) ? frameIndex : 0;
+		// XX instead simply check image[1] for NULL
+		Nokia5110_PrintBMP(s->x, s->y, s->consts->image[i], 0);
 	}
 	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + offsetX,
 						   s->y + offsetY,
-						   s->image[this->frame],
+						   s->consts->image[this->frame],
 						   0);
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?
 	}
