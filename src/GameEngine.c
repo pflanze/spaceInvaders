@@ -666,8 +666,6 @@ void Actor_masterDraw(struct Actor *s,
 			}
 		}
 	}
-	// Only enemies need change between frames, unless
-	// something explodes.
 	if (s->alive) {
 		const unsigned char* img = s->consts->image[frameIndex];
 		if (! img) {
@@ -680,7 +678,7 @@ void Actor_masterDraw(struct Actor *s,
 						   s->y + s->origConsts->offsetY,
 						   s->consts->image[s->frame],
 						   0);
-		s->frame++; // wrap-around check is under "case 2:" above
+		s->frame++; // wrap-around handling is under "case 2:" above
 	}
 }
 
