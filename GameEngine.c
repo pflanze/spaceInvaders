@@ -55,8 +55,6 @@
 //BonusShip
 #define BONUS_C_LINE TOPLIMIT+BONUSENEMYH
 #define BONUSTIMING 30
-#define OFFSETEXPLOSIONX 2
-#define OFFSETEXPLOSIONY 4
 
 //BonusShip midPoint xCoordinate
 #define ENEMY_Bon_midX (BONUSENEMYW>>1)
@@ -156,11 +154,14 @@ const struct ActorConsts shipLaserConsts = {
 const struct ActorConsts enemyLaserConsts = {
 	.behaviour = ID_E_LASER
 	, .image[0] = laser0
+	, .offsetX = -5
 };
 
 const struct ActorConsts bonusEnemyConsts = {
 	.behaviour = ID_BONUS
 	, .image[0] = smallBonusEnemy0
+	, .offsetX = 2
+	, .offsetY = 4
 };
 
 const struct ActorConsts enemy30Consts = {
@@ -661,23 +662,15 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 void GameEngine_masterDraw(struct GameEngine *this,
 						   struct Actor *s,
 						   unsigned int frameIndex) {
-	unsigned char behaviour = s->consts->behaviour;
-	signed char offsetX = 0;
-	signed char offsetY = 0;
+	const unsigned char behaviour = s->consts->behaviour;
 	if (s->jk) {
-		//used to change explosions offset values
 		//XX use switch?
 		if (behaviour == ID_BONUS) {
 			Sound_stop_all(&ufoLowPitch);
 			Sound_Play(&smallExplosion);
-			offsetX = OFFSETEXPLOSIONX;
-			offsetY = OFFSETEXPLOSIONY;
 		}
 		else if (behaviour == ID_SHIP) {
 			Sound_Play(&smallExplosion);
-		}
-		else if (behaviour == ID_E_LASER) {
-			offsetX = -5;
 		}
 		else if (behaviour == ID_ENEMY) {
 			Sound_Play(&smallExplosion);
@@ -705,8 +698,8 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		Nokia5110_PrintBMP(s->x, s->y, s->consts->image[i], 0);
 	}
 	else if (s->jk) {
-		Nokia5110_PrintBMP(s->x + offsetX,
-						   s->y + offsetY,
+		Nokia5110_PrintBMP(s->x + s->consts->offsetX,
+						   s->y + s->consts->offsetY,
 						   s->consts->image[this->frame],
 						   0);
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?

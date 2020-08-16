@@ -30,7 +30,8 @@
 struct ActorConsts {
 	unsigned char behaviour; // ID_ constants, XX rename those to BEHAVIOUR_
 	const unsigned char *image[2]; // two pointers to images
-	// XX offsets
+	signed char offsetX;
+	signed char offsetY;
 };
 
 
