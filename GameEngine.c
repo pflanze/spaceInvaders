@@ -679,6 +679,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		switch (this->frame) {
 		case 0:
 		case 1:
+			s->origConsts = s->consts;
 			s->consts = &smallExplosionConsts; // XX changes .behaviour, too!!
 			break;
 		case 2:
@@ -698,8 +699,8 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		Nokia5110_PrintBMP(s->x, s->y, s->consts->image[i], 0);
 	}
 	else if (s->jk) {
-		Nokia5110_PrintBMP(s->x + s->consts->offsetX,
-						   s->y + s->consts->offsetY,
+		Nokia5110_PrintBMP(s->x + s->origConsts->offsetX,
+						   s->y + s->origConsts->offsetY,
 						   s->consts->image[this->frame],
 						   0);
 		this->frame++; // XXX is it a bug that there's no check for wraparound here?

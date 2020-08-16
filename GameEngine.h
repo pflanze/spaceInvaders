@@ -40,6 +40,8 @@ struct Actor {
 	const struct ObjectInterface* vtable;
 #endif
 	const struct ActorConsts* consts;
+	const struct ActorConsts* origConsts; // NULL unless jk, in which case it
+										  // holds the original consts value
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
 	bool alive;
