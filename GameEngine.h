@@ -29,9 +29,12 @@
 
 struct ActorConsts {
 	unsigned char behaviour; // ID_ constants, XX rename those to BEHAVIOUR_
-	const unsigned char *image[2]; // two pointers to images
+	const unsigned char *image[2]; // two pointers to images, second can be NULL
+	const struct Sound *maybeSound;
+	// These are unused for ID_EXPLOSION (ugly?):
 	signed char offsetX;
 	signed char offsetY;
+	bool playExplosionSound; // on jk
 };
 
 

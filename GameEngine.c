@@ -144,42 +144,51 @@ const struct ObjectInterface Actor_ObjectInterface = {
 const struct ActorConsts shipConsts = {
 	.behaviour = ID_SHIP
 	, .image[0] = playerShip0
+	, .playExplosionSound = true
 };
 
 const struct ActorConsts shipLaserConsts = {
 	.behaviour = ID_S_LASER
 	, .image[0] = laser0
+	, .playExplosionSound = false
 };
 
 const struct ActorConsts enemyLaserConsts = {
 	.behaviour = ID_E_LASER
 	, .image[0] = laser0
 	, .offsetX = -5
+	, .playExplosionSound = false
 };
 
 const struct ActorConsts bonusEnemyConsts = {
 	.behaviour = ID_BONUS
 	, .image[0] = smallBonusEnemy0
+	, .maybeSound = &ufoLowPitch
 	, .offsetX = 2
 	, .offsetY = 4
+	, .playExplosionSound = true
 };
 
 const struct ActorConsts enemy30Consts = {
 	.behaviour = ID_ENEMY
 	, { smallEnemy30PointA, smallEnemy30PointB }
+	, .playExplosionSound = true
 };
 const struct ActorConsts enemy20Consts = {
 	.behaviour = ID_ENEMY
 	, { smallEnemy20PointA, smallEnemy20PointB }
+	, .playExplosionSound = true
 };
 const struct ActorConsts enemy10Consts = {
 	.behaviour = ID_ENEMY
 	, { smallEnemy10PointA, smallEnemy10PointB }
+	, .playExplosionSound = true
 };
 
 const struct ActorConsts smallExplosionConsts = {
 	.behaviour = ID_EXPLOSION
 	, { smallExplosion0, smallExplosion1 }
+	, .maybeSound = &smallExplosion
 };
 
 //------------------------GameStatColumn----------------------------------------
@@ -664,31 +673,35 @@ void GameEngine_masterDraw(struct GameEngine *this,
 						   unsigned int frameIndex) {
 	const unsigned char behaviour = s->consts->behaviour;
 	if (s->jk) {
-		//XX use switch?
-		if (behaviour == ID_BONUS) {
-			Sound_stop_all(&ufoLowPitch);
-			Sound_Play(&smallExplosion);
-		}
-		else if (behaviour == ID_SHIP) {
-			Sound_Play(&smallExplosion);
-		}
-		else if (behaviour == ID_ENEMY) {
-			Sound_Play(&smallExplosion);
-		}
-		
 		switch (this->frame) {
 		case 0:
 		case 1:
+			// switch actor to an explosion (but remember original)
 			s->origConsts = s->consts;
-			s->consts = &smallExplosionConsts; // XX changes .behaviour, too!!
+			s->consts = &smallExplosionConsts;
 			break;
 		case 2:
 			s->jk = false;
 			this->frame = 0;
 			if (behaviour == ID_SHIP) {
-				this->gStatus = LOOSE;
+				this->gStatus = LOOSE; //XX needed or no effect *?*
 			}
 			break;
+		}
+
+		// Disable original sound if any
+		{
+			const struct Sound *maybeSound= s->origConsts->maybeSound;
+			if (maybeSound) {
+				Sound_stop_all(maybeSound);
+			}
+		}
+		// Play explosion's sound if required and available
+		if (s->origConsts->playExplosionSound) {
+			const struct Sound *maybeSound= s->consts->maybeSound;
+			if (maybeSound) {
+				Sound_Play(maybeSound);
+			}
 		}
 	}
 	// Only enemies need change between frames, unless
