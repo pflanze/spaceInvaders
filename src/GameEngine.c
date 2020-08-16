@@ -306,25 +306,29 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 	
 	for (i=0; i < MAXLASERS; i++) {
 		if (this->laser_ship[i].alive == false) {
+			unsigned char x = 0;
 			switch(count){
 				case 0:
-					this->laser_ship[i].x = this->ship.x + SHIPMIDDLE;
+					x = this->ship.x + SHIPMIDDLE;
 					count++;
 					break; // terminate loop when a slot is found
 				case 1:
-					this->laser_ship[i].x = this->ship.x + 2 + SHIPMIDDLE;
+					x = this->ship.x + 2 + SHIPMIDDLE;
 					count++;
 					break; // terminate loop when a slot is found
 				case 2:	
-					this->laser_ship[i].x = this->ship.x + 4 + SHIPMIDDLE;
+					x = this->ship.x + 4 + SHIPMIDDLE;
 					break; // terminate loop when a slot is found
 				
 			}
-			// XX should use Actor_init, no ?
-			this->laser_ship[i].consts = &shipLaserConsts;
-			this->laser_ship[i].y = 39;
-			this->laser_ship[i].alive = true;
-			this->laser_ship[i].jk = false;
+			Actor_init(
+				&this->laser_ship[i],
+				(struct Actor) {
+						.consts = &shipLaserConsts,
+						.x = x,
+						.y = 39,
+						.alive = true,
+						.jk = false });
 		}
 	}
 }
