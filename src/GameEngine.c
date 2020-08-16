@@ -642,8 +642,11 @@ void Actor_masterDraw(struct Actor *s,
 		case 0:
 		case 1:
 			// switch actor to an explosion (but remember original)
-			s->origConsts = s->consts;
-			s->consts = &smallExplosionConsts;
+			// (Need to check whether it was already done, why, due to a bug?)
+			if (! s->origConsts) {
+				s->origConsts = s->consts;
+				s->consts = &smallExplosionConsts;
+			}
 			break;
 		case 2:
 			s->jk = false;
