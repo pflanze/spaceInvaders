@@ -126,6 +126,7 @@ void Actor_pp(struct Actor* this, FILE* out) {
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
 	PP_PRINTF(", .jk = %s", bool_show(this->jk));
 	PP_PRINTF(", .id = %s", Actor_id_string(this));
+	PP_PRINTF(", .frame = %i", this->frame);
 	PP_PRINTF(" }");
 }
 
@@ -620,19 +621,19 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
 	//drawing battleship
-	GameEngine_masterDraw(this, &this->ship, 0);
+	Actor_masterDraw(&this->ship, 0);
 
 	//drawing enemies
 #if DRAW_ENEMIES
-	GameEngine_enemyDraw(this);			//Uses GameEngine_masterDraw
-	GameEngine_laserEnemyDraw(this);		//Uses GameEngine_masterDraw
+	GameEngine_enemyDraw(this);
+	GameEngine_laserEnemyDraw(this);
 #endif
 	
 	//drawing laser
-	GameEngine_laserShipDraw(this);		//uses GameEngine_masterDraw
+	GameEngine_laserShipDraw(this);
 
 #if DRAW_BONUSENEMY		
-	GameEngine_masterDraw(this, &this->bonusEnemy, 0);
+	Actor_masterDraw(&this->bonusEnemy, 0);
 #endif	
 		
 	// draw buffer
@@ -652,9 +653,8 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 		unsigned char column;
 		if (this->gStatus == INGAME) { this->frameIndex ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
-			GameEngine_masterDraw(this,
-								  &this->enemy[row][column],
-								  this->frameIndex);
+			Actor_masterDraw(&this->enemy[row][column],
+							 this->frameIndex);
 		}
 	}
 }
@@ -666,13 +666,11 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 
-// XX should probably change this into a Actor_draw procedure and move
-// the GameEngine parts out.
-void GameEngine_masterDraw(struct GameEngine *this,
-						   struct Actor *s,
-						   unsigned int frameIndex) {
+// XX also does sound playing, detangle or rename
+void Actor_masterDraw(struct Actor *s,
+					  unsigned int frameIndex) {
 	if (s->jk) {
-		switch (this->frame) {
+		switch (s->frame) {
 		case 0:
 		case 1:
 			// switch actor to an explosion (but remember original)
@@ -681,7 +679,7 @@ void GameEngine_masterDraw(struct GameEngine *this,
 			break;
 		case 2:
 			s->jk = false;
-			this->frame = 0;
+			s->frame = 0;
 			break;
 		}
 
@@ -712,9 +710,9 @@ void GameEngine_masterDraw(struct GameEngine *this,
 	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + s->origConsts->offsetX,
 						   s->y + s->origConsts->offsetY,
-						   s->consts->image[this->frame],
+						   s->consts->image[s->frame],
 						   0);
-		this->frame++; // wrap-around check is under "case 2:" above
+		s->frame++; // wrap-around check is under "case 2:" above
 	}
 }
 
@@ -726,9 +724,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		if (this->laser_ship[laserNum].alive) {
-			GameEngine_masterDraw(this,
-								  &this->laser_ship[laserNum],
-								  0);
+			Actor_masterDraw(&this->laser_ship[laserNum], 0);
 		}
 	}
 }
@@ -741,9 +737,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
-		GameEngine_masterDraw(this,
-							  &this->laser_enemy[laserNum],
-							  0);
+		Actor_masterDraw(&this->laser_enemy[laserNum], 0);
 	}
 }
 #endif
@@ -1316,7 +1310,6 @@ void GameEngine_pp(struct GameEngine* this, FILE* out) {
 	PP_PRINTF(", .right = %s", bool_show(this->right));
 	PP_PRINTF(", .down = %s", bool_show(this->down));
 	PP_PRINTF(", .frameIndex = %hhu", this->frameIndex);
-	PP_PRINTF(", .frame = %hhu", this->frame);
 
 	PP_PRINTF(", .enemyTracking = { ");
 	{
@@ -1404,7 +1397,6 @@ void GameEngine_init(struct GameEngine *this,
 	this->right = true;
 	this->down = false;
 	this->frameIndex = 0;
-	this->frame = 0;
 	GameEngine_enemyTracking_reset(this);
 
 #if DRAW_BONUSENEMY

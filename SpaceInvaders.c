@@ -96,7 +96,7 @@ Handlers:
 Systick: @30hz: Bottons, ADC, Video calculations
 Timer2: @44100hz: Sound
 
-gameStatus: End game@: FirstLast, EnemyLaserCollisions@GameEngine_masterDraw
+gameStatus: End game@: FirstLast, EnemyLaserCollisions@Actor_masterDraw
 */
 
 //testing & preprocessing directives

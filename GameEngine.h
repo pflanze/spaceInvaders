@@ -50,6 +50,7 @@ struct Actor {
 	bool alive;
 	bool jk;                       // status for image replacement,
 	                               // represents "Just Killed", needs updating
+	unsigned char frame;
 };
 
 #ifdef DEBUG
@@ -154,9 +155,6 @@ struct GameEngine {
 	// GameEngine_enemyDraw:
 	unsigned char frameIndex;  // 0,1,0,1,...
 
-	// GameEngine_masterDraw:
-	unsigned char frame;
-
 	// GameEngine_enemyShiftTrack:
 	unsigned int enemyTracking[2];
 	// ^ keeps track of the first and last enemy across diferrent rows
@@ -217,9 +215,9 @@ void GameEngine_laserShipDraw(struct GameEngine *this);
 void GameEngine_enemyLasers_init(struct GameEngine *this);
 void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init);
 void GameEngine_laserEnemyDraw(struct GameEngine *this);
-void GameEngine_masterDraw(struct GameEngine *this,
-						   struct Actor *s,
-						   unsigned int frameIndex);
+
+void Actor_masterDraw(struct Actor *s,
+					  unsigned int frameIndex);
 
 void GameEngine_enemyscanY(struct GameEngine *this,
 						   unsigned int laserNum);
