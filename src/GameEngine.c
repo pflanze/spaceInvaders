@@ -141,25 +141,10 @@ const char* addrToActorConstName(const struct ActorConsts* p) {
 static
 void Actor_pp(struct Actor* this, FILE* out) {
 	PP_PRINTF("(struct Actor) {");
-	PP_PRINTF(" .x = %hhu", this->x);
+	PP_PRINTF(" .consts = %s", addrToActorConstName(this->consts));
+	PP_PRINTF(", .origConsts = %s", addrToActorConstName(this->origConsts));
+	PP_PRINTF(", .x = %hhu", this->x);
 	PP_PRINTF(", .y = %hhu", this->y);
-	PP_PRINTF(", .image = {");
-	{
-		bool first= true;
-		for (int i=0; i<2; i++) {
-			if (! first) { PP_PRINTF(","); }
-			first = false;
-			{
-				const unsigned char* p= this->consts->image[i];
-				const char* nam= addrToSpriteName(p);
-				if (nam) {
-					PP_PRINTF(" %s", nam);
-				} else {
-					PP_PRINTF(" %p", p);
-				}
-			}
-		}
-	}
 	PP_PRINTF(" }");
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
 	PP_PRINTF(", .jk = %s", bool_show(this->jk));
