@@ -671,7 +671,6 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 void GameEngine_masterDraw(struct GameEngine *this,
 						   struct Actor *s,
 						   unsigned int frameIndex) {
-	const unsigned char behaviour = s->consts->behaviour;
 	if (s->jk) {
 		switch (this->frame) {
 		case 0:
@@ -683,9 +682,6 @@ void GameEngine_masterDraw(struct GameEngine *this,
 		case 2:
 			s->jk = false;
 			this->frame = 0;
-			if (behaviour == ID_SHIP) {
-				this->gStatus = LOOSE; //XX needed or no effect *?*
-			}
 			break;
 		}
 
