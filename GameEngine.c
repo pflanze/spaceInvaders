@@ -707,9 +707,11 @@ void GameEngine_masterDraw(struct GameEngine *this,
 	// Only enemies need change between frames, unless
 	// something explodes.
 	if (s->alive) {
-		unsigned int i = (behaviour == ID_ENEMY) ? frameIndex : 0;
-		// XX instead simply check image[1] for NULL
-		Nokia5110_PrintBMP(s->x, s->y, s->consts->image[i], 0);
+		const unsigned char* img = s->consts->image[frameIndex];
+		if (! img) {
+			img = s->consts->image[0];
+		}
+		Nokia5110_PrintBMP(s->x, s->y, img, 0);
 	}
 	else if (s->jk) {
 		Nokia5110_PrintBMP(s->x + s->origConsts->offsetX,
