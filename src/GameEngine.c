@@ -1359,7 +1359,8 @@ void GameEngine_init(struct GameEngine *this,
 	// GameEngine_shipLasersCreation and GameEngine_laserInit_ship2
 	GameEngine_shipInit(this);
 	GameEngine_shipLasers_init(this);
-	//GameEngine_laserInit_ship2(this); XX wrong?
+	GameEngine_laserInit_ship2(this); // has no effect, not sure why. everything
+									  // *is* alive at first.
 
 	this->right = true;
 	this->down = false;
