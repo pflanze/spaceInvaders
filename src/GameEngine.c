@@ -74,49 +74,6 @@ static
 void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #endif
 
-//-----------------------------Actor--------------------------------------------
-
-#ifdef DEBUG
-
-static
-void Actor_pp(struct Actor* this, FILE* out) {
-	PP_PRINTF("(struct Actor) {");
-	PP_PRINTF(" .x = %hhu", this->x);
-	PP_PRINTF(", .y = %hhu", this->y);
-	PP_PRINTF(", .image = {");
-	{
-		bool first= true;
-		for (int i=0; i<2; i++) {
-			if (! first) { PP_PRINTF(","); }
-			first = false;
-			{
-				const unsigned char* p= this->consts->image[i];
-				const char* nam= addrToSpriteName(p);
-				if (nam) {
-					PP_PRINTF(" %s", nam);
-				} else {
-					PP_PRINTF(" %p", p);
-				}
-			}
-		}
-	}
-	PP_PRINTF(" }");
-	PP_PRINTF(", .alive = %s", bool_show(this->alive));
-	PP_PRINTF(", .jk = %s", bool_show(this->jk));
-	PP_PRINTF(", .frame = %i", this->frame);
-	PP_PRINTF(" }");
-}
-
-static
-void _Actor_pp(void* this, FILE* out) { Actor_pp(this, out); }
-    
-const struct ObjectInterface Actor_ObjectInterface = {
-	.pp = &_Actor_pp
-};
-
-#endif
-
-
 //------------------------ActorConsts-------------------------------------------
 
 const struct ActorConsts shipConsts = {
@@ -160,6 +117,65 @@ const struct ActorConsts smallExplosionConsts = {
 	{ smallExplosion0, smallExplosion1 }
 	, .maybeSound = &smallExplosion
 };
+
+static
+const char* addrToActorConstName(const struct ActorConsts* p) {
+	if (! p) { return "NULL"; }
+#define C(nam) if (p == &nam) return "&"#nam
+	C(shipConsts);
+	C(shipLaserConsts);
+	C(enemyLaserConsts);
+	C(bonusEnemyConsts);
+	C(enemy30Consts);
+	C(enemy20Consts);
+	C(enemy10Consts);
+	C(smallExplosionConsts);
+#undef C
+	return NULL;
+}
+
+//-----------------------------Actor--------------------------------------------
+
+#ifdef DEBUG
+
+static
+void Actor_pp(struct Actor* this, FILE* out) {
+	PP_PRINTF("(struct Actor) {");
+	PP_PRINTF(" .x = %hhu", this->x);
+	PP_PRINTF(", .y = %hhu", this->y);
+	PP_PRINTF(", .image = {");
+	{
+		bool first= true;
+		for (int i=0; i<2; i++) {
+			if (! first) { PP_PRINTF(","); }
+			first = false;
+			{
+				const unsigned char* p= this->consts->image[i];
+				const char* nam= addrToSpriteName(p);
+				if (nam) {
+					PP_PRINTF(" %s", nam);
+				} else {
+					PP_PRINTF(" %p", p);
+				}
+			}
+		}
+	}
+	PP_PRINTF(" }");
+	PP_PRINTF(", .alive = %s", bool_show(this->alive));
+	PP_PRINTF(", .jk = %s", bool_show(this->jk));
+	PP_PRINTF(", .frame = %i", this->frame);
+	PP_PRINTF(" }");
+}
+
+static
+void _Actor_pp(void* this, FILE* out) { Actor_pp(this, out); }
+    
+const struct ObjectInterface Actor_ObjectInterface = {
+	.pp = &_Actor_pp
+};
+
+#endif
+
 
 //------------------------GameStatColumn----------------------------------------
 
