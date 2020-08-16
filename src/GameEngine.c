@@ -76,28 +76,7 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 
 //-----------------------------Actor--------------------------------------------
 
-// Actor IDs
-#define ID_SHIP        0
-#define ID_ENEMY       1
-#define ID_BONUS       2
-#define ID_E_LASER     3
-#define ID_S_LASER     4
-// When an actor explodes, it turns into an explosion actor
-#define ID_EXPLOSION   99
-
 #ifdef DEBUG
-
-const char* Actor_id_string(struct Actor *this) {
-	switch (this->consts->behaviour) {
-	case ID_SHIP: return "ID_SHIP";
-	case ID_ENEMY: return "ID_ENEMY";
-	case ID_BONUS: return "ID_BONUS";
-	case ID_E_LASER: return "ID_E_LASER";
-	case ID_S_LASER: return "ID_S_LASER";
-	case ID_EXPLOSION: return "ID_EXPLOSION";
-	}
-	return "<invalid id>";
-}
 
 static
 void Actor_pp(struct Actor* this, FILE* out) {
@@ -124,7 +103,6 @@ void Actor_pp(struct Actor* this, FILE* out) {
 	PP_PRINTF(" }");
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
 	PP_PRINTF(", .jk = %s", bool_show(this->jk));
-	PP_PRINTF(", .id = %s", Actor_id_string(this));
 	PP_PRINTF(", .frame = %i", this->frame);
 	PP_PRINTF(" }");
 }
@@ -142,27 +120,23 @@ const struct ObjectInterface Actor_ObjectInterface = {
 //------------------------ActorConsts-------------------------------------------
 
 const struct ActorConsts shipConsts = {
-	.behaviour = ID_SHIP
-	, .image[0] = playerShip0
+	.image[0] = playerShip0
 	, .playExplosionSound = true
 };
 
 const struct ActorConsts shipLaserConsts = {
-	.behaviour = ID_S_LASER
-	, .image[0] = laser0
+	.image[0] = laser0
 	, .playExplosionSound = false
 };
 
 const struct ActorConsts enemyLaserConsts = {
-	.behaviour = ID_E_LASER
-	, .image[0] = laser0
+	.image[0] = laser0
 	, .offsetX = -5
 	, .playExplosionSound = false
 };
 
 const struct ActorConsts bonusEnemyConsts = {
-	.behaviour = ID_BONUS
-	, .image[0] = smallBonusEnemy0
+	.image[0] = smallBonusEnemy0
 	, .maybeSound = &ufoLowPitch
 	, .offsetX = 2
 	, .offsetY = 4
@@ -170,24 +144,20 @@ const struct ActorConsts bonusEnemyConsts = {
 };
 
 const struct ActorConsts enemy30Consts = {
-	.behaviour = ID_ENEMY
-	, { smallEnemy30PointA, smallEnemy30PointB }
+	{ smallEnemy30PointA, smallEnemy30PointB }
 	, .playExplosionSound = true
 };
 const struct ActorConsts enemy20Consts = {
-	.behaviour = ID_ENEMY
-	, { smallEnemy20PointA, smallEnemy20PointB }
+	{ smallEnemy20PointA, smallEnemy20PointB }
 	, .playExplosionSound = true
 };
 const struct ActorConsts enemy10Consts = {
-	.behaviour = ID_ENEMY
-	, { smallEnemy10PointA, smallEnemy10PointB }
+	{ smallEnemy10PointA, smallEnemy10PointB }
 	, .playExplosionSound = true
 };
 
 const struct ActorConsts smallExplosionConsts = {
-	.behaviour = ID_EXPLOSION
-	, { smallExplosion0, smallExplosion1 }
+	{ smallExplosion0, smallExplosion1 }
 	, .maybeSound = &smallExplosion
 };
 
