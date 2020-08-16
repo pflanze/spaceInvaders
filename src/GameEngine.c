@@ -240,14 +240,14 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 						.x = 20*column,
 						.y = 10 + row*10,
 						.alive = true,
-						.jk = false});
+						.jk = false });
 		}
 		GameStatRow_init(
 			&this->gameStatRow[row],
 			(struct GameStatRow) {
 					.epr = MAX_ENEMY_PR,
 					.fep = 0,
-					.lep = 3});
+					.lep = 3 });
 	}
 }
 #endif
@@ -260,7 +260,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 				.x = 0,
 				.y = 46,
 				.alive = true,
-				.jk = false});
+				.jk = false });
 }
 
 // Function used to initialize the lasers fired by the spaceship
@@ -279,7 +279,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 						.x = this->ship.x + SHIPMIDDLE,
 						.y = 39,
 						.alive = true,
-						.jk = false});
+						.jk = false });
 			if (! init) {
 			    break; // terminate loop when a slot is found
 			}
@@ -356,7 +356,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 							.x = this->enemy[row][columnNew].x + E_LASER_OFFX,
 							.y = this->enemy[row][columnNew].y + E_LASER_OFFY,
 							.alive = true,
-							.jk = false});
+							.jk = false });
 				if (! init) {
 					break; // terminate loop when a slot is found
 				}
@@ -385,7 +385,7 @@ void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 				.x = RIGHTLIMIT,
 				.y = TOPLIMIT,
 				.alive = false,
-				.jk = false});
+				.jk = false });
 }
 #endif
 
@@ -404,9 +404,9 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 	//sets defaults column stats
 	for (i=0; i < MAX_ENEMY_PR; i++) {
 	    GameStatColumn_init(&this->gameStatColumn[i],
-							(struct GameStatColumn){
+							(struct GameStatColumn) {
 									.epc = this->maxrows,
-									.fep = this->lastLine});
+									.fep = this->lastLine });
 	}
 	for (i=0; i < MAX_ENEMY_PR; i++) {
 		this->laser_enemy[i].alive = false;
