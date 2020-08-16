@@ -206,7 +206,7 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 
 
 
-//-----------------------------------------------------------INIT---------------
+//------------------------GameEngine--------------------------------------------
 
 // Initialize enemies
 //Enemies are counted normally, top left 00
@@ -389,8 +389,6 @@ void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 }
 #endif
 
-//-----------------------------------------------------------DEFAULT VALUES-----
-
 // Reset the values to default 
 // changes: laser_enemy[i].alive, lastLine, gameStatColumn[i].(epc|fep)
 // inputs: none
@@ -437,8 +435,6 @@ void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_firstLast_reset(this);
 #endif
 }
-
-//--------------------------------------------------------------MOVE OBJECTS----
 
 // Update the position values of the associated objects
 // inputs: INGAME
@@ -580,8 +576,6 @@ void GameEngine_bonusEnemy_move(struct GameEngine *this) {
 	}
 }
 #endif
-
-//-------------------------------------------DRAWING----------------------------
 
 // Update the object positions and send the data to the screen
 // inputs: none
@@ -1163,7 +1157,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 }
 #endif
 
-//----------------------------------Miscelaneus---------------------------------
+//----------------------------------Miscellaneus--------------------------------
 
 // Create the enemy bonus ship, and time the reappearence
 // changes: na
@@ -1187,7 +1181,6 @@ void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 }
 #endif
 
-//----------------------------------------------Utilities-----------------------
 
 signed int absValue(signed int value){
 	return ((value<0) ? -value:value);
