@@ -251,22 +251,20 @@ static const unsigned char laser0[] = {
 	
 #ifdef DEBUG
 const char* addrToSpriteName(const unsigned char* p) {
-	if (! p) {
-		return "NULL";
-	}
-#define C(nam) if (p == nam) return #nam;
-	C(smallEnemy30PointA) 
-	C(smallEnemy30PointB)
-	C(smallEnemy20PointA)
-	C(smallEnemy20PointB)
-	C(smallEnemy10PointA)
-	C(smallEnemy10PointB)
-	C(playerShip0)
-	C(smallBonusEnemy0)
-	C(smallExplosion0)
-	C(smallExplosion1)
-	C(missile0)
-	C(laser0)
+	if (! p) { return "NULL"; }
+#define C(nam) if (p == nam) return #nam
+	C(smallEnemy30PointA);
+	C(smallEnemy30PointB);
+	C(smallEnemy20PointA);
+	C(smallEnemy20PointB);
+	C(smallEnemy10PointA);
+	C(smallEnemy10PointB);
+	C(playerShip0);
+	C(smallBonusEnemy0);
+	C(smallExplosion0);
+	C(smallExplosion1);
+	C(missile0);
+	C(laser0);
 #undef C
 	return NULL;
 }
