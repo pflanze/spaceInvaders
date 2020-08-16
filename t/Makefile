@@ -36,8 +36,24 @@ t/out:
 test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
 
+# depend on OBJS here just to make sure it's rebuilt on any file
+# change, since that's the only way dependency info is accessible
+# currently:
+testsingle.c: $(OBJS)
+	./make_testsingle $(SRCS) > testsingle.c
+
+# (Note: using -I is not optimal, as it makes it look in VPATH for
+# *system* header files, too--that's the real meaning for -I, after
+# all! Had to rename our assert.h for that reason. Maybe there's
+# something more precise?)
+testsingle.o: testsingle.c
+	$(CC) $(CFLAGS) -I$(VPATH) -c -o testsingle.o testsingle.c
+
+testsingle: testsingle.o
+	$(CC) $(SAN) -o testsingle testsingle.o
+
 clean:
-	rm -f *.o test
+	rm -f *.o test testsingle
 
 depend:
 	cp Makefile $(VPATH)/

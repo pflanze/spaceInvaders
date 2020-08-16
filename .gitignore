@@ -29,3 +29,5 @@ t.out
 .makedepend.log
 t/.gdb_history
 t/_*
+t/testsingle.c
+t/testsingle
