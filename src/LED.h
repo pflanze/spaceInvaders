@@ -3,9 +3,9 @@
 #define _LED_H
 
 
-void Red(void);
+EXPORTED void Red(void);
 
-void Green(void);
+EXPORTED void Green(void);
 
 #ifdef TEST_WITHOUT_IO
 extern unsigned char GPIO_PORTB_DATA_R;

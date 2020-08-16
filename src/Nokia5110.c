@@ -121,7 +121,8 @@ enum typeOfWrite{
 //         message  8-bit code to transmit
 // outputs: none
 // assumes: SSI0 and port A have already been initialized and enabled
-void static lcdwrite(enum typeOfWrite type, char message) {
+static
+void lcdwrite(enum typeOfWrite type, char message) {
 	if (type == COMMAND) {
 		// wait until SSI0 not busy/transmit FIFO empty
 		while ((SSI0_SR_R&SSI_SR_BSY)==SSI_SR_BSY) {};
@@ -149,6 +150,7 @@ void static lcdwrite(enum typeOfWrite type, char message) {
 // inputs: none
 // outputs: none
 // assumes: system clock rate of 80 MHz
+EXPORTED
 void Nokia5110_Init(void) {
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned long delay;
@@ -212,6 +214,7 @@ void Nokia5110_Init(void) {
 // inputs: data  character to print
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+EXPORTED
 void Nokia5110_OutChar(unsigned char data) {
 #ifndef TEST_WITHOUT_IO
 	int i;
@@ -230,6 +233,7 @@ void Nokia5110_OutChar(unsigned char data) {
 // inputs: ptr  pointer to NULL-terminated ASCII string
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+EXPORTED
 void Nokia5110_OutString(char *ptr) {
 #ifndef TEST_WITHOUT_IO
 	while (*ptr) {
@@ -245,6 +249,7 @@ void Nokia5110_OutString(char *ptr) {
 // Inputs: n  16-bit unsigned number
 // Outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+EXPORTED
 void Nokia5110_OutUDec(unsigned short n) {
 	if (n < 10) {
 		Nokia5110_OutString("    ");
@@ -288,6 +293,7 @@ void Nokia5110_OutUDec(unsigned short n) {
 // inputs: newX  new X-position of the cursor (0<=newX<=11)
 //         newY  new Y-position of the cursor (0<=newY<=5)
 // outputs: none
+EXPORTED
 void Nokia5110_SetCursor(unsigned char newX, unsigned char newY) {
 #ifndef TEST_WITHOUT_IO
 	if((newX > 11) || (newY > 5)){        // bad input
@@ -304,6 +310,7 @@ void Nokia5110_SetCursor(unsigned char newX, unsigned char newY) {
 // reset the cursor to (0,0) (top left corner of screen).
 // inputs: none
 // outputs: none
+EXPORTED
 void Nokia5110_Clear(void){
 #ifndef TEST_WITHOUT_IO
 	int i;
@@ -319,6 +326,7 @@ void Nokia5110_Clear(void){
 // inputs: ptr  pointer to 504 byte bitmap
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+EXPORTED
 void Nokia5110_DrawFullImage(const char *ptr){
 #ifndef TEST_WITHOUT_IO
 	int i;
@@ -353,6 +361,7 @@ char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be printed on
 //                     0 to 14
 //                     0 is fine for ships, explosions, projectiles, and bunkers
 // outputs: none
+EXPORTED
 void Nokia5110_PrintBMP(unsigned char xpos,
 						unsigned char ypos,
 						const unsigned char *ptr,
@@ -412,8 +421,10 @@ void Nokia5110_PrintBMP(unsigned char xpos,
 		}
 	}
 }
+
 // There is a buffer in RAM that holds one screen
 // This routine clears this buffer
+EXPORTED
 void Nokia5110_ClearBuffer(void) {
 	int i;
 	for (i=0; i<SCREENW*SCREENH/8; i=i+1) {
@@ -426,6 +437,7 @@ void Nokia5110_ClearBuffer(void) {
 // inputs: none
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+EXPORTED
 void Nokia5110_DisplayBuffer(void) {
 	Nokia5110_DrawFullImage(Screen);
 }

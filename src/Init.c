@@ -9,6 +9,7 @@
 //Clock used: 
 //Port: NA
 //Mode: Digital
+EXPORTED
 void Buttons_Init(){
 #ifndef TEST_WITHOUT_IO
 	//Clock for Port E already active
@@ -22,10 +23,12 @@ void Buttons_Init(){
 	GPIO_PORTE_DEN_R |= 0x03; // 7) enable digital on PE1-0
 #endif
 }
+
 //********ADC*****************
 //Clock used: 
 //Port: NA
 //Mode: Digital
+EXPORTED
 void ADC0_Init(void){ 
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned long delay;
@@ -41,11 +44,13 @@ void ADC0_Init(void){
 	ADC0_ACTSS_R |= 0x0008;         // 13) enable sample sequencer 3
 #endif
 }
+
 //********DAC OUT*****************
 //Clock used: 
 //Port: DAC PB3-0
 //Mode: Digital
 //Description: Audio Digital out
+EXPORTED
 void DAC_Init(void){
 #ifndef TEST_WITHOUT_IO
 	unsigned long volatile delay;
@@ -59,6 +64,7 @@ void DAC_Init(void){
 	GPIO_PORTB_DEN_R |= 0x0F;      // enable digital I/O on PB3-0
 #endif
 }
+
 //********LED****************
 //Clock used: 
 //Port: PB3-0
@@ -66,6 +72,7 @@ void DAC_Init(void){
 //Description: 
 //Default: LED off
 //Colours: PB4 RED, PB5 Green
+EXPORTED
 void LED_Init(void){
 #ifndef TEST_WITHOUT_IO
 	//port B already active
@@ -79,6 +86,7 @@ void LED_Init(void){
 //	GPIO_PORTB_DATA_R |= 0x30;		//LEDs on test
 #endif
 }
+
 //********HeartBit****************
 //Clock used: 
 //Port: PF1
@@ -87,6 +95,7 @@ void LED_Init(void){
 //Default: LED off
 //Colours: Red
 #if PORTF1_systick || PORTF1_audio
+EXPORTED
 void PortF_init(void){ volatile unsigned long delay;
 #ifndef TEST_WITHOUT_IO
 	SYSCTL_RCGC2_R |= 0x00000020;     // activate clock for Port F
@@ -109,6 +118,7 @@ void PortF_init(void){ volatile unsigned long delay;
 //Description: Led on/off, used for testing
 //Default: Disabled, enable: TIMER1_CTL_R
 #if AUDIO_1A
+EXPORTED
 void Timer1A_Init(void){ 
 #ifndef TEST_WITHOUT_IO
 	unsigned long volatile delay;
@@ -137,6 +147,7 @@ void Timer1A_Init(void){
 //Description: Led on/off, used for testing
 //Default: Disabled, enable: TIMER2_CTL_R
 #if AUDIO_2A
+EXPORTED
 void Timer2A_Init(void){ 
 #ifndef TEST_WITHOUT_IO
 	unsigned long volatile delay;
@@ -162,6 +173,7 @@ void Timer2A_Init(void){
 //Clock used: 
 //Port: NA
 //Mode: Digital
+EXPORTED
 void Systick_Init(unsigned long periodSystick){
 #ifndef TEST_WITHOUT_IO
 	NVIC_ST_CTRL_R = 0;         						// disable SysTick during setup

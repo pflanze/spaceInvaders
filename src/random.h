@@ -14,10 +14,10 @@
       m = Random32()%60; // returns a random number from 0 to 59
       p = Random();      // returns a random number 0 to 255
 */
-void Random_Init(unsigned long seed);
+EXPORTED void Random_Init(unsigned long seed);
 
-unsigned long Random(void);
-unsigned long Random32(void);
+EXPORTED unsigned long Random(void);
+EXPORTED unsigned long Random32(void);
 
 
 #endif

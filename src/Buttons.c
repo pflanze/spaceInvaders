@@ -8,6 +8,7 @@
 bool GPIO_PORTE_DATA_R = 0;
 #endif
 
+EXPORTED
 bool Pressfire_B1(void){
 	static bool Fire_Bool,Prev_Fire;
 	
@@ -21,7 +22,7 @@ bool Pressfire_B1(void){
 	return Fire_Bool;
 }
 
-
+EXPORTED
 bool Pressfire_B2(void){
 	static bool Fire_Bool_2,Prev_Fire_2;
 	

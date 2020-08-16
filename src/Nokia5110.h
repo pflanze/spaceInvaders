@@ -84,7 +84,7 @@ extern char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be pri
 // inputs: none
 // outputs: none
 // assumes: system clock rate of 50 MHz or less
-void Nokia5110_Init(void);
+EXPORTED void Nokia5110_Init(void);
 
 //********Nokia5110_OutChar*****************
 // Print a character to the Nokia 5110 48x84 LCD.  The
@@ -98,7 +98,7 @@ void Nokia5110_Init(void);
 // inputs: data  character to print
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutChar(unsigned char data);
+EXPORTED void Nokia5110_OutChar(unsigned char data);
 
 //********Nokia5110_OutString*****************
 // Print a string of characters to the Nokia 5110 48x84 LCD.
@@ -107,7 +107,7 @@ void Nokia5110_OutChar(unsigned char data);
 // inputs: ptr  pointer to NULL-terminated ASCII string
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutString(char *ptr);
+EXPORTED void Nokia5110_OutString(char *ptr);
 
 //********Nokia5110_OutUDec*****************
 // Output a 16-bit number in unsigned decimal format with a
@@ -115,7 +115,7 @@ void Nokia5110_OutString(char *ptr);
 // Inputs: n  16-bit unsigned number
 // Outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_OutUDec(unsigned short n);
+EXPORTED void Nokia5110_OutUDec(unsigned short n);
 
 //********Nokia5110_SetCursor*****************
 // Move the cursor to the desired X- and Y-position.  The
@@ -124,21 +124,21 @@ void Nokia5110_OutUDec(unsigned short n);
 // inputs: newX  new X-position of the cursor (0<=newX<=11)
 //         newY  new Y-position of the cursor (0<=newY<=5)
 // outputs: none
-void Nokia5110_SetCursor(unsigned char newX, unsigned char newY);
+EXPORTED void Nokia5110_SetCursor(unsigned char newX, unsigned char newY);
 
 //********Nokia5110_Clear*****************
 // Clear the LCD by writing zeros to the entire screen and
 // reset the cursor to (0,0) (top left corner of screen).
 // inputs: none
 // outputs: none
-void Nokia5110_Clear(void);
+EXPORTED void Nokia5110_Clear(void);
 
 //********Nokia5110_DrawFullImage*****************
 // Fill the whole screen by drawing a 48x84 bitmap image.
 // inputs: ptr  pointer to 504 byte bitmap
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_DrawFullImage(const char *ptr);
+EXPORTED void Nokia5110_DrawFullImage(const char *ptr);
 
 //********Nokia5110_PrintBMP*****************
 // Bitmaps defined above were created for the LM3S1968 or
@@ -162,18 +162,21 @@ void Nokia5110_DrawFullImage(const char *ptr);
 //                     0 to 14
 //                     0 is fine for ships, explosions, projectiles, and bunkers
 // outputs: none
-void Nokia5110_PrintBMP(unsigned char xpos, unsigned char ypos, const unsigned char *ptr, unsigned char threshold);
+EXPORTED void Nokia5110_PrintBMP(unsigned char xpos,
+								 unsigned char ypos,
+								 const unsigned char *ptr,
+								 unsigned char threshold);
 
 // There is a buffer in RAM that holds one screen
 // This routine clears this buffer
-void Nokia5110_ClearBuffer(void);
+EXPORTED void Nokia5110_ClearBuffer(void);
 
 //********Nokia5110_DisplayBuffer*****************
 // Fill the whole screen by drawing a 48x84 screen image.
 // inputs: none
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
-void Nokia5110_DisplayBuffer(void);
+EXPORTED void Nokia5110_DisplayBuffer(void);
 
 
 #endif

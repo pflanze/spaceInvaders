@@ -11,6 +11,7 @@ unsigned char GPIO_PORTB_DATA_R=0;
 
 static unsigned char n;
 
+EXPORTED
 void Red(void) {
 	unsigned char i;
 	for(i=0;n<4;n++){
@@ -18,6 +19,7 @@ void Red(void) {
 	}
 }
 
+EXPORTED
 void Green(void) {
 	unsigned char i;
 	for(i=0;n<4;n++){

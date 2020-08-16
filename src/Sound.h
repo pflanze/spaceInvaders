@@ -14,10 +14,10 @@ extern const struct Sound ufoLowPitch;
 
 //------------------------------------------------------------------------------------
 	
-void shipFire(void);
-void DAC_Out(unsigned int data);
-void Sound_Play(const struct Sound *ptSound);
-void Sound_stop_all(const struct Sound *sp);
+EXPORTED void shipFire(void);
+EXPORTED void DAC_Out(unsigned int data);
+EXPORTED void Sound_Play(const struct Sound *ptSound);
+EXPORTED void Sound_stop_all(const struct Sound *sp);
 
 
 #endif /* _SOUND_H */

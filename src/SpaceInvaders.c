@@ -114,6 +114,7 @@ void EnableInterrupts(void);  // Enable interrupts
 
 //Game sequence: STANDBY>INGAME>LOOSE|WIN
 // To be run from systick handler at 30 Hz
+EXPORTED
 void SpaceInvaders_step(struct SpaceInvaders *this) {
 	
 #if PORTF1_systick
@@ -241,6 +242,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	this->sysTickFlag = true;
 }
 
+static
 void init_Hw(void) {
 #ifndef TEST_WITHOUT_IO
 	TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
@@ -264,6 +266,7 @@ void init_Hw(void) {
 }
 
 
+EXPORTED
 void SpaceInvaders_init(struct SpaceInvaders *this,
 						unsigned int max_number_of_enemy_rows) {
     this->vtable = NULL; // XXX
@@ -282,6 +285,7 @@ void SpaceInvaders_init(struct SpaceInvaders *this,
 #endif
 }
 
+EXPORTED
 void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {
 	if ((this->gameOverFlag == INGAME) || (this->gameOverFlag == STANDBY)) {
 		GameEngine_draw(&this->gameEngine); // update the LCD
@@ -293,6 +297,7 @@ void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this) {
 
 static struct SpaceInvaders game;
 
+EXPORTED
 void SysTick_Handler(void) {
 	SpaceInvaders_step(&game);
 }

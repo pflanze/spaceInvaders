@@ -501,6 +501,7 @@ const struct Sound ufoLowPitch = {
 // inputs: none
 // outputs: none
 // assumes: na
+static
 void Timer1A_Stop(void){
 #ifndef TEST_WITHOUT_IO
 	TIMER1_CTL_R &= ~0x00000001; // disable
@@ -513,6 +514,7 @@ void Timer1A_Stop(void){
 // inputs: none
 // outputs: none
 // assumes: na
+static
 void Timer1A_Start(void){
 #ifndef TEST_WITHOUT_IO
 	TIMER1_CTL_R |= 0x00000001;   // enable
@@ -525,6 +527,7 @@ void Timer1A_Start(void){
 // inputs: none
 // outputs: none
 // assumes: na
+static
 void Timer2A_Stop(void){
 #ifndef TEST_WITHOUT_IO
 	TIMER2_CTL_R &= ~0x00000001; // disable
@@ -537,6 +540,7 @@ void Timer2A_Stop(void){
 // inputs: none
 // outputs: none
 // assumes: na
+static
 void Timer2A_Start(void){
 #ifndef TEST_WITHOUT_IO
 	TIMER2_CTL_R |= 0x00000001;   // enable
@@ -587,6 +591,7 @@ static struct SoundState soundState2 = {2};
 
 unsigned int average;
 
+static
 void outputSounds() {
 	average = (soundState1.currentSample + soundState2.currentSample) / 2;
 #ifndef TEST_WITHOUT_IO
@@ -601,6 +606,7 @@ void outputSounds() {
 // outputs: none
 // assumes: na
 //Used by: Function name
+static
 void soundStateInit(struct SoundState *soundState) {
 	soundState->frameIndex = 0;
 	soundState->sampleIndex = 0;
@@ -615,6 +621,7 @@ void soundStateInit(struct SoundState *soundState) {
 // outputs: none
 // assumes: na
 //Used by: Function name
+static
 void soundUpdate(struct SoundState *soundState) {
 	
 	if(soundState->sampleIndex == 8){
@@ -645,6 +652,7 @@ void soundUpdate(struct SoundState *soundState) {
 		soundStateInit(soundState);
 	}
 }
+
 //********functionName*****************
 // Multiline description
 // changes: variablesChanged
@@ -653,6 +661,7 @@ void soundUpdate(struct SoundState *soundState) {
 // outputs: none
 // assumes: na
 //Used by: Function name
+EXPORTED /* it's not in Sound.h, though, nor referenced anywhere, ? */
 void Timer1A_Handler(void) {
 #ifndef TEST_WITHOUT_IO
 	TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
@@ -670,6 +679,7 @@ void Timer1A_Handler(void) {
 
 //static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
+EXPORTED /* it's not in Sound.h, though, nor referenced anywhere, ? */
 void Timer2A_Handler(void) {
 #ifndef TEST_WITHOUT_IO
 	TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
@@ -686,6 +696,7 @@ void Timer2A_Handler(void) {
 // inputs: *ptArraySound
 // outputs: none
 // assumes: na
+EXPORTED
 void Sound_Play(const struct Sound *ptSound) {
 #ifndef TEST_WITHOUT_IO
 	volatile unsigned char timer1 = TIMER1_CTL_R&0x01;
@@ -703,6 +714,7 @@ void Sound_Play(const struct Sound *ptSound) {
 }
 
 
+EXPORTED
 void Sound_stop_all(const struct Sound *sp) {
 	if(soundState1.sound == sp){
 		Timer1A_Stop();

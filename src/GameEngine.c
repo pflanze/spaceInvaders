@@ -215,6 +215,7 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemyInit(struct GameEngine *this) {
 	unsigned char row;
 	for (row=0; row < this->maxrows; row++) {
@@ -252,6 +253,7 @@ void GameEngine_enemyInit(struct GameEngine *this) {
 }
 #endif
 
+EXPORTED
 void GameEngine_shipInit(struct GameEngine *this) {
 	Actor_init(
 		&this->ship,
@@ -268,6 +270,7 @@ void GameEngine_shipInit(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 	unsigned char i;
 	for (i=0; i < MAXLASERS; i++) {
@@ -287,6 +290,7 @@ void GameEngine_shipLasersCreation(struct GameEngine *this, bool init) {
 	}
 }
 
+EXPORTED
 void GameEngine_shipLasers_init(struct GameEngine *this) {
 	GameEngine_shipLasersCreation(this, true);
 }
@@ -300,6 +304,7 @@ void GameEngine_shipLasers_init(struct GameEngine *this) {
 
 // XX what is the difference to GameEngine_shipLasersCreation, what is it
 // for?
+EXPORTED
 void GameEngine_laserInit_ship2(struct GameEngine *this) {
 	unsigned char i;
 	unsigned int count = 0;
@@ -339,6 +344,7 @@ void GameEngine_laserInit_ship2(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	// if init == true, initializes all lasers; kinda ugly but "works for now"
     
@@ -369,6 +375,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
 	}
 }
 
+EXPORTED
 void GameEngine_enemyLasers_init(struct GameEngine *this) {
 	GameEngine_enemyLasersCreation(this, true);
 }
@@ -381,6 +388,7 @@ void GameEngine_enemyLasers_init(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_BONUSENEMY	
+EXPORTED
 void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 	Actor_init(
 		&this->bonusEnemy,
@@ -399,6 +407,7 @@ void GameEngine_bonusEnemy_init(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_defaultValues(struct GameEngine *this) {
 	unsigned char i;
 	//tracking defaults
@@ -431,6 +440,7 @@ void GameEngine_defaultValues(struct GameEngine *this) {
 // XX what is the difference between this and GameEngine_defaultValues
 // [and GameEngine_init etc.]?
 
+EXPORTED
 void GameEngine_reset(struct GameEngine *this) {
 	GameEngine_shipInit(this);
 #if DRAW_ENEMIES
@@ -444,6 +454,7 @@ void GameEngine_reset(struct GameEngine *this) {
 // inputs: INGAME
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_moveObjects(struct GameEngine *this) {
 	GameEngine_player_move(this); // calls ADC0_in, Convert2Distance
 	if (this->gStatus == INGAME) {
@@ -467,6 +478,7 @@ void GameEngine_moveObjects(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_player_move(struct GameEngine *this) {
 	unsigned long ADCdata;
 	ADCdata = ADC0_In();
@@ -479,6 +491,7 @@ void GameEngine_player_move(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemy_move(struct GameEngine *this,
 						   unsigned int leftShiftColumn,
 						   unsigned int lightShiftColumn) {
@@ -527,6 +540,7 @@ void GameEngine_enemy_move(struct GameEngine *this,
 // inputs: none
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_laserShip_move(struct GameEngine *this) {
  	unsigned char i;
 	for (i=0; i < MAXLASERS; i++) {
@@ -549,6 +563,7 @@ void GameEngine_laserShip_move(struct GameEngine *this) {
 // assumes: na
 //laser_enemy[i]
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_laserEnemy_move(struct GameEngine *this) {
  	unsigned char i;
 	
@@ -567,10 +582,12 @@ void GameEngine_laserEnemy_move(struct GameEngine *this) {
 
 #if DRAW_BONUSENEMY
 
+EXPORTED
 void GameEngine_bonusEnemy_move_reset(struct GameEngine *this) {
 	this->bonusEnemy.alive = false;
 }
 
+EXPORTED
 void GameEngine_bonusEnemy_move(struct GameEngine *this) {
 	if (this->bonusEnemy.alive) {
 		this->bonusEnemy.x--;
@@ -585,6 +602,7 @@ void GameEngine_bonusEnemy_move(struct GameEngine *this) {
 // inputs: none
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
@@ -614,6 +632,7 @@ void GameEngine_draw(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemyDraw(struct GameEngine *this) {
 	signed char row;
 
@@ -635,6 +654,7 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // assumes: na
 
 // XX also does sound playing, detangle or rename
+EXPORTED
 void Actor_masterDraw(struct Actor *s,
 					  unsigned int frameIndex) {
 	if (s->jk) {
@@ -689,6 +709,7 @@ void Actor_masterDraw(struct Actor *s,
 // inputs: none
 // outputs: none
 // assumes: na
+EXPORTED
 void GameEngine_laserShipDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
@@ -703,6 +724,7 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
@@ -712,8 +734,8 @@ void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 #endif
 
 #if DRAW_ENEMIES
-void
-GameEngine_enemyTracking_reset(struct GameEngine *this) {
+EXPORTED
+void GameEngine_enemyTracking_reset(struct GameEngine *this) {
 	this->enemyTracking[0] = FIRST_E;		
 	this->enemyTracking[1] = LAST_E;
 	this->lowest = FIRST_E;	
@@ -721,9 +743,9 @@ GameEngine_enemyTracking_reset(struct GameEngine *this) {
 }
 
 // Keep track of the leftmost and rightmost Enemies.
-void
-GameEngine_enemyShiftTrack(struct GameEngine *this,
-						   unsigned int localAliveRows) {
+EXPORTED
+void GameEngine_enemyShiftTrack(struct GameEngine *this,
+								unsigned int localAliveRows) {
 	switch(localAliveRows){
 		case 1:
 			if (this->gameStatRow[this->lastLine].epr == 1) {
@@ -762,6 +784,7 @@ GameEngine_enemyShiftTrack(struct GameEngine *this,
 // inputs: sample
 // outputs: none
 // assumes: na
+EXPORTED
 unsigned long Convert2Distance(unsigned long sample){
 	return (Avalue*(sample) >> 10)+Bvalue; // Needs recalibration
 }
@@ -776,7 +799,8 @@ unsigned long Convert2Distance(unsigned long sample){
 unsigned long ADC0_SSFIFO3_R=0;
 #endif
 
-unsigned long ADC0_In(void){
+EXPORTED
+unsigned long ADC0_In(void) {
 #ifndef TEST_WITHOUT_IO
 	unsigned long result;
 	ADC0_PSSI_R = 0x0008;            // 1) initiate SS3
@@ -796,6 +820,7 @@ unsigned long ADC0_In(void){
 // outputs: none
 // assumes: na
 // Note: the result pointer must be array to make the collision result homogeneous
+EXPORTED
 void GameEngine_collisions(struct GameEngine *this) {
 #if DRAW_BONUSENEMY
 	GameEngine_bonusLaserCollision(this);
@@ -815,6 +840,7 @@ void GameEngine_collisions(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 	unsigned char laserNum = 0; 
 	//each laser is checked for a collition
@@ -836,6 +862,7 @@ void GameEngine_playerLaserCollisions(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemyscanY(struct GameEngine *this,
 						   unsigned int laserNum) {
 	signed char row = this->lastLine;
@@ -892,6 +919,7 @@ void GameEngine_update_lastLine(struct GameEngine *this) {
 // outputs: enemyDestroyed(0:1)
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_enemyscanX(struct GameEngine *this,
 						   unsigned int row,
 						   unsigned int laserNum) {
@@ -958,6 +986,7 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+EXPORTED
 void GameEngine_laserCollision(struct GameEngine *this) {
 	unsigned char lasernumEnemy;
 	//checks collision course
@@ -1000,6 +1029,7 @@ void GameEngine_laserCollision(struct GameEngine *this) {
 // assumes: na
 //notes: BonusLaserCollision does not need return (game does not terminate)
 #if DRAW_BONUSENEMY
+EXPORTED
 void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 	if (this->bonusEnemy.alive) {
 		unsigned char laserNumber = 0;
@@ -1029,6 +1059,7 @@ void GameEngine_bonusLaserCollision(struct GameEngine *this) {
 
 #if DRAW_ENEMIES
 
+EXPORTED
 void GameEngine_firstLast_reset(struct GameEngine *this) {
 	this->enemyCount = this->maxrows * MAX_ENEMY_PR; // see COPYPASTE
 	{	//liverows[] defaults
@@ -1047,6 +1078,7 @@ void GameEngine_firstLast_reset(struct GameEngine *this) {
 // inputs: row, column, mode
 // outputs: none
 // assumes: na
+EXPORTED
 unsigned int GameEngine_firstLast(struct GameEngine *this,
 								  unsigned int row,
 								  unsigned int column) {
@@ -1122,6 +1154,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // assumes: na
 #if DRAW_ENEMIES
 
+EXPORTED
 void GameEngine_firstEPC_reset(struct GameEngine *this) {
 	//sets defaults
 	unsigned char i;
@@ -1131,6 +1164,7 @@ void GameEngine_firstEPC_reset(struct GameEngine *this) {
 	}
 }
 
+EXPORTED
 void GameEngine_firstEPC(struct GameEngine *this) {
 	unsigned char column = 0;
 	unsigned char aliveCol = 0;
@@ -1170,6 +1204,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 // outputs: none
 // assumes: na
 #if DRAW_BONUSENEMY
+EXPORTED
 void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 	
 	if ((this->bonusEnemy.alive == false) &&
@@ -1187,15 +1222,18 @@ void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 #endif
 
 
+EXPORTED
 signed int absValue(signed int value){
 	return ((value<0) ? -value:value);
 }
 
 // Systick sets the game status on the Engine
 // Callers: systick, FirstLast, EnemyLaserCollisions
+EXPORTED
 void GameEngine_setStatus(struct GameEngine *this, const unsigned int v) {
 	this->gStatus = v;
 }
+EXPORTED
 unsigned int GameEngine_getStatus(struct GameEngine *this) {
 	return this->gStatus;
 }
@@ -1203,6 +1241,7 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 
 #ifdef DEBUG
 
+static
 void GameEngine_pp(struct GameEngine* this, FILE* out) {
 	int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
@@ -1330,6 +1369,7 @@ const struct ObjectInterface GameEngine_ObjectInterface = {
 #endif
 
 
+EXPORTED
 void GameEngine_init(struct GameEngine *this,
 					 unsigned int max_number_of_enemy_rows) {
 #ifdef DEBUG

@@ -24,7 +24,7 @@
 #define XSNPRINTF(str, n, ...) \
 	assert(snprintf(str, n, __VA_ARGS__) < n)
 
-
+static
 void die_errno(const char* msg, const char* arg) {
 	fprintf(stderr, "error: %s (%s): %s\n", msg, arg, strerror(errno));
 	exit(1);
@@ -39,7 +39,8 @@ void die_errno(const char* msg, const char* arg) {
 
 // Write screen buffer format from Nokia5110.c to file in XPM
 // format. Take dimensions from Nokia5110.h
-static void screen_write_xpm(const char* screen, const char* basepath) {
+static
+void screen_write_xpm(const char* screen, const char* basepath) {
 	int w= SCREENW;
 	int h= SCREENH;
 
@@ -85,14 +86,16 @@ struct Game {
 	struct SpaceInvaders spaceInvaders;
 };
 
-static void game_screen_write(struct Game *game) {
+static
+void game_screen_write(struct Game *game) {
 	char basepath[100];
 	XSNPRINTF(basepath, 100, "out/%i-%04i",
 			  game->max_number_of_enemy_rows, game->frame_number);
 	screen_write_xpm(Screen, basepath);
 }
 
-static void game_step(struct Game *game, FILE* step_dump_fh) {
+static
+void game_step(struct Game *game, FILE* step_dump_fh) {
 	PP2(&game->spaceInvaders.gameEngine, step_dump_fh);
 	SpaceInvaders_step(&game->spaceInvaders);
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
@@ -103,7 +106,8 @@ static void game_step(struct Game *game, FILE* step_dump_fh) {
 #define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
 
-static void test_run(unsigned int max_number_of_enemy_rows) {
+static
+void test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
 
 	//memset(&game, 8, sizeof(game));

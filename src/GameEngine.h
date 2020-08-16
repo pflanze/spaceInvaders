@@ -176,12 +176,12 @@ struct GameEngine {
 };
 
 
-void GameEngine_player_move(struct GameEngine *this);
-void GameEngine_shipLasers_init(struct GameEngine *this);
-void GameEngine_shipLasersCreation(struct GameEngine *this, bool init);
-void GameEngine_shipInit(struct GameEngine *this);
-void GameEngine_draw(struct GameEngine *this);
-unsigned long ADC0_In(void);
+EXPORTED void GameEngine_player_move(struct GameEngine *this);
+EXPORTED void GameEngine_shipLasers_init(struct GameEngine *this);
+EXPORTED void GameEngine_shipLasersCreation(struct GameEngine *this, bool init);
+EXPORTED void GameEngine_shipInit(struct GameEngine *this);
+EXPORTED void GameEngine_draw(struct GameEngine *this);
+EXPORTED unsigned long ADC0_In(void);
 
 #ifdef TEST_WITHOUT_IO
 extern unsigned long ADC0_SSFIFO3_R;
@@ -189,65 +189,66 @@ extern unsigned long ADC0_SSFIFO3_R;
 
 
 #if DRAW_ENEMIES
-void GameEngine_enemyInit(struct GameEngine *this);
-void GameEngine_laserCollision(struct GameEngine *this);
-void GameEngine_laserEnemy_move(struct GameEngine *this);
-void GameEngine_playerLaserCollisions(struct GameEngine *this);
-void GameEngine_enemy_move(struct GameEngine *this,
-						   unsigned int leftShiftColumn,
-						   unsigned int lightShiftColumn);
-void GameEngine_defaultValues(struct GameEngine *this);
+EXPORTED void GameEngine_enemyInit(struct GameEngine *this);
+EXPORTED void GameEngine_laserCollision(struct GameEngine *this);
+EXPORTED void GameEngine_laserEnemy_move(struct GameEngine *this);
+EXPORTED void GameEngine_playerLaserCollisions(struct GameEngine *this);
+EXPORTED void GameEngine_enemy_move(struct GameEngine *this,
+									unsigned int leftShiftColumn,
+									unsigned int lightShiftColumn);
+EXPORTED void GameEngine_defaultValues(struct GameEngine *this);
 #endif
 
 #if DRAW_BONUSENEMY
-void GameEngine_bonusEnemy_init(struct GameEngine *this);
-void GameEngine_bonusEnemy_move_reset(struct GameEngine *this);
-void GameEngine_bonusEnemy_move(struct GameEngine *this);
-void GameEngine_bonusEnemyCreate(struct GameEngine *this);
+EXPORTED void GameEngine_bonusEnemy_init(struct GameEngine *this);
+EXPORTED void GameEngine_bonusEnemy_move_reset(struct GameEngine *this);
+EXPORTED void GameEngine_bonusEnemy_move(struct GameEngine *this);
+EXPORTED void GameEngine_bonusEnemyCreate(struct GameEngine *this);
 #endif
 
-void GameEngine_bonusLaserCollision(struct GameEngine *this);
-void GameEngine_laserShip_move(struct GameEngine *this);
-void GameEngine_enemyDraw(struct GameEngine *this);
-void GameEngine_laserShipDraw(struct GameEngine *this);
+EXPORTED void GameEngine_bonusLaserCollision(struct GameEngine *this);
+EXPORTED void GameEngine_laserShip_move(struct GameEngine *this);
+EXPORTED void GameEngine_enemyDraw(struct GameEngine *this);
+EXPORTED void GameEngine_laserShipDraw(struct GameEngine *this);
 
-void GameEngine_enemyLasers_init(struct GameEngine *this);
-void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init);
-void GameEngine_laserEnemyDraw(struct GameEngine *this);
+EXPORTED void GameEngine_enemyLasers_init(struct GameEngine *this);
+EXPORTED void GameEngine_enemyLasersCreation(struct GameEngine *this,
+											 bool init);
+EXPORTED void GameEngine_laserEnemyDraw(struct GameEngine *this);
 
-void Actor_masterDraw(struct Actor *s,
-					  unsigned int frameIndex);
+EXPORTED void Actor_masterDraw(struct Actor *s,
+							   unsigned int frameIndex);
 
-void GameEngine_enemyscanY(struct GameEngine *this,
-						   unsigned int laserNum);
+EXPORTED void GameEngine_enemyscanY(struct GameEngine *this,
+									unsigned int laserNum);
 
-signed int absValue(signed int value);
-unsigned long Convert2Distance(unsigned long sample);
+EXPORTED signed int absValue(signed int value);
+EXPORTED unsigned long Convert2Distance(unsigned long sample);
 
-void GameEngine_moveObjects(struct GameEngine *this);
+EXPORTED void GameEngine_moveObjects(struct GameEngine *this);
 
-void GameEngine_collisions(struct GameEngine *this);
-void GameEngine_reset(struct GameEngine *this);
+EXPORTED void GameEngine_collisions(struct GameEngine *this);
+EXPORTED void GameEngine_reset(struct GameEngine *this);
 
 #if DRAW_ENEMIES
-void GameEngine_enemyTracking_reset(struct GameEngine *this);
-void GameEngine_enemyShiftTrack(struct GameEngine *this,
-								unsigned int localAliveRows);
-void GameEngine_firstLast_reset(struct GameEngine *this);
-unsigned int GameEngine_firstLast(struct GameEngine *this,
-								  unsigned int row,
-								  unsigned int column);
+EXPORTED void GameEngine_enemyTracking_reset(struct GameEngine *this);
+EXPORTED void GameEngine_enemyShiftTrack(struct GameEngine *this,
+										 unsigned int localAliveRows);
+EXPORTED void GameEngine_firstLast_reset(struct GameEngine *this);
+EXPORTED unsigned int GameEngine_firstLast(struct GameEngine *this,
+										   unsigned int row,
+										   unsigned int column);
 // first enemy per column
-void GameEngine_firstEPC_reset(struct GameEngine *this);
-void GameEngine_firstEPC(struct GameEngine *this);
+EXPORTED void GameEngine_firstEPC_reset(struct GameEngine *this);
+EXPORTED void GameEngine_firstEPC(struct GameEngine *this);
 #endif
-void GameEngine_enemyscanX(struct GameEngine *this,
-						   unsigned int row,
-						   unsigned int laserNum);
-void GameEngine_setStatus(struct GameEngine *this, unsigned int v);
-unsigned int GameEngine_getStatus(struct GameEngine *this);
-void GameEngine_laserInit_ship2(struct GameEngine *this);
-void GameEngine_init(struct GameEngine *this,
-					 unsigned int max_number_of_enemy_rows);
+EXPORTED void GameEngine_enemyscanX(struct GameEngine *this,
+									unsigned int row,
+									unsigned int laserNum);
+EXPORTED void GameEngine_setStatus(struct GameEngine *this, unsigned int v);
+EXPORTED unsigned int GameEngine_getStatus(struct GameEngine *this);
+EXPORTED void GameEngine_laserInit_ship2(struct GameEngine *this);
+EXPORTED void GameEngine_init(struct GameEngine *this,
+							  unsigned int max_number_of_enemy_rows);
 
 #endif /* _GAMEENGINE_H */

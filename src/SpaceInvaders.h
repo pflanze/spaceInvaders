@@ -18,10 +18,10 @@ struct SpaceInvaders {
 	char swapMessage;
 };
 
-void SpaceInvaders_init(struct SpaceInvaders *this,
-						unsigned int max_number_of_enemy_rows);
-void SpaceInvaders_step(struct SpaceInvaders *this);
-void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this);
-
+EXPORTED void SpaceInvaders_init(struct SpaceInvaders *this,
+								 unsigned int max_number_of_enemy_rows);
+EXPORTED void SpaceInvaders_step(struct SpaceInvaders *this);
+EXPORTED void SysTick_Handler(void);
+EXPORTED void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this);
 
 #endif

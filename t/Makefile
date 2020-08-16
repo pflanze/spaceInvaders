@@ -21,7 +21,7 @@ SAN=`./sanflags`
 #SAN=
 
 CC=`./clang-version`
-CFLAGS=-fdiagnostics-color=always -O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DDEBUG $(SAN)
+CFLAGS=-fdiagnostics-color=always -O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
 all: depend
@@ -47,7 +47,7 @@ testsingle.c: $(OBJS)
 # all! Had to rename our assert.h for that reason. Maybe there's
 # something more precise?)
 testsingle.o: testsingle.c
-	$(CC) $(CFLAGS) -I$(VPATH) -c -o testsingle.o testsingle.c
+	$(CC) $(CFLAGS) -UEXPORTED -DEXPORTED=static -I$(VPATH) -c -o testsingle.o testsingle.c
 
 testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
