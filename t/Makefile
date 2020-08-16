@@ -1,7 +1,7 @@
 # Where to find the files:
-VPATH=..
-# From here on do not use the "../" prefix, relative paths are assumed
-# to be found in ".." already.
+VPATH=../src
+# From here on do not use the "../src" prefix, relative paths are assumed
+# to be found there already.
 
 # ----------------------------------------------------------------------
 # Keep these two variables updated manually:
