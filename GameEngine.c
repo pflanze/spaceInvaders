@@ -82,8 +82,7 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 #define ID_BONUS       2
 #define ID_E_LASER     3
 #define ID_S_LASER     4
-// When an actor explodes, it turns into an explosion actor (leaving no trace or
-// knowledge of what it was before)
+// When an actor explodes, it turns into an explosion actor
 #define ID_EXPLOSION   99
 
 #ifdef DEBUG
