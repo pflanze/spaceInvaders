@@ -27,6 +27,10 @@
 
 ### Sound
 
+* Change sound output to use PWM on a single bit digital output?
+  (Could use a simple digital amplifier stage instead of resistor
+  network plus analog amplifier. And would probably allow up to 8 bit
+  instead of only 4 bit output.)
 * If really only 4 bits are ever played (for microcontroller), only
   store those.
 * Compression (some efficient run-length encoding)
