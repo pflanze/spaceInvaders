@@ -2,7 +2,6 @@
 
 #include "Buttons.h"
 #include "GameEngine.h"
-#include "Init.h"
 #include "Message.h"
 #include "Nokia5110_font.h"
 #include "Nokia5110.h"
