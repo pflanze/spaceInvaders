@@ -21,7 +21,9 @@ struct SpaceInvaders {
 EXPORTED void SpaceInvaders_init(struct SpaceInvaders *this,
 								 unsigned int max_number_of_enemy_rows);
 EXPORTED void SpaceInvaders_step(struct SpaceInvaders *this);
+#ifndef TEST_WITHOUT_IO
 EXPORTED void SysTick_Handler(void);
+#endif
 EXPORTED void SpaceInvaders_main_update_LCD(struct SpaceInvaders *this);
 
 #endif

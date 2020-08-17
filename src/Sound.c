@@ -514,12 +514,12 @@ void Timer1A_Stop(void){
 // inputs: none
 // outputs: none
 // assumes: na
+#ifndef TEST_WITHOUT_IO
 static
 void Timer1A_Start(void){
-#ifndef TEST_WITHOUT_IO
 	TIMER1_CTL_R |= 0x00000001;   // enable
-#endif
 }	
+#endif
 //********functionName*****************
 // Multiline description
 // changes: variablesChanged
@@ -540,12 +540,12 @@ void Timer2A_Stop(void){
 // inputs: none
 // outputs: none
 // assumes: na
+#ifndef TEST_WITHOUT_IO
 static
 void Timer2A_Start(void){
-#ifndef TEST_WITHOUT_IO
 	TIMER2_CTL_R |= 0x00000001;   // enable
-#endif
 }
+#endif
 
 
 

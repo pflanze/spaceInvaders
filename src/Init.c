@@ -72,9 +72,9 @@ void DAC_Init(void){
 //Description: 
 //Default: LED off
 //Colours: PB4 RED, PB5 Green
-EXPORTED
-void LED_Init(void){
 #ifndef TEST_WITHOUT_IO
+EXPORTED
+void LED_Init(void) {
 	//port B already active
 	GPIO_PORTB_AMSEL_R &= ~0x30;      // no analog function for PB4-5
 	GPIO_PORTB_PCTL_R &= ~0x00FF0000; // regular function for PB4-5
@@ -84,8 +84,8 @@ void LED_Init(void){
 	GPIO_PORTB_DEN_R |= 0x30;      // enable digital I/O on PB4-5
 	GPIO_PORTB_DATA_R &= ~0x30;		//LEDs off by default
 //	GPIO_PORTB_DATA_R |= 0x30;		//LEDs on test
-#endif
 }
+#endif
 
 //********HeartBit****************
 //Clock used: 
@@ -118,9 +118,9 @@ void PortF_init(void){ volatile unsigned long delay;
 //Description: Led on/off, used for testing
 //Default: Disabled, enable: TIMER1_CTL_R
 #if AUDIO_1A
-EXPORTED
-void Timer1A_Init(void){ 
 #ifndef TEST_WITHOUT_IO
+EXPORTED
+void Timer1A_Init(void) {
 	unsigned long volatile delay;
 	SYSCTL_RCGCTIMER_R |= 0x02;   // 0) activate timer1 (2^1)
 	delay = SYSCTL_RCGCTIMER_R;
@@ -137,8 +137,8 @@ void Timer1A_Init(void){
 // vector number 37, interrupt number 21
 	NVIC_EN0_R = 1<<21;           // 9) enable IRQ 21 in NVIC
 //  TIMER1_CTL_R = 0x00000001;    // 10) enable timer1A, testing only
-#endif
 }
+#endif
 #endif
 //********timer2A*****************
 //Clock: 
@@ -147,9 +147,9 @@ void Timer1A_Init(void){
 //Description: Led on/off, used for testing
 //Default: Disabled, enable: TIMER2_CTL_R
 #if AUDIO_2A
-EXPORTED
-void Timer2A_Init(void){ 
 #ifndef TEST_WITHOUT_IO
+EXPORTED
+void Timer2A_Init(void) {
 	unsigned long volatile delay;
 	SYSCTL_RCGCTIMER_R |= 0x04;   // 0) activate timer2
 	delay = SYSCTL_RCGCTIMER_R;
@@ -165,8 +165,8 @@ void Timer2A_Init(void){
 // vector number 39, interrupt number 23
 	NVIC_EN0_R = 1<<23;           // 9) enable IRQ 23 in NVIC
 //  TIMER2_CTL_R = 0x00000001;    // 10) enable timer2A, testing only
-#endif
 }	
+#endif
 #endif
 
 //********Systick*****************

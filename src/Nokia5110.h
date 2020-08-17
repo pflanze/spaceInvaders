@@ -84,7 +84,9 @@ extern char Screen[SCREENW*SCREENH/8]; // buffer stores the next image to be pri
 // inputs: none
 // outputs: none
 // assumes: system clock rate of 50 MHz or less
+#ifndef TEST_WITHOUT_IO
 EXPORTED void Nokia5110_Init(void);
+#endif
 
 //********Nokia5110_OutChar*****************
 // Print a character to the Nokia 5110 48x84 LCD.  The
@@ -98,7 +100,9 @@ EXPORTED void Nokia5110_Init(void);
 // inputs: data  character to print
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+#ifndef TEST_WITHOUT_IO
 EXPORTED void Nokia5110_OutChar(unsigned char data);
+#endif
 
 //********Nokia5110_OutString*****************
 // Print a string of characters to the Nokia 5110 48x84 LCD.

@@ -29,8 +29,9 @@ void RestartMessage(void){
 }
 
 
+#ifndef TEST_WITHOUT_IO
 EXPORTED
-void InitMessage(void){
+void InitMessage(void) {
 	Nokia5110_Clear();
 	Nokia5110_SetCursor(1, 1);
 	Nokia5110_OutString("We are");
@@ -39,3 +40,4 @@ void InitMessage(void){
 	Nokia5110_SetCursor(1, 3);
 	Nokia5110_OutString("attack!");
 }
+#endif

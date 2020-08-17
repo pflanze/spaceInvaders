@@ -150,9 +150,9 @@ void lcdwrite(enum typeOfWrite type, char message) {
 // inputs: none
 // outputs: none
 // assumes: system clock rate of 80 MHz
+#ifndef TEST_WITHOUT_IO
 EXPORTED
 void Nokia5110_Init(void) {
-#ifndef TEST_WITHOUT_IO
 	volatile unsigned long delay;
 	SYSCTL_RCGC1_R |= SYSCTL_RCGC1_SSI0;  // activate SSI0
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOA; // activate port A
@@ -199,8 +199,8 @@ void Nokia5110_Init(void) {
 	
 	lcdwrite(COMMAND, 0x20);              // we must send 0x20 before modifying the display control mode
 	lcdwrite(COMMAND, 0x0C);              // set display control to normal mode: 0x0D for inverse
-#endif
 }
+#endif
 
 //********Nokia5110_OutChar*****************
 // Print a character to the Nokia 5110 48x84 LCD.  The
@@ -214,17 +214,17 @@ void Nokia5110_Init(void) {
 // inputs: data  character to print
 // outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+#ifndef TEST_WITHOUT_IO
 EXPORTED
 void Nokia5110_OutChar(unsigned char data) {
-#ifndef TEST_WITHOUT_IO
 	int i;
 	lcdwrite(DATA, 0x00);                 // blank vertical line padding
 	for (i=0; i<5; i=i+1) {
 		lcdwrite(DATA, ASCII[data - 0x20][i]);
 	}
 	lcdwrite(DATA, 0x00);                 // blank vertical line padding
-#endif
 }
+#endif
 
 //********Nokia5110_OutString*****************
 // Print a string of characters to the Nokia 5110 48x84 LCD.

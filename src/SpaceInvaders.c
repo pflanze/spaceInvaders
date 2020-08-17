@@ -35,9 +35,9 @@
 #ifndef TEST_WITHOUT_IO
 #  include "..//tm4c123gh6pm.h"
 #  include "TExaS.h"
+#  include "Init.h"
 #endif
 #include "Nokia5110.h"
-#include "Init.h"
 #include "Buttons.h"
 #include "GameEngine.h"
 #include "random.h"
