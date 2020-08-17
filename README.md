@@ -56,3 +56,30 @@ package for clang-9, for example, which should be installed already
 after installing clang-9.
 
 You'll want to install `gdb`.
+
+### make targets
+
+* `depend`: update the Makefile for changes in cross file dependencies
+    (header file includes)
+* `runtest`: run the test suite (via `test`)
+* `test`: binary built via separate compilation
+* `testsingle`: binary built with whole-program analysis
+* default: runs `make depend` then `make runtest`
+
+### Compiler configuration
+
+By default, it tries to find clang, and will compile with -O0 and with
+sanitizers enabled. This can be changed via (run from within `t`
+directory):
+
+* use gcc instead of clang: `touch .use-gcc`
+* use different optimization level: `echo -Os > .opt`
+
+Run `./compiler` to see compiler and optimization option choice (this
+does not reflect sanitizer options though--TODO simplify).
+
+* disable sanitizer: `touch .nosan`
+
+In all cases, after changing options, `make clean` has to be run
+before compiling again or it will reuse existing object files.
+
