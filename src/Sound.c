@@ -591,13 +591,13 @@ static struct SoundState soundState2 = {2};
 
 unsigned int average;
 
+#ifndef TEST_WITHOUT_IO
 static
 void outputSounds() {
 	average = (soundState1.currentSample + soundState2.currentSample) / 2;
-#ifndef TEST_WITHOUT_IO
 	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | average;
-#endif
 }
+#endif
 //********functionName*****************
 // Multiline description
 // changes: variablesChanged
@@ -621,6 +621,7 @@ void soundStateInit(struct SoundState *soundState) {
 // outputs: none
 // assumes: na
 //Used by: Function name
+#ifndef TEST_WITHOUT_IO
 static
 void soundUpdate(struct SoundState *soundState) {
 	
@@ -652,6 +653,7 @@ void soundUpdate(struct SoundState *soundState) {
 		soundStateInit(soundState);
 	}
 }
+#endif
 
 //********functionName*****************
 // Multiline description
@@ -661,13 +663,13 @@ void soundUpdate(struct SoundState *soundState) {
 // outputs: none
 // assumes: na
 //Used by: Function name
+#ifndef TEST_WITHOUT_IO
 EXPORTED /* it's not in Sound.h, though, nor referenced anywhere, ? */
 void Timer1A_Handler(void) {
-#ifndef TEST_WITHOUT_IO
 	TIMER1_ICR_R = 0x01;   // acknowledge timer1A timeout
-#endif
 	soundUpdate(&soundState1);
 }
+#endif
 
 #endif
 //********Timer2B_Handler*****************
@@ -679,13 +681,13 @@ void Timer1A_Handler(void) {
 
 //static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
+#ifndef TEST_WITHOUT_IO
 EXPORTED /* it's not in Sound.h, though, nor referenced anywhere, ? */
 void Timer2A_Handler(void) {
-#ifndef TEST_WITHOUT_IO
 	TIMER2_ICR_R = 0x01;   // acknowledge timer1A timeout
-#endif
 	soundUpdate(&soundState2);
 }
+#endif
 //#endif
 
 //------------------------------------------------------------------
