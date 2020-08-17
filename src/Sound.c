@@ -31,7 +31,8 @@ How sound are implemented
 unsigned int Index = 0;
 
 
-//----------------------------------------------Compressed Sounds------------------------------------------
+//-----------------------Sounds, 8 bits per sample------------------------------
+
 #if AUDIO_1A || AUDIO_2A
 const unsigned int _shoot[] = {
 	0x866AD827, 0xD7369EA4, 0x5AC658D8, 0x368DA558, 0xC748D947, 0x9B738D85, 0x7DF635A7, 0x259DCCC7, 0x6105A78F, 
