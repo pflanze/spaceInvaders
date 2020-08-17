@@ -50,10 +50,10 @@ If you get something like:
 
     /usr/bin/ld: cannot find /usr/lib/llvm-10/lib/clang/10.0.0/lib/linux/libclang_rt.msan-i386.a: No such file or directory
 
-then it's because you're on a 32 bit system and msan only works on 64
-bit systems? The library would be part of the `libclang-common-9-dev`
-package for clang-9, for example, which should be installed already
-after installing clang-9.
+then it's because you're on a 32 bit system--apparently msan only
+works on 64 bit systems. The library would be part of the
+`libclang-common-9-dev` package for clang-9, for example, which should
+be installed already after installing clang-9.
 
 You'll want to install `gdb`.
 
