@@ -250,6 +250,8 @@ static const unsigned char laser0[] = {
 
 	
 #ifdef DEBUG
+
+#ifdef UNUSED
 static
 const char* addrToSpriteName(const unsigned char* p) {
 	if (! p) { return "NULL"; }
@@ -269,4 +271,6 @@ const char* addrToSpriteName(const unsigned char* p) {
 #undef C
 	return "<unknown sprite image>";
 }
+#endif
+
 #endif

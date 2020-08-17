@@ -7,7 +7,9 @@
 #define MESSAGEDELAY	5		//controls the delay of the inittial message (if enabled)
 #define SWAPDELAYMSG 10
 
+#ifdef UNUSED
 EXPORTED void Delay100ms(unsigned long count); // time delay in 0.1 seconds
+#endif
 EXPORTED void GameOverMessage(void);		   // Prints game over message
 EXPORTED void InitMessage(void);			   // Prints initial message
 EXPORTED void WinMessage(void);

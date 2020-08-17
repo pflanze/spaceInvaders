@@ -115,7 +115,9 @@ EXPORTED void Nokia5110_OutString(char *ptr);
 // Inputs: n  16-bit unsigned number
 // Outputs: none
 // assumes: LCD is in default horizontal addressing mode (V = 0)
+#ifdef UNUSED
 EXPORTED void Nokia5110_OutUDec(unsigned short n);
+#endif
 
 //********Nokia5110_SetCursor*****************
 // Move the cursor to the desired X- and Y-position.  The

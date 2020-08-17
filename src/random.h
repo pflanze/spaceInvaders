@@ -16,7 +16,9 @@
 */
 EXPORTED void Random_Init(unsigned long seed);
 
+#ifdef UNUSED
 EXPORTED unsigned long Random(void);
+#endif
 EXPORTED unsigned long Random32(void);
 
 
