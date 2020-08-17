@@ -15,6 +15,7 @@ die () {
     exit 1
 }
 
-which clang-10 || which clang-9 || which clang-8 || which clang-7 || which clang-6 || die
+which clang-11 || which clang-10 || which clang-9 || which clang-8 || which clang-7 || which clang-6 || die
+# clang-11 doesn't exist yet, but hey, be somewhat future proof?
 # clang-6 may never exist as there was clang-6.0 etc.? Anyway, this
 # may be too old anyway. Install a newer one!
