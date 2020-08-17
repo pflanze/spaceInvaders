@@ -4,9 +4,11 @@ VPATH=../src
 # to be found there already.
 
 # ----------------------------------------------------------------------
-# Keep these two variables updated manually:
+# Keep these variables updated manually:
 
 SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c test.c
+# not including unused modules, for building `testsingle`:
+SRCS_TEST=Buttons.c CMWC.c GameEngine.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c test.c
 
 OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o object.o pp.o test.o
 
@@ -40,7 +42,7 @@ test: $(OBJS)
 # change, since that's the only way dependency info is accessible
 # currently:
 testsingle.c: $(OBJS)
-	./make_testsingle $(SRCS) > testsingle.c
+	./make_testsingle $(SRCS_TEST) > testsingle.c
 
 # (Note: using -I is not optimal, as it makes it look in VPATH for
 # *system* header files, too--that's the real meaning for -I, after
