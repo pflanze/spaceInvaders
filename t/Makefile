@@ -20,8 +20,8 @@ SAN=`./sanflags`
 # disable sanitizer via "touch .nosan" or by clearing the SAN variable here: 
 #SAN=
 
-CC=`./clang-version`
-CFLAGS=-fdiagnostics-color=always -O0 -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
+CC=`./compiler`
+CFLAGS=-fdiagnostics-color=always -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
 all: depend

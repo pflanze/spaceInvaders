@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=' '
+
+if [ -e .opt ]; then
+    opt=$(cat .opt)
+else
+    opt=-O0
+fi
+
+if [ -e .use-gcc ]; then
+    echo gcc $opt
+else
+    v=$(./clang-version)
+    echo $v $opt
+fi
+

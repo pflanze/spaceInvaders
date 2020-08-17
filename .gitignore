@@ -25,7 +25,9 @@ TExaS.*
 test
 *.exe
 t.out
-.nosan
+t/.nosan
+t/.use-gcc
+t/.opt
 .makedepend.log
 t/.gdb_history
 t/_*
