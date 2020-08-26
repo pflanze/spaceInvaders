@@ -1,7 +1,6 @@
 #ifndef _SPACEINVADERS_H
 #define _SPACEINVADERS_H
 
-#include "SpaceInvaders.h"
 #include "object.h"
 
 
