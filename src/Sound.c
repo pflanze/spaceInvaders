@@ -27,10 +27,6 @@ How sound are implemented
 #include "utils.h"
 
 
-//Global variables
-unsigned int Index = 0;
-
-
 //-----------------------Sounds, 4 bits per sample------------------------------
 
 #if AUDIO_1A || AUDIO_2A
