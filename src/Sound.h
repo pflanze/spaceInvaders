@@ -2,17 +2,16 @@
 #define _SOUND_H
 
 
-//Used to set the sound frequency
 struct Sound {
 	const unsigned int *data;
-	const unsigned int size; //number of elements in data array
+	const unsigned int size; // number of elements in data array
 };
 
 extern const struct Sound shoot;
 extern const struct Sound smallExplosion;
 extern const struct Sound ufoLowPitch;
 
-//------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 	
 // EXPORTED void shipFire(void);
 // EXPORTED void DAC_Out(unsigned int data);
