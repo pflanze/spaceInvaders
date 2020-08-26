@@ -4,6 +4,10 @@
 
 ## Primary
 
+### Build for hardware
+
+* Build for the real hardware via gcc or clang instead of Keil
+
 ### Sound
 
 * (optionally) actually play sounds via Linux sound system or
