@@ -8,11 +8,6 @@
 
 * Build for the real hardware via gcc or clang instead of Keil
 
-### Sound
-
-* (optionally) actually play sounds via Linux sound system or
-  some wrapper
-
 ### Testing infrastructure
 
 * add currently playing sounds data (globals) to the game world
@@ -31,6 +26,7 @@
 
 ### Sound
 
+* play sounds via Linux sound system or some wrapper
 * Change sound output to use PWM on a single bit digital output?
   (Could use a simple digital amplifier stage instead of resistor
   network plus analog amplifier. And would probably allow up to 8 bit
