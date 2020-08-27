@@ -35,6 +35,8 @@
   (Could use a simple digital amplifier stage instead of resistor
   network plus analog amplifier. And would probably allow up to 8 bit
   instead of only 4 bit output.)
+* Instead of taking the 4 upper bits from the original 8-bit sound
+  samples, use a u-law style encoding to 4 (or more?) bits.
 * Compression (some efficient run-length encoding)
 * look at mixer/decoder/streams handling (which is where decompressor
   code will be added)
