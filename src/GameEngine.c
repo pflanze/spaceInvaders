@@ -145,7 +145,6 @@ void Actor_pp(struct Actor* this, FILE* out) {
 	PP_PRINTF(", .origConsts = %s", addrToActorConstName(this->origConsts));
 	PP_PRINTF(", .x = %hhu", this->x);
 	PP_PRINTF(", .y = %hhu", this->y);
-	PP_PRINTF(" }");
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
 	PP_PRINTF(", .jk = %s", bool_show(this->jk));
 	PP_PRINTF(", .frame = %i", this->frame);
