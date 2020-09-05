@@ -76,22 +76,26 @@ void GameEngine_enemyLaserCollisions(struct GameEngine *this);
 
 //------------------------ActorConsts-------------------------------------------
 
+static
 const struct ActorConsts shipConsts = {
 	.image[0] = playerShip0
 	, .playExplosionSound = true
 };
 
+static
 const struct ActorConsts shipLaserConsts = {
 	.image[0] = laser0
 	, .playExplosionSound = false
 };
 
+static
 const struct ActorConsts enemyLaserConsts = {
 	.image[0] = laser0
 	, .offsetX = -5
 	, .playExplosionSound = false
 };
 
+static
 const struct ActorConsts bonusEnemyConsts = {
 	.image[0] = smallBonusEnemy0
 	, .maybeSound = &ufoLowPitch
@@ -100,19 +104,23 @@ const struct ActorConsts bonusEnemyConsts = {
 	, .playExplosionSound = true
 };
 
+static
 const struct ActorConsts enemy30Consts = {
 	{ smallEnemy30PointA, smallEnemy30PointB }
 	, .playExplosionSound = true
 };
+static
 const struct ActorConsts enemy20Consts = {
 	{ smallEnemy20PointA, smallEnemy20PointB }
 	, .playExplosionSound = true
 };
+static
 const struct ActorConsts enemy10Consts = {
 	{ smallEnemy10PointA, smallEnemy10PointB }
 	, .playExplosionSound = true
 };
 
+static
 const struct ActorConsts smallExplosionConsts = {
 	{ smallExplosion0, smallExplosion1 }
 	, .maybeSound = &smallExplosion
