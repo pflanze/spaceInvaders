@@ -215,29 +215,24 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 // outputs: none
 // assumes: na
 #if DRAW_ENEMIES
+
+#define NUM_ACTORCONSTS_IN_ROW 3
+
+static
+const struct ActorConsts* actorconsts_in_row[NUM_ACTORCONSTS_IN_ROW] = {
+	&enemy30Consts, &enemy20Consts, &enemy10Consts
+};
+
 EXPORTED
 void GameEngine_enemyInit(struct GameEngine *this) {
-	unsigned char row;
-	for (row=0; row < this->maxrows; row++) {
-		unsigned int column;
-		for (column=0; column < MAX_ENEMY_PR; column++) {
-			const struct ActorConsts *ac; 
-			switch(row) {
-				case 0:
-					ac = &enemy30Consts;
-					break;
-				case 1:
-					ac = &enemy20Consts;
-					break;
-				case 2:
-					ac = &enemy10Consts;
-					break;
-			}
+	assert(ALLOC_MAXROWS <= NUM_ACTORCONSTS_IN_ROW);
+	for (unsigned char row=0; row < this->maxrows; row++) {
+		for (unsigned int column=0; column < MAX_ENEMY_PR; column++) {
 			Actor_init(
 				&this->enemy[row][column],
 				// https://en.cppreference.com/w/c/language/compound_literal
 				(struct Actor) {
-						.consts = ac,
+						.consts = actorconsts_in_row[row],
 						.x = 20*column,
 						.y = 10 + row*10,
 						.alive = true,
