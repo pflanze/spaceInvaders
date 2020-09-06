@@ -1,4 +1,28 @@
-# Todo/aims
+# Todo
+
+(Corresponding to "Aims" below.)
+
+1.  Get to work on real hardware via gcc/clang.
+1.  Verify sound is still working (how, without DAC?).
+1.  Rework sound to only use a single timer/irq handler (and to PWM at
+    the same time?).
+1.  Run sound irq handler from test, output sound data (event log, but
+    also sample log) to files for debugging.
+1.  Can we get rid of `jk`?
+1.  Get rid of `origConsts` if possible (play sound immediately, so it
+    won't need the change; perhaps move to functional approach (next
+    vs. old state during a game cycle)? But requires double the
+    RAM.)
+1.  Move from initialization and separate `alive` flag to just
+    _construct and _destroy (assumes actor object life times can be
+    equal to actor life time). If `vtable` is used, don't need an
+    alive flag anymore, otherwise we will for safety (but then that's
+    a debug feature, so, only rely on `vtable`, OK?).
+
+(Some work for audio compression is ongoing outside this repo and
+might be included after the above.)
+
+# Aims
 
 (These are Christian's ideas/aims.)
 
