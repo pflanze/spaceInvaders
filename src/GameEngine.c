@@ -127,7 +127,7 @@ const struct ActorConsts smallExplosionConsts = {
 };
 
 static
-const char* addrToActorConstName(const struct ActorConsts* p) {
+const char* addrToActorConstsName(const struct ActorConsts* p) {
 	if (! p) { return "NULL"; }
 #define C(nam) if (p == &nam) return "&"#nam
 	C(shipConsts);
@@ -139,7 +139,7 @@ const char* addrToActorConstName(const struct ActorConsts* p) {
 	C(enemy10Consts);
 	C(smallExplosionConsts);
 #undef C
-	return "<unknown ActorConst>";
+	return "<unknown ActorConsts>";
 }
 
 //-----------------------------Actor--------------------------------------------
@@ -149,8 +149,8 @@ const char* addrToActorConstName(const struct ActorConsts* p) {
 static
 void Actor_pp(struct Actor* this, FILE* out) {
 	PP_PRINTF("(struct Actor) {");
-	PP_PRINTF(" .consts = %s", addrToActorConstName(this->consts));
-	PP_PRINTF(", .origConsts = %s", addrToActorConstName(this->origConsts));
+	PP_PRINTF(" .consts = %s", addrToActorConstsName(this->consts));
+	PP_PRINTF(", .origConsts = %s", addrToActorConstsName(this->origConsts));
 	PP_PRINTF(", .x = %hhu", this->x);
 	PP_PRINTF(", .y = %hhu", this->y);
 	PP_PRINTF(", .alive = %s", bool_show(this->alive));
