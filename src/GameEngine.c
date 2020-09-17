@@ -1172,14 +1172,13 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 
 	// read left -> right, down -> up
 	for (unsigned char column=0; column < MAX_ENEMY_PR; column++) {
+		if (this->gameStatColumn[column].numEnemies == 0) {
+			continue;
+		}
 
 		// start from last known position
 		unsigned int row = this->gameStatColumn[column].fep;
 		assert(row < this->maxrows);
-
-		if (this->gameStatColumn[column].numEnemies == 0) {
-			continue;
-		}
 	
 		this->alColsMat[aliveCol] = column;
 		aliveCol++;
