@@ -70,7 +70,4 @@ might be included after the above.)
 
 # Various
 
-* change `unsigned char randN = (Random32()>>24) % this->liveCols` to
-  use a proper randomInteger(max) function which doesn't mess up
-  probability distribution
-* Fix PRNG lib (seems buggy)
+* Fix/check/test PRNG lib (seems buggy)
