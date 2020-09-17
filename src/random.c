@@ -25,8 +25,7 @@ uint32_t random_uint32(uint32_t ceil) {
 	assert(ceil >= 1);
 	uint32_t dropbits= clz(ceil - 1);
 	while (1) {
-		uint32_t v = PRNG();
-		v = v >> dropbits;
+		uint32_t v = PRNG() >> dropbits;
 		if (v < ceil) {
 			return v;
 		}
