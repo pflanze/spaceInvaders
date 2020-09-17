@@ -76,6 +76,6 @@ PRNG.o: PRNG.h
 Sound.o: Sound.h debug.h utils.h
 SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h random.h Message.h Sound.h SpaceInvaders.h
 pp.o: pp.h utils.h object.h
-random.o: random.h PRNG.h
+random.o: random.h PRNG.h perhaps_assert.h
 stdlib_utils.o: stdlib_utils.h
 test.o: Buttons.h utils.h GameEngine.h debug.h object.h Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h pp.h perhaps_assert.h stdlib_utils.h
