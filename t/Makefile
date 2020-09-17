@@ -6,11 +6,11 @@ VPATH=../src
 # ----------------------------------------------------------------------
 # Keep these variables updated manually:
 
-SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c test.c
+SRCS=Buttons.c CMWC.c GameEngine.c Init.c LED.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c stdlib_utils.c test.c
 # not including unused modules, for building `testsingle`:
-SRCS_TEST=Buttons.c CMWC.c GameEngine.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c test.c
+SRCS_TEST=Buttons.c CMWC.c GameEngine.c Message.c Nokia5110.c Sound.c SpaceInvaders.c random.c object.c pp.c stdlib_utils.c test.c
 
-OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o object.o pp.o test.o
+OBJS=Buttons.o CMWC.o GameEngine.o Init.o Message.o Nokia5110.o Sound.o SpaceInvaders.o random.o object.o pp.o stdlib_utils.o test.o
 
 # ----------------------------------------------------------------------
 # No need for manual updating here
@@ -76,4 +76,5 @@ Sound.o: Sound.h debug.h utils.h
 SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h random.h Message.h Sound.h SpaceInvaders.h
 pp.o: pp.h utils.h object.h
 random.o: random.h CMWC.h
-test.o: Buttons.h utils.h GameEngine.h debug.h object.h Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h pp.h perhaps_assert.h
+stdlib_utils.o: stdlib_utils.h
+test.o: Buttons.h utils.h GameEngine.h debug.h object.h Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h pp.h perhaps_assert.h stdlib_utils.h

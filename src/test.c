@@ -12,12 +12,13 @@
 #include "utils.h"
 #include "pp.h"
 
-
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
 #include "perhaps_assert.h"
+#include "stdlib_utils.h"
+
 
 #define XSNPRINTF(str, n, ...) \
 	assert(snprintf(str, n, __VA_ARGS__) < n)
@@ -43,7 +44,7 @@ void screen_write_xpm(const char* screen, const char* basepath) {
 	int h= SCREENH;
 
 	int pathsiz= strlen(basepath)+5;
-	char* path= malloc(pathsiz);
+	char* path= xmalloc(pathsiz);
 	snprintf(path, pathsiz, "%s.xpm", basepath);
 	
 	FILE *fh= fopen(path, "w");
