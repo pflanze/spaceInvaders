@@ -1168,11 +1168,10 @@ void GameEngine_firstEPC_reset(struct GameEngine *this) {
 
 EXPORTED
 void GameEngine_firstEPC(struct GameEngine *this) {
-	unsigned char column = 0;
 	unsigned char aliveCol = 0;
-	
+
 	// read left -> right, down -> up
-	for (column=0; column < MAX_ENEMY_PR; column++) {
+	for (unsigned char column=0; column < MAX_ENEMY_PR; column++) {
 		unsigned int row = this->gameStatColumn[column].fep;
 		// ^ start from last known position
 		assert(row < this->maxrows);
