@@ -2,7 +2,6 @@
 https://en.wikipedia.org/wiki/Middle_square_method#Middle_Square_Weyl_Sequence_PRNG
 */
 
-#include <stdio.h>
 #include "PRNG.h"
 
 static
