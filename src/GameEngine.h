@@ -152,8 +152,8 @@ struct GameEngine {
 #endif
 
 	// GameEngine_enemy_move:
-	bool right; //moves the enemies, 0: moves left
-	bool down; //moves the enemies, 1: moves down
+	bool right; // current horizontal enemy movement, false = left, true = right
+	bool down; // current vertical enemy movment, false = none, true = down
 
 	// GameEngine_enemyDraw:
 	unsigned char frameIndex;  // 0,1,0,1,...
