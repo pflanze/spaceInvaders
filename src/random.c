@@ -36,10 +36,11 @@ uint32_t clz(uint32_t x) {
 EXPORTED
 uint32_t random_uint32(uint32_t ceil) {
 	uint32_t v;
+	uint32_t dropbits= clz(ceil - 1);
 	while (1) {
 		v = PRNG();
 		printf("random_uint32: v=%u, ceil=%u\n", v, ceil);
-		v = v >> clz(ceil);
+		v = v >> dropbits;
 		printf("random_uint32: => v=%u\n", v);
 		if (v < ceil) {
 			return v;
