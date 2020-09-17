@@ -23,7 +23,7 @@ SAN=`./sanflags`
 #SAN=
 
 CC=`./compiler`
-CFLAGS=-fdiagnostics-color=always -std=c99 -Wall -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
+CFLAGS=-fdiagnostics-color=always -std=c99 -Wall -Wextra -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
 all: depend
