@@ -8,7 +8,7 @@
 
 unsigned long CMWC_Q[4096], CMWC_c=123, CMWC_i=4095;
 
-unsigned long CMWC(void)
+unsigned long PRNG(void)
 {
 	unsigned long long t, a=18782LL;
 	unsigned long x, m=0xFFFFFFFE;
@@ -26,7 +26,7 @@ unsigned long CMWC(void)
 	return (CMWC_Q[CMWC_i] = m - x);
 }
 
-void CMWC_init(unsigned long seed) {
+void PRNG_init(unsigned long seed) {
 	for (unsigned long i=0; i<4096; i++) {
 		CMWC_Q[i]= seed + i;
 	}
@@ -37,7 +37,7 @@ void CMWC_init(unsigned long seed) {
 	// idea of cryptography):
 	unsigned long _i = 0;
 	for (unsigned long i=0; i<4096; i++) {
-		CMWC();
+		PRNG();
 		CMWC_Q[i] ^= (seed - i);
 		_i = (_i + i + CMWC_Q[_i]) & 4095;
 		printf("i=%lu, _i=%lu, CMWC_Q[i]=%lu\n", i, _i, CMWC_Q[i]);
