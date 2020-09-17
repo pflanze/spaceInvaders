@@ -1184,14 +1184,15 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		aliveCol++;
 		
 		//finds the first enemy on a column
-		while (row>=0) {
+		while (1) {
 			if (this->enemy[row][column].alive) {
 				this->gameStatColumn[column].fep = row;
 				break;
 			}
-			else {
+			if (row > 0)
 				row--;
-			}
+			else
+				break;
 		}
 	}
 	this->liveCols = aliveCol;
