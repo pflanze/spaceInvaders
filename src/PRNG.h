@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-void PRNG_init(uint32_t seed);
+EXPORTED void PRNG_init(uint32_t seed);
 
-uint32_t PRNG();
+EXPORTED uint32_t PRNG();
 
 #endif
