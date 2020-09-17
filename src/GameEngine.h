@@ -53,7 +53,7 @@ struct Actor {
 };
 
 #ifdef DEBUG
-const struct ObjectInterface Actor_ObjectInterface;
+extern const struct ObjectInterface Actor_ObjectInterface;
 #endif
 
 static inline
@@ -81,7 +81,7 @@ struct GameStatColumn {
 };
 
 #ifdef DEBUG
-const struct ObjectInterface GameStatColumn_ObjectInterface;
+extern const struct ObjectInterface GameStatColumn_ObjectInterface;
 #endif
 
 static inline
@@ -105,7 +105,7 @@ struct GameStatRow {
 };
 
 #ifdef DEBUG
-const struct ObjectInterface GameStatRow_ObjectInterface;
+extern const struct ObjectInterface GameStatRow_ObjectInterface;
 #endif
 
 static inline
