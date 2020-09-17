@@ -1150,7 +1150,7 @@ unsigned int GameEngine_firstLast(struct GameEngine *this,
 // Keep track of the first enemy per column,
 //    Used for: - knowing how far enemies should move (before switching
 //                direction)
-// changes: gameStatColumn[column].(fep|numEnemies),aliveColsMat[aliveCol], numLiveCols
+// changes: gameStatColumn[column].(fep|numEnemies),aliveColsMat[numLiveCols], numLiveCols
 // Callers: EnemyLaserInit, GameEngine_enemyscanX
 // outputs: numLiveCols
 // assumes: na
@@ -1168,7 +1168,7 @@ void GameEngine_firstEPC_reset(struct GameEngine *this) {
 
 EXPORTED
 void GameEngine_firstEPC(struct GameEngine *this) {
-	unsigned char aliveCol = 0;
+	unsigned char numLiveCols = 0;
 
 	// read left -> right, down -> up
 	for (unsigned char column=0; column < MAX_ENEMY_PR; column++) {
@@ -1180,8 +1180,8 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		unsigned int row = this->gameStatColumn[column].fep;
 		assert(row < this->maxrows);
 	
-		this->aliveColsMat[aliveCol] = column;
-		aliveCol++;
+		this->aliveColsMat[numLiveCols] = column;
+		numLiveCols++;
 		
 		// find the first (closest to player) live enemy on a column and update
 		// the column's gameStatColumn to refer to it
@@ -1196,7 +1196,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 				break;
 		}
 	}
-	this->numLiveCols = aliveCol;
+	this->numLiveCols = numLiveCols;
 }
 #endif
 
