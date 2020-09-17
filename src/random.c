@@ -3,8 +3,6 @@
 #include "random.h"
 #include "CMWC.h"
 
-#include <assert.h> // HACK
-
 
 EXPORTED
 void Random_Init(unsigned long seed) {
@@ -26,8 +24,7 @@ unsigned long Random32(void) {
 EXPORTED
 uint32_t random_uint32(uint32_t ceil) {
 	uint32_t v= CMWC();
-	assert(ceil < 256); // HACK
-	return (v >> 24) % ceil;
+	return v % ceil;
 }
 
 
