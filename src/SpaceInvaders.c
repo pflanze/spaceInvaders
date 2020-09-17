@@ -116,6 +116,7 @@ void EnableInterrupts(void);  // Enable interrupts
 // To be run from systick handler at 30 Hz
 EXPORTED
 void SpaceInvaders_step(struct SpaceInvaders *this) {
+	random_mixin(ADC0_SSFIFO3_R);
 	
 #if PORTF1_systick
 	GPIO_PORTF_DATA_R ^= 0x02;	//test only
@@ -123,10 +124,12 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 	
 	if(Pressfire_B1()){
 		this->clickCounter++;
+		random_mixin(101);
 	}
 	
 	if(Pressfire_B2()){
 		this->multishot = true;
+		random_mixin(102);
 	}
 	
 	switch(this->gameOverFlag){
