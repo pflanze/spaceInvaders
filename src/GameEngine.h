@@ -76,8 +76,10 @@ struct GameStatColumn {
 #ifdef DEBUG
 	const struct ObjectInterface* vtable;
 #endif
-	unsigned char fep;		//"First enemy position"
-	unsigned char epc;		//"Enemies per column"
+	unsigned char fep;	// "First enemy position" -- row number of live enemy
+						// closest to player
+	unsigned char epc;	// "Enemies per column" -- number of live enemies in
+						// that column
 };
 
 #ifdef DEBUG
@@ -99,9 +101,9 @@ struct GameStatRow {
 #ifdef DEBUG
 	const struct ObjectInterface* vtable;
 #endif
-	unsigned char fep;		//"First enemy position"
-	unsigned char lep;		//"Last enemy position"
-	unsigned char epr;		//"Enemies per row"
+	unsigned char fep;	// "First enemy position" -- left-most enemy in that row
+	unsigned char lep;	// "Last enemy position" -- right-most enemy in that row
+	unsigned char epr;	// "Enemies per row"
 };
 
 #ifdef DEBUG
