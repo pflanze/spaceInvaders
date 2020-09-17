@@ -67,3 +67,10 @@ might be included after the above.)
   records all user actions; use the recorded traces as better tests.
 * (within that GUI, step back (undo game steps).)
 
+
+# Various
+
+* change `unsigned char randN = (Random32()>>24) % this->liveCols` to
+  use a proper randomInteger(max) function which doesn't mess up
+  probability distribution
+* Fix PRNG lib (seems buggy)
