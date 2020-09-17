@@ -27,3 +27,7 @@ void PRNG_init(uint32_t seed) {
 	PRNG();
 }
 
+EXPORTED
+void PRNG_mixin(uint32_t randomvalue) {
+	x ^= randomvalue;
+}
