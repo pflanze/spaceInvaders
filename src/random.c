@@ -1,5 +1,6 @@
 #ifdef TEST_WITHOUT_IO
 
+#include <stdio.h>
 #include "random.h"
 #include "CMWC.h"
 
@@ -37,10 +38,13 @@ uint32_t random_uint32(uint32_t ceil) {
 	uint32_t v;
 	while (1) {
 		v = CMWC();
+		printf("random_uint32: v=%u, ceil=%u\n", v, ceil);
 		v = v >> clz(ceil);
+		printf("random_uint32: => v=%u\n", v);
 		if (v < ceil) {
 			return v;
 		}
+		printf("random_uint32: try again (v=%u, ceil=%u)\n", v, ceil);
 	}
 }
 
