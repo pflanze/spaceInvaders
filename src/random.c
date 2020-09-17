@@ -6,7 +6,7 @@
 
 
 EXPORTED
-void random_init(unsigned long seed) {
+void random_init(uint32_t seed) {
 	PRNG_init(seed);
 }
 
