@@ -78,8 +78,7 @@ struct GameStatColumn {
 #endif
 	unsigned char fep;	// "First enemy position" -- row number of live enemy
 						// closest to player
-	unsigned char numEnemies;	// "Enemies per column" -- number of live enemies in
-						// that column
+	unsigned char numEnemies;  // number of live enemies in that column
 };
 
 #ifdef DEBUG
@@ -103,7 +102,7 @@ struct GameStatRow {
 #endif
 	unsigned char fep;	// "First enemy position" -- left-most enemy in that row
 	unsigned char lep;	// "Last enemy position" -- right-most enemy in that row
-	unsigned char numEnemies;	// "Enemies per row"
+	unsigned char numEnemies;  // number of live enemies in that row
 };
 
 #ifdef DEBUG
