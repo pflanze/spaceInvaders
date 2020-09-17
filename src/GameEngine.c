@@ -1393,7 +1393,7 @@ void GameEngine_init(struct GameEngine *this,
 	GameEngine_enemyInit(this);
 	// must call defaultValues and firstEPC *before* enemyLaserInit
 	GameEngine_defaultValues(this);
-	GameEngine_firstEPC_reset(this);
+	// GameEngine_firstEPC_reset(this); included in GameEngine_reset
 	GameEngine_enemyLasers_init(this);
 #endif
 #if DRAW_BONUSENEMY
