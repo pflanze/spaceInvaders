@@ -1,10 +1,10 @@
 #ifndef _PRNG_H
 #define _PRNG_H
 
-extern unsigned long CMWC_Q[4096], CMWC_c, CMWC_i;
+#include <stdint.h>
 
-void PRNG_init(unsigned long seed);
+void PRNG_init(uint32_t seed);
 
-unsigned long PRNG(void);
+uint32_t PRNG();
 
 #endif

@@ -1,47 +1,26 @@
 /*
- http://www.gamedev.net/topic/512260-number-generator-cmwc-4096-and-implementation/
+https://en.wikipedia.org/wiki/Middle_square_method#Middle_Square_Weyl_Sequence_PRNG
 */
 
-#include <string.h>
 #include <stdio.h>
+#include "PRNG.h"
 
+static
+uint64_t x = 0, w = 0;
 
-unsigned long CMWC_Q[4096], CMWC_c=123, CMWC_i=4095;
+static
+const uint64_t s = 0xb5ad4eceda1ce2a9;
 
-unsigned long PRNG(void)
-{
-	unsigned long long t, a=18782LL;
-	unsigned long x, m=0xFFFFFFFE;
-
-	CMWC_i = (CMWC_i + 1) & 4095;
-	printf("CMWC_c=%lu, CMWC_i=%lu\n", CMWC_c, CMWC_i);
-	t = a * CMWC_Q[CMWC_i] + CMWC_c;
-	CMWC_c = (t >> 32);
-	x = t + CMWC_c;
-	if(x < CMWC_c)
-	{
-		++x;
-		++CMWC_c;
-	}
-	return (CMWC_Q[CMWC_i] = m - x);
+uint32_t PRNG() {
+    x *= x; 
+    x += (w += s); 
+    return x = (x>>32) | (x<<32);
 }
 
-void PRNG_init(unsigned long seed) {
-	for (unsigned long i=0; i<4096; i++) {
-		CMWC_Q[i]= seed + i;
-	}
-	CMWC_c=123;
-	CMWC_i=4095;
-
-	// try to properly mix up the state before use (yes, I *really* have no
-	// idea of cryptography):
-	unsigned long _i = 0;
-	for (unsigned long i=0; i<4096; i++) {
-		PRNG();
-		CMWC_Q[i] ^= (seed - i);
-		_i = (_i + i + CMWC_Q[_i]) & 4095;
-		printf("i=%lu, _i=%lu, CMWC_Q[i]=%lu\n", i, _i, CMWC_Q[i]);
-		CMWC_Q[_i] ^= CMWC_Q[i];
-	}
+void PRNG_init(uint32_t seed) {
+	x = seed;
+	w = 0;
+	PRNG();
+	PRNG();
 }
 
