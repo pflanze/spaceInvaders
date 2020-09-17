@@ -18,11 +18,6 @@
 */
 EXPORTED void Random_Init(unsigned long seed);
 
-#ifdef UNUSED
-EXPORTED unsigned long Random(void);
-#endif
-EXPORTED unsigned long Random32(void);
-
 // A number [0..ceil)
 EXPORTED uint32_t random_uint32(uint32_t ceil);
 
