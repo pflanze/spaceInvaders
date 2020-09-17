@@ -9,14 +9,14 @@
   Jonathan Valvano
 
   How to use: 
-  Call Random_Init once with a seed. For example
-      Random_Init(1);
-      Random_Init(NVIC_CURRENT_R);
+  Call random_init once with a seed. For example
+      random_init(1);
+      random_init(NVIC_CURRENT_R);
   Call Random over and over to get a new random number. For example
       m = Random32()%60; // returns a random number from 0 to 59
       p = Random();      // returns a random number 0 to 255
 */
-EXPORTED void Random_Init(unsigned long seed);
+EXPORTED void random_init(unsigned long seed);
 
 // A number [0..ceil)
 EXPORTED uint32_t random_uint32(uint32_t ceil);

@@ -300,7 +300,7 @@ void SysTick_Handler(void) {
 }
 
 int main(void) {
-	Random_Init(1);
+	random_init(1);
 	SpaceInvaders_init(&game, 2 /* max_number_of_enemy_rows */);
 	
 	while (1) {
