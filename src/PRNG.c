@@ -1,5 +1,7 @@
 /*
 https://en.wikipedia.org/wiki/Middle_square_method#Middle_Square_Weyl_Sequence_PRNG
+
+TODO: *is* this the full code for the PRNG?
 */
 
 #include "PRNG.h"

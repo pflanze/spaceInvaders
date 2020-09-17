@@ -70,4 +70,3 @@ might be included after the above.)
 
 # Various
 
-* Fix/check/test PRNG lib (seems buggy)
