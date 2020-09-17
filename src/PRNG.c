@@ -19,15 +19,23 @@ uint32_t PRNG() {
     return x = (x>>32) | (x<<32);
 }
 
+
+/* used to record the fact that PRNG_mixin was called even if randomvalue was 0 */
+static
+uint64_t mixin_count = 0;
+
 EXPORTED
 void PRNG_init(uint32_t seed) {
 	x = seed;
 	w = 0;
+	mixin_count = 0;
+	// these may not be needed:
 	PRNG();
 	PRNG();
 }
 
 EXPORTED
 void PRNG_mixin(uint32_t randomvalue) {
-	x ^= randomvalue;
+	mixin_count++;
+	x ^= randomvalue ^ mixin_count;
 }
