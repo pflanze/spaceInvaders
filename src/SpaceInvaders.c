@@ -224,9 +224,6 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 				GameEngine_enemyInit(&this->gameEngine);
 				GameEngine_defaultValues(&this->gameEngine);
 #endif
-#ifndef TEST_WITHOUT_IO
-				Random_Init(NVIC_ST_CURRENT_R);
-#endif
 				GameEngine_shipInit(&this->gameEngine);
 #if DRAW_BONUSENEMY				
 				GameEngine_bonusEnemy_move_reset(&this->gameEngine);
