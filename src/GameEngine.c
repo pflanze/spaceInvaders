@@ -1171,7 +1171,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 	unsigned char column = 0;
 	unsigned char aliveCol = 0;
 	
-	//we are reading left>right, dowun>up
+	// read left -> right, down -> up
 	for (column=0; column < MAX_ENEMY_PR; column++) {
 		unsigned int row = this->gameStatColumn[column].fep;
 		// ^ start from last known position
@@ -1183,7 +1183,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		this->alColsMat[aliveCol] = column;
 		aliveCol++;
 		
-		//finds the first enemy on a column
+		// find the first enemy on a column
 		while (1) {
 			if (this->enemy[row][column].alive) {
 				this->gameStatColumn[column].fep = row;
