@@ -34,10 +34,9 @@ uint32_t clz(uint32_t x) {
 
 EXPORTED
 uint32_t random_uint32(uint32_t ceil) {
-	uint32_t v;
 	uint32_t dropbits= clz(ceil - 1);
 	while (1) {
-		v = PRNG();
+		uint32_t v = PRNG();
 		v = v >> dropbits;
 		if (v < ceil) {
 			return v;
