@@ -352,7 +352,7 @@ void GameEngine_enemyLasersCreation(struct GameEngine *this, bool init) {
     
 	// Choose one of the enemies randomly:
 	unsigned char randN = (Random32()>>24) % this->liveCols;
-	// ^ generates number [0-aliveCols]
+	// ^ generates number [0..liveCols)
 	unsigned char columnNew	= this->aliveColsMat[randN];
 	
 	if (this->gameStatColumn[columnNew].numEnemies) {
