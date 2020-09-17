@@ -636,7 +636,7 @@ void GameEngine_draw(struct GameEngine *this) {
 #if DRAW_ENEMIES
 EXPORTED
 void GameEngine_enemyDraw(struct GameEngine *this) {
-	signed char row;
+	unsigned int row;
 
 	for (row=0; row < this->maxrows; row++) {
 		unsigned char column;
@@ -760,7 +760,7 @@ void GameEngine_enemyShiftTrack(struct GameEngine *this,
 			}
 			break;
 		default:{
-			signed char row = 0;
+			unsigned int row = 0;
 			this->lowest 	= this->gameStatRow[row].fep;
 			this->highest	= this->gameStatRow[row].lep;
 			row = 1;
@@ -1173,7 +1173,7 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 	
 	//we are reading left>right, dowun>up
 	for (column=0; column < MAX_ENEMY_PR; column++) {
-		signed char row = this->gameStatColumn[column].fep;
+		unsigned int row = this->gameStatColumn[column].fep;
 		// ^ start from last known position
 		assert(row < this->maxrows);
 		if (this->gameStatColumn[column].epc == 0) {
