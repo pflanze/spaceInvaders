@@ -10,6 +10,12 @@ void random_init(uint32_t seed) {
 	PRNG_init(seed);
 }
 
+EXPORTED
+void random_mixin(uint32_t randomvalue) {
+	PRNG_mixin(randomvalue);
+}
+
+
 /* static */
 /* uint32_t bitlength(uint32_t x) { */
 /* 	return 32 - __builtin_clz(x); */

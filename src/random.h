@@ -19,6 +19,9 @@
 
 EXPORTED void random_init(uint32_t seed);
 
+EXPORTED void random_mixin(uint32_t randomvalue);
+
+
 // A number [0..ceil)
 EXPORTED uint32_t random_uint32(uint32_t ceil);
 
