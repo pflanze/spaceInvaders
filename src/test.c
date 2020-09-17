@@ -109,6 +109,9 @@ static
 void test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
 
+	/*
+	  for comparing test results with and without (it *should* have no effect):
+	*/
 	//memset(&game, 8, sizeof(game));
 
 #define PATHSIZ 100
