@@ -1184,7 +1184,8 @@ void GameEngine_firstEPC(struct GameEngine *this) {
 		this->alColsMat[aliveCol] = column;
 		aliveCol++;
 		
-		// find the first enemy on a column
+		// find the first (closest to player) live enemy on a column and update
+		// the column's gameStatColumn to refer to it
 		while (1) {
 			if (this->enemy[row][column].alive) {
 				this->gameStatColumn[column].fep = row;

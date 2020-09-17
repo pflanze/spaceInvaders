@@ -71,7 +71,11 @@ const char* Actor_id_string(struct Actor *this);
 #endif
 
 
+// Enemies, except for the bonusEnemy, are allocated and positioned in a matrix
+// of GameEngine.maxrows rows * MAX_ENEMY_PR columns. The row closest to the
+// player is row 0, the left-most column is column 0.
 
+// Summary information about a column:
 struct GameStatColumn {
 #ifdef DEBUG
 	const struct ObjectInterface* vtable;
@@ -94,8 +98,7 @@ void GameStatColumn_init(struct GameStatColumn* this,
 #endif
 }
 
-
-//game stats per row
+// Summary information about a row:
 struct GameStatRow {
 #ifdef DEBUG
 	const struct ObjectInterface* vtable;
