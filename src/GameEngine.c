@@ -21,8 +21,8 @@
 #include "perhaps_assert.h"
 #include "Sound.h"
 #ifdef DEBUG
-#include <stdio.h>
-#include "pp.h"
+#  include <stdio.h>
+#  include "pp.h"
 #endif
 
 

@@ -47,6 +47,32 @@
 #include "debug.h"
 #include "SpaceInvaders.h"
 
+#ifdef DEBUG
+#  include <stdio.h>
+#  include "pp.h"
+#endif
+
+
+static
+void SpaceInvaders_pp(struct SpaceInvaders* this, FILE* out) {
+	PP_PRINTF("(struct SpaceInvaders) {");
+	PP_PRINTF(" .gameEngine = "); V(pp, &this->gameEngine, out);
+	PP_PRINTF(", .sysTickFlag = %s", bool_show(this->sysTickFlag));
+	PP_PRINTF(", .clickCounter = %u", this->clickCounter);
+	PP_PRINTF(", .multishot = %s", bool_show(this->multishot));
+	PP_PRINTF(", .EFcounter = %u", this->EFcounter);
+	PP_PRINTF(", .swapMessage = %i", this->swapMessage);
+	PP_PRINTF(" }");
+}
+
+
+static
+void _SpaceInvaders_pp(void* this, FILE* out) { SpaceInvaders_pp(this, out); }
+
+const struct ObjectInterface SpaceInvaders_ObjectInterface = {
+	.pp = &_SpaceInvaders_pp
+};
+
 
 /*	Required Hardware I/O connections
 Slide pot pin 1 connected to ground
@@ -269,7 +295,7 @@ void init_Hw(void) {
 EXPORTED
 void SpaceInvaders_init(struct SpaceInvaders *this,
 						unsigned int max_number_of_enemy_rows) {
-    this->vtable = NULL; // XXX
+    this->vtable = &SpaceInvaders_ObjectInterface;
 	this->sysTickFlag= false;
 	this->gameOverFlag = STANDBY;
 	this->clickCounter = 0;
