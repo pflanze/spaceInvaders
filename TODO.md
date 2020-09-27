@@ -14,7 +14,7 @@
     vs. old state during a game cycle)? But requires double the
     RAM.)
 1.  Move from initialization and separate `alive` flag to just
-    _construct and _destroy (assumes actor object life times can be
+    _construct and _destruct (assumes actor object life times can be
     equal to actor life time). If `vtable` is used, don't need an
     alive flag anymore, otherwise we will for safety (but then that's
     a debug feature, so, only rely on `vtable`, OK?).
