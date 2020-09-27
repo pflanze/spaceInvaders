@@ -253,7 +253,7 @@ static const unsigned char laser0[] = {
 
 #ifdef UNUSED
 static
-const char* addrToSpriteName(const unsigned char* p) {
+const char *addrToSpriteName(const unsigned char *p) {
 	if (! p) { return "NULL"; }
 #define C(nam) if (p == nam) return #nam
 	C(smallEnemy30PointA);

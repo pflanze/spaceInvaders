@@ -10,14 +10,14 @@
 #define PP2(p, out)									\
 	pp_helper((p), (p)->vtable->pp, out)
 
-EXPORTED void pp_helper(void* p,
-						void(*_pp)(void* this, FILE* out),
-						FILE* out);
+EXPORTED void pp_helper(void *p,
+						void(*_pp)(void *this, FILE *out),
+						FILE *out);
 
 
 // Helper functions
 
-EXPORTED const char* bool_show(bool v);
+EXPORTED const char *bool_show(bool v);
 
 // Ugly? Unhygienic, but at least name-prefixed:
 

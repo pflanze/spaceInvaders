@@ -127,7 +127,7 @@ const struct ActorConsts smallExplosionConsts = {
 };
 
 static
-const char* addrToActorConstsName(const struct ActorConsts* p) {
+const char *addrToActorConstsName(const struct ActorConsts *p) {
 	if (! p) { return "NULL"; }
 #define C(nam) if (p == &nam) return "&"#nam
 	C(shipConsts);
@@ -147,7 +147,7 @@ const char* addrToActorConstsName(const struct ActorConsts* p) {
 #ifdef DEBUG
 
 static
-void Actor_pp(struct Actor* this, FILE* out) {
+void Actor_pp(struct Actor *this, FILE *out) {
 	PP_PRINTF("(struct Actor) {");
 	PP_PRINTF(" .consts = %s", addrToActorConstsName(this->consts));
 	PP_PRINTF(", .origConsts = %s", addrToActorConstsName(this->origConsts));
@@ -160,7 +160,7 @@ void Actor_pp(struct Actor* this, FILE* out) {
 }
 
 static
-void _Actor_pp(void* this, FILE* out) { Actor_pp(this, out); }
+void _Actor_pp(void *this, FILE *out) { Actor_pp(this, out); }
     
 const struct ObjectInterface Actor_ObjectInterface = {
 	.pp = &_Actor_pp
@@ -174,14 +174,14 @@ const struct ObjectInterface Actor_ObjectInterface = {
 #ifdef DEBUG
 
 static
-void GameStatColumn_pp(struct GameStatColumn* this, FILE* out) {
+void GameStatColumn_pp(struct GameStatColumn *this, FILE *out) {
 	PP_PRINTF("(struct GameStatColumn) {");
 	PP_PRINTF(" .fep = %hhu", this->fep);
 	PP_PRINTF(", .numEnemies = %hhu", this->numEnemies);
 	PP_PRINTF(" }");
 }
 static
-void _GameStatColumn_pp(void* this, FILE* out) { GameStatColumn_pp(this, out); }
+void _GameStatColumn_pp(void *this, FILE *out) { GameStatColumn_pp(this, out); }
 
 const struct ObjectInterface GameStatColumn_ObjectInterface = {
 	.pp = &_GameStatColumn_pp
@@ -195,7 +195,7 @@ const struct ObjectInterface GameStatColumn_ObjectInterface = {
 #ifdef DEBUG
 
 static
-void GameStatRow_pp(struct GameStatRow* this, FILE* out) {
+void GameStatRow_pp(struct GameStatRow *this, FILE *out) {
 	PP_PRINTF("(struct GameStatRow) {");
 	PP_PRINTF(" .fep = %hhu", this->fep);
 	PP_PRINTF(", .lep = %hhu", this->lep);
@@ -203,7 +203,7 @@ void GameStatRow_pp(struct GameStatRow* this, FILE* out) {
 	PP_PRINTF(" }");
 }
 static
-void _GameStatRow_pp(void* this, FILE* out) { GameStatRow_pp(this, out); }
+void _GameStatRow_pp(void *this, FILE *out) { GameStatRow_pp(this, out); }
 
 const struct ObjectInterface GameStatRow_ObjectInterface = {
 	.pp = &_GameStatRow_pp
@@ -226,7 +226,7 @@ const struct ObjectInterface GameStatRow_ObjectInterface = {
 #define NUM_ACTORCONSTS_IN_ROW 3
 
 static
-const struct ActorConsts* actorconsts_in_row[NUM_ACTORCONSTS_IN_ROW] = {
+const struct ActorConsts *actorconsts_in_row[NUM_ACTORCONSTS_IN_ROW] = {
 	&enemy30Consts, &enemy20Consts, &enemy10Consts
 };
 
@@ -692,7 +692,7 @@ void Actor_masterDraw(struct Actor *s,
 		}
 	}
 	if (s->alive) {
-		const unsigned char* img = s->consts->image[frameIndex];
+		const unsigned char *img = s->consts->image[frameIndex];
 		if (! img) {
 			img = s->consts->image[0];
 		}
@@ -1246,7 +1246,7 @@ unsigned int GameEngine_getStatus(struct GameEngine *this) {
 #ifdef DEBUG
 
 static
-void GameEngine_pp(struct GameEngine* this, FILE* out) {
+void GameEngine_pp(struct GameEngine *this, FILE *out) {
 	int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
 	PP_PRINTF("(struct GameEngine) {");
@@ -1364,7 +1364,7 @@ void GameEngine_pp(struct GameEngine* this, FILE* out) {
 
 	PP_PRINTF(" }");
 }
-static void _GameEngine_pp(void* this, FILE* out) { GameEngine_pp(this, out); }
+static void _GameEngine_pp(void *this, FILE *out) { GameEngine_pp(this, out); }
 
 const struct ObjectInterface GameEngine_ObjectInterface = {
 	.pp = &_GameEngine_pp

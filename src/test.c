@@ -24,7 +24,7 @@
 	assert(snprintf(str, n, __VA_ARGS__) < n)
 
 static
-void die_errno(const char* msg, const char* arg) {
+void die_errno(const char *msg, const char *arg) {
 	fprintf(stderr, "error: %s (%s): %s\n", msg, arg, strerror(errno));
 	exit(1);
 }
@@ -39,12 +39,12 @@ void die_errno(const char* msg, const char* arg) {
 // Write screen buffer format from Nokia5110.c to file in XPM
 // format. Take dimensions from Nokia5110.h
 static
-void screen_write_xpm(const char* screen, const char* basepath) {
+void screen_write_xpm(const char *screen, const char *basepath) {
 	int w= SCREENW;
 	int h= SCREENH;
 
 	int pathsiz= strlen(basepath)+5;
-	char* path= xmalloc(pathsiz);
+	char *path= xmalloc(pathsiz);
 	snprintf(path, pathsiz, "%s.xpm", basepath);
 	
 	FILE *fh= fopen(path, "w");
@@ -94,7 +94,7 @@ void game_screen_write(struct Game *game) {
 }
 
 static
-void game_step(struct Game *game, FILE* step_dump_fh) {
+void game_step(struct Game *game, FILE *step_dump_fh) {
 	PP2(&game->spaceInvaders, step_dump_fh);
 	SpaceInvaders_step(&game->spaceInvaders);
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
@@ -118,7 +118,7 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	char path[PATHSIZ];
 	snprintf(path, PATHSIZ, "%i-step.dump", max_number_of_enemy_rows);
 #undef PATHSIZ
-	FILE* step_dump_fh = fopen(path, "w");
+	FILE *step_dump_fh = fopen(path, "w");
 	if (! step_dump_fh) {
 		die_errno("open", path);
 	}
@@ -173,7 +173,7 @@ int main () {
 	// assume that MingW's shell can do redirection
 	system("git status --porcelain out > t.out");
 
-	const char* path= "t.out";
+	const char *path= "t.out";
 	FILE *fh= fopen(path, "r");
 	if (!fh) die_errno("open", path);
 	char buf[1024];

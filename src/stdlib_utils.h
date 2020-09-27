@@ -8,8 +8,8 @@
 void xmalloc_abort(size_t size) NORETURN;
 
 static inline
-void* xmalloc(size_t size) {
-	void* p= malloc(size);
+void *xmalloc(size_t size) {
+	void *p= malloc(size);
 	if (!p) {
 		xmalloc_abort(size);
 	}

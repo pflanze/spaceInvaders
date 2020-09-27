@@ -39,10 +39,10 @@ struct ActorConsts {
 
 struct Actor {
 #ifdef DEBUG
-	const struct ObjectInterface* vtable;
+	const struct ObjectInterface *vtable;
 #endif
-	const struct ActorConsts* consts;
-	const struct ActorConsts* origConsts; // NULL unless jk, in which case it
+	const struct ActorConsts *consts;
+	const struct ActorConsts *origConsts; // NULL unless jk, in which case it
 										  // holds the original consts value
 	unsigned char x;               // x coordinate
 	unsigned char y;               // y coordinate
@@ -57,7 +57,7 @@ extern const struct ObjectInterface Actor_ObjectInterface;
 #endif
 
 static inline
-void Actor_init(struct Actor* this,
+void Actor_init(struct Actor *this,
 				struct Actor values) {
 	*this = values;
 #ifdef DEBUG
@@ -67,7 +67,7 @@ void Actor_init(struct Actor* this,
 
 
 #ifdef DEBUG
-const char* Actor_id_string(struct Actor *this);
+const char *Actor_id_string(struct Actor *this);
 #endif
 
 
@@ -78,7 +78,7 @@ const char* Actor_id_string(struct Actor *this);
 // Summary information about a column:
 struct GameStatColumn {
 #ifdef DEBUG
-	const struct ObjectInterface* vtable;
+	const struct ObjectInterface *vtable;
 #endif
 	unsigned char fep;	// "First enemy position" -- row number of live enemy
 						// closest to player
@@ -90,7 +90,7 @@ extern const struct ObjectInterface GameStatColumn_ObjectInterface;
 #endif
 
 static inline
-void GameStatColumn_init(struct GameStatColumn* this,
+void GameStatColumn_init(struct GameStatColumn *this,
 						 struct GameStatColumn values) {
 	*this = values;
 #ifdef DEBUG
@@ -101,7 +101,7 @@ void GameStatColumn_init(struct GameStatColumn* this,
 // Summary information about a row:
 struct GameStatRow {
 #ifdef DEBUG
-	const struct ObjectInterface* vtable;
+	const struct ObjectInterface *vtable;
 #endif
 	unsigned char fep;	// "First enemy position" -- left-most enemy in that row
 	unsigned char lep;	// "Last enemy position" -- right-most enemy in that row
@@ -113,7 +113,7 @@ extern const struct ObjectInterface GameStatRow_ObjectInterface;
 #endif
 
 static inline
-void GameStatRow_init(struct GameStatRow* this,
+void GameStatRow_init(struct GameStatRow *this,
 					  struct GameStatRow values) {
 	*this = values;
 #ifdef DEBUG
@@ -124,7 +124,7 @@ void GameStatRow_init(struct GameStatRow* this,
 
 struct GameEngine {
 #ifdef DEBUG
-	const struct ObjectInterface* vtable;
+	const struct ObjectInterface *vtable;
 #endif
 	unsigned int gStatus;
 	unsigned int maxrows;
