@@ -19,7 +19,7 @@
 #include "random.h"
 #include "utils.h"
 #include "perhaps_assert.h"
-#include "Sound.h"
+#include "sounds.h"
 #ifdef DEBUG
 #  include <stdio.h>
 #  include "pp.h"

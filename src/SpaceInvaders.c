@@ -43,7 +43,7 @@
 #include "random.h"
 #include "Message.h"
 #include "utils.h"
-#include "Sound.h"
+#include "sounds.h"
 #include "debug.h"
 #include "SpaceInvaders.h"
 
