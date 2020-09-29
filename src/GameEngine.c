@@ -609,7 +609,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	Nokia5110_ClearBuffer();
 	
 	//drawing battleship
-	Actor_masterDraw(&this->ship, 0);
+	Actor_masterDraw(&this->ship, 0, &this->soundPlayer);
 
 	//drawing enemies
 #if DRAW_ENEMIES
@@ -621,7 +621,7 @@ void GameEngine_draw(struct GameEngine *this) {
 	GameEngine_laserShipDraw(this);
 
 #if DRAW_BONUSENEMY		
-	Actor_masterDraw(&this->bonusEnemy, 0);
+	Actor_masterDraw(&this->bonusEnemy, 0, &this->soundPlayer);
 #endif	
 		
 	// draw buffer
@@ -643,7 +643,8 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 		if (this->gStatus == INGAME) { this->frameIndex ^= 0x01; }  // 0,1,0,1,...
 		for (column=0; column < 4; column++) {
 			Actor_masterDraw(&this->enemy[row][column],
-							 this->frameIndex);
+							 this->frameIndex,
+							 &this->soundPlayer);
 		}
 	}
 }
@@ -658,7 +659,8 @@ void GameEngine_enemyDraw(struct GameEngine *this) {
 // XX also does sound playing, detangle or rename
 EXPORTED
 void Actor_masterDraw(struct Actor *s,
-					  unsigned int frameIndex) {
+					  unsigned int frameIndex,
+					  struct SoundPlayer *soundPlayer) {
 	if (s->jk) {
 		switch (s->frame) {
 		case 0:
@@ -680,14 +682,14 @@ void Actor_masterDraw(struct Actor *s,
 		{
 			const struct Sound *maybeSound= s->origConsts->maybeSound;
 			if (maybeSound) {
-				Sound_stop_all(maybeSound);
+				SoundPlayer_stop_all(soundPlayer, maybeSound);
 			}
 		}
 		// Play explosion's sound if required and available
 		if (s->origConsts->playExplosionSound) {
 			const struct Sound *maybeSound= s->consts->maybeSound;
 			if (maybeSound) {
-				Sound_Play(maybeSound);
+				SoundPlayer_play(soundPlayer, maybeSound);
 			}
 		}
 	}
@@ -716,7 +718,9 @@ void GameEngine_laserShipDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
 		if (this->laser_ship[laserNum].alive) {
-			Actor_masterDraw(&this->laser_ship[laserNum], 0);
+			Actor_masterDraw(&this->laser_ship[laserNum],
+							 0,
+							 &this->soundPlayer);
 		}
 	}
 }
@@ -730,7 +734,9 @@ EXPORTED
 void GameEngine_laserEnemyDraw(struct GameEngine *this) {
 	unsigned char laserNum;
 	for (laserNum=0; laserNum < MAXLASERS; laserNum++) {
-		Actor_masterDraw(&this->laser_enemy[laserNum], 0);
+		Actor_masterDraw(&this->laser_enemy[laserNum],
+						 0,
+						 &this->soundPlayer);
 	}
 }
 #endif
@@ -1215,7 +1221,7 @@ void GameEngine_bonusEnemyCreate(struct GameEngine *this) {
 		(this->localCounter >= BONUSTIMING)){
 		GameEngine_bonusEnemy_init(this);
 		this->bonusEnemy.alive = true;
-		Sound_Play(&ufoLowPitch);
+		SoundPlayer_play(&this->soundPlayer, &ufoLowPitch);
 		this->localCounter = 0;
 	}
 		
@@ -1379,7 +1385,9 @@ void GameEngine_init(struct GameEngine *this,
 #ifdef DEBUG
 	this->vtable = &GameEngine_ObjectInterface;
 #endif
-    
+
+	SoundPlayer_init(&this->soundPlayer);
+
 	this->gStatus = STANDBY;
 	assert(max_number_of_enemy_rows <= ALLOC_MAXROWS);
 	this->maxrows= max_number_of_enemy_rows;

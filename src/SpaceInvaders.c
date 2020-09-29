@@ -162,13 +162,13 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 		case INGAME:{
 			if (this->clickCounter) {
 				GameEngine_shipLasersCreation(&this->gameEngine, false);
-				Sound_Play(&shoot);
+				SoundPlayer_play(&this->gameEngine.soundPlayer, &shoot);
 				this->clickCounter = 0;
 			}	
 			
 			if (this->multishot) {
 				GameEngine_laserInit_ship2(&this->gameEngine);
-				Sound_Play(&shoot);
+				SoundPlayer_play(&this->gameEngine.soundPlayer, &shoot);
 				this->multishot = false;
 			}
 #if DRAW_ENEMIES
@@ -211,7 +211,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			if (this->clickCounter == 1) {
 				GameEngine_shipLasersCreation(&this->gameEngine, false);
 				this->clickCounter = 0;
-				Sound_Play(&shoot);
+				SoundPlayer_play(&this->gameEngine.soundPlayer, &shoot);
 				this->gameOverFlag = INGAME;
 				{//updates gameEngine with a new default value
 					bool done = true;
@@ -225,7 +225,7 @@ void SpaceInvaders_step(struct SpaceInvaders *this) {
 			break;
 		}	
 		default: {
-			Sound_stop_all(&ufoLowPitch);
+			SoundPlayer_stop_all(&this->gameEngine.soundPlayer, &ufoLowPitch);
 			if (this->swapMessage < SWAPDELAYMSG) {
 				if (this->gameOverFlag == LOOSE) {
 					GameOverMessage();

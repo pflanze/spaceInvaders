@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "utils.h" /* bool */
 #include "object.h"
+#include "Sound.h"
 
 
 //Game over status
@@ -126,6 +127,9 @@ struct GameEngine {
 #ifdef DEBUG
 	const struct ObjectInterface *vtable;
 #endif
+
+	struct SoundPlayer soundPlayer;
+
 	unsigned int gStatus;
 	unsigned int maxrows;
 
@@ -225,7 +229,8 @@ EXPORTED void GameEngine_enemyLasersCreation(struct GameEngine *this,
 EXPORTED void GameEngine_laserEnemyDraw(struct GameEngine *this);
 
 EXPORTED void Actor_masterDraw(struct Actor *s,
-							   unsigned int frameIndex);
+							   unsigned int frameIndex,
+							   struct SoundPlayer *soundPlayer);
 
 EXPORTED void GameEngine_enemyscanY(struct GameEngine *this,
 									unsigned int laserNum);
