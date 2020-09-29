@@ -10,8 +10,8 @@
 #define PP2(p, out)									\
 	pp_helper((p), (p)->vtable->pp, out)
 
-EXPORTED void pp_helper(void *p,
-						void(*_pp)(void *this, FILE *out),
+EXPORTED void pp_helper(const void *p,
+						void(*_pp)(const void *this, FILE *out),
 						FILE *out);
 
 

@@ -54,7 +54,7 @@
 
 
 static
-void SpaceInvaders_pp(struct SpaceInvaders *this, FILE *out) {
+void SpaceInvaders_pp(const struct SpaceInvaders *this, FILE *out) {
 	PP_PRINTF("(struct SpaceInvaders) {");
 	PP_PRINTF(" .gameEngine = "); V(pp, &this->gameEngine, out);
 	PP_PRINTF(", .sysTickFlag = %s", bool_show(this->sysTickFlag));
@@ -67,7 +67,9 @@ void SpaceInvaders_pp(struct SpaceInvaders *this, FILE *out) {
 
 
 static
-void _SpaceInvaders_pp(void *this, FILE *out) { SpaceInvaders_pp(this, out); }
+void _SpaceInvaders_pp(const void *this, FILE *out) {
+	SpaceInvaders_pp(this, out);
+}
 
 const struct ObjectInterface SpaceInvaders_ObjectInterface = {
 	.pp = &_SpaceInvaders_pp

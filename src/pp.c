@@ -8,8 +8,8 @@ const char *bool_show(bool v) {
 }
 
 EXPORTED
-void pp_helper(void *p,
-			   void(*_pp)(void *this, FILE *out),
+void pp_helper(const void *p,
+			   void(*_pp)(const void *this, FILE *out),
 			   FILE *out) {
     _pp(p, out);
     PP_PRINTF("\n");

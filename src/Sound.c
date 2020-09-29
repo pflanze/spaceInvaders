@@ -32,12 +32,12 @@ How sound are implemented
 #ifdef DEBUG
 
 static
-void Sound_pp(struct Sound *this, FILE *out) {
+void Sound_pp(const struct Sound *this, FILE *out) {
 	PP_PRINTF("&%s", this->symbolName);
 }
 
 static
-void _Sound_pp(void *this, FILE *out) { Sound_pp(this, out); }
+void _Sound_pp(const void *this, FILE *out) { Sound_pp(this, out); }
 
 const struct ObjectInterface Sound_ObjectInterface = {
 	.pp = &_Sound_pp
@@ -45,7 +45,7 @@ const struct ObjectInterface Sound_ObjectInterface = {
 
 
 static
-void SoundChannel_pp(struct SoundChannel *this, FILE *out) {
+void SoundChannel_pp(const struct SoundChannel *this, FILE *out) {
 	PP_PRINTF("(struct SoundChannel) {");
 	PP_PRINTF(" .playing = ");
 	V(pp, this->playing, out);
@@ -56,7 +56,9 @@ void SoundChannel_pp(struct SoundChannel *this, FILE *out) {
 }
 
 static
-void _SoundChannel_pp(void *this, FILE *out) { SoundChannel_pp(this, out); }
+void _SoundChannel_pp(const void *this, FILE *out) {
+	SoundChannel_pp(this, out);
+}
 
 const struct ObjectInterface SoundChannel_ObjectInterface = {
 	.pp = &_SoundChannel_pp
@@ -80,7 +82,7 @@ void SoundChannel_init(struct SoundChannel *this) {
 #ifdef DEBUG
 
 static
-void SoundPlayer_pp(struct SoundPlayer *this, FILE *out) {
+void SoundPlayer_pp(const struct SoundPlayer *this, FILE *out) {
 	PP_PRINTF("(struct SoundPlayer) {");
 	PP_PRINTF(" .timerRunning = %s", bool_show(this->timerRunning));
 	PP_PRINTF(", .channel = {");
@@ -95,7 +97,9 @@ void SoundPlayer_pp(struct SoundPlayer *this, FILE *out) {
 }
 
 static
-void _SoundPlayer_pp(void *this, FILE *out) { SoundPlayer_pp(this, out); }
+void _SoundPlayer_pp(const void *this, FILE *out) {
+	SoundPlayer_pp(this, out);
+}
 
 const struct ObjectInterface SoundPlayer_ObjectInterface = {
 	.pp = &_SoundPlayer_pp
