@@ -29,10 +29,10 @@ CFLAGS=-fdiagnostics-color=always -std=c99 -Wall -Wextra -Wno-missing-field-init
 all: depend
 	make runtest
 
-runtest: test t/out
+runtest: test out
 	./test
 
-t/out:
+out:
 	mkdir -p out
 
 test: $(OBJS)
