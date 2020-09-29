@@ -19,10 +19,10 @@ struct Sound {
 extern const struct ObjectInterface Sound_ObjectInterface;
 #endif
 
-// XX #ifdef DEBUG for .vtable and .symbolName
 #define DEFINE_SOUND_BEGIN(name)						\
 	const unsigned int _##name [] =
 
+#ifdef DEBUG
 #define DEFINE_SOUND_END(name)							\
 	;													\
 	const struct Sound name = {							\
@@ -31,6 +31,15 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 		.data = _##name,								\
 		.size = sizeof(_##name)/sizeof(_##name[0])		\
 	}
+#else
+// copy-paste with .vtable and .symbolName removed
+#define DEFINE_SOUND_END(name)							\
+	;													\
+	const struct Sound name = {							\
+		.data = _##name,								\
+		.size = sizeof(_##name)/sizeof(_##name[0])		\
+	}
+#endif
 
 #define NUM_SOUND_CHANNELS 2
 
