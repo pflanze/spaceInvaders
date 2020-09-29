@@ -29,11 +29,15 @@ uint32_t clz(uint32_t x) {
 EXPORTED
 uint32_t random_uint32(uint32_t ceil) {
 	assert(ceil >= 1);
-	uint32_t dropbits= clz(ceil - 1);
-	while (1) {
-		uint32_t v = PRNG() >> dropbits;
-		if (v < ceil) {
-			return v;
+	if (ceil == 1) {
+		return 0;
+	} else {
+		uint32_t dropbits= clz(ceil - 1);
+		while (1) {
+			uint32_t v = PRNG() >> dropbits;
+			if (v < ceil) {
+				return v;
+			}
 		}
 	}
 }
