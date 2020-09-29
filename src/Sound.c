@@ -211,8 +211,7 @@ void SoundPlayer_play(struct SoundPlayer *this,
 			return;
 		}
 	}
-	// couldn't find a free channel
-	// XXXWARN;
+	WARN("could not find a free sound channel");
 }
 
 
