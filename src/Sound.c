@@ -30,7 +30,38 @@ How sound are implemented
 
 
 #ifdef DEBUG
-extern const struct ObjectInterface SoundChannel_ObjectInterface;
+
+static
+void Sound_pp(struct Sound *this, FILE *out) {
+	PP_PRINTF("&%s", this->symbolName);
+}
+
+static
+void _Sound_pp(void *this, FILE *out) { Sound_pp(this, out); }
+
+const struct ObjectInterface Sound_ObjectInterface = {
+	.pp = &_Sound_pp
+};
+
+
+static
+void SoundChannel_pp(struct SoundChannel *this, FILE *out) {
+	PP_PRINTF("(struct SoundChannel) {");
+	PP_PRINTF(" .playing = ");
+	V(pp, this->playing, out);
+	PP_PRINTF(", .frameIndex = %u", this->frameIndex);
+	PP_PRINTF(", .sampleIndex = %u", this->sampleIndex);
+	PP_PRINTF(", .frame = 0x%08x", this->frame);
+	PP_PRINTF(" }");
+}
+
+static
+void _SoundChannel_pp(void *this, FILE *out) { SoundChannel_pp(this, out); }
+
+const struct ObjectInterface SoundChannel_ObjectInterface = {
+	.pp = &_SoundChannel_pp
+};
+
 #endif
 
 EXPORTED
@@ -47,7 +78,29 @@ void SoundChannel_init(struct SoundChannel *this) {
 
 
 #ifdef DEBUG
-extern const struct ObjectInterface SoundPlayer_ObjectInterface;
+
+static
+void SoundPlayer_pp(struct SoundPlayer *this, FILE *out) {
+	PP_PRINTF("(struct SoundPlayer) {");
+	PP_PRINTF(" .timerRunning = %s", bool_show(this->timerRunning));
+	PP_PRINTF(", .channel = {");
+	for (int i=0; i<NUM_SOUND_CHANNELS; i++) {
+		if (i) {
+			PP_PRINTF(", ");
+		}
+		V(pp, &this->channel[i], out);
+	}
+	PP_PRINTF(" }");
+	PP_PRINTF(" }");
+}
+
+static
+void _SoundPlayer_pp(void *this, FILE *out) { SoundPlayer_pp(this, out); }
+
+const struct ObjectInterface SoundPlayer_ObjectInterface = {
+	.pp = &_SoundPlayer_pp
+};
+
 #endif
 
 EXPORTED

@@ -2,11 +2,35 @@
 #define _SOUND_H
 
 #include "utils.h"
+#include "object.h"
+#include "pp.h" //XX shouldn't that be part of object.h
+
 
 struct Sound {
+#ifdef DEBUG
+	const struct ObjectInterface *vtable;
+	const char *symbolName;
+#endif
 	const unsigned int *data;
 	const unsigned int size; // number of elements in data array
 };
+
+#ifdef DEBUG
+extern const struct ObjectInterface Sound_ObjectInterface;
+#endif
+
+// XX #ifdef DEBUG for .vtable and .symbolName
+#define DEFINE_SOUND_BEGIN(name)						\
+	const unsigned int _##name [] =
+
+#define DEFINE_SOUND_END(name)							\
+	;													\
+	const struct Sound name = {							\
+		.vtable = &Sound_ObjectInterface,				\
+		.symbolName = #name,							\
+		.data = _##name,								\
+		.size = sizeof(_##name)/sizeof(_##name[0])		\
+	}
 
 #define NUM_SOUND_CHANNELS 2
 

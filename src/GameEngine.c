@@ -1256,7 +1256,9 @@ void GameEngine_pp(struct GameEngine *this, FILE *out) {
 	int maxrows= this->maxrows; // XX or ALLOC_MAXROWS ?
 
 	PP_PRINTF("(struct GameEngine) {");
-	PP_PRINTF(" .gStatus = %u", this->gStatus);
+	PP_PRINTF(" .soundPlayer = ");
+	V(pp, &this->soundPlayer, out);
+	PP_PRINTF(", .gStatus = %u", this->gStatus);
 	PP_PRINTF(", .maxrows = %u", this->maxrows);
 	PP_PRINTF(", .lastLine = %u", this->lastLine);
 	PP_PRINTF(", .enemyCount = %hhu", this->enemyCount);
