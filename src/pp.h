@@ -4,10 +4,10 @@
 #include "utils.h" /* bool */
 #include "object.h"
 
-#define PP(p)					\
+#define PP(p)									\
 	pp_helper((p), (p)->vtable->pp, stdout)
 
-#define PP2(p, out)									\
+#define PP_TO(p, out)							\
 	pp_helper((p), (p)->vtable->pp, out)
 
 EXPORTED void pp_helper(const void *p,
