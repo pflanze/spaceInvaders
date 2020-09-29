@@ -5,14 +5,21 @@
 #include "object.h"
 
 #define PP(p)									\
-	pp_helper((p), (p)->vtable->pp, stdout)
+	pp_helper((p), (p) ? (p)->vtable->pp : NULL, stdout, true)
 
 #define PP_TO(p, out)							\
-	pp_helper((p), (p)->vtable->pp, out)
+	pp_helper((p), (p) ? (p)->vtable->pp : NULL, out, true)
+
+// same as PP_TO but does not print a newline (thus usable as part of
+// implementing a pp method):
+#define PP_TO_(p, out)							\
+	pp_helper((p), (p) ? (p)->vtable->pp : NULL, out, false)
+
 
 EXPORTED void pp_helper(const void *p,
 						void(*_pp)(const void *this, FILE *out),
-						FILE *out);
+						FILE *out,
+						bool newline);
 
 
 // Helper functions

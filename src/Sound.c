@@ -48,7 +48,7 @@ static
 void SoundChannel_pp(const struct SoundChannel *this, FILE *out) {
 	PP_PRINTF("(struct SoundChannel) {");
 	PP_PRINTF(" .playing = ");
-	V(pp, this->playing, out);
+	PP_TO_(this->playing, out);
 	PP_PRINTF(", .frameIndex = %u", this->frameIndex);
 	PP_PRINTF(", .sampleIndex = %u", this->sampleIndex);
 	PP_PRINTF(", .frame = 0x%08x", this->frame);
