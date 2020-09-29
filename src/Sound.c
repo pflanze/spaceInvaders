@@ -25,61 +25,7 @@ How sound are implemented
 #include "Sound.h"
 #include "debug.h"
 #include "utils.h"
-
-
-//-------------------------------------------------------------------------------------------
-// Multiline description
-// changes: variablesChanged
-// Callers: 
-// inputs: none
-// outputs: none
-// assumes: na
-static
-void Timer1A_Stop(void){
-#ifndef TEST_WITHOUT_IO
-	TIMER1_CTL_R &= ~0x00000001; // disable
-#endif
-}
-//********functionName*****************
-// Multiline description
-// changes: variablesChanged
-// Callers: 
-// inputs: none
-// outputs: none
-// assumes: na
-#ifndef TEST_WITHOUT_IO
-static
-void Timer1A_Start(void){
-	TIMER1_CTL_R |= 0x00000001;   // enable
-}	
-#endif
-//********functionName*****************
-// Multiline description
-// changes: variablesChanged
-// Callers: 
-// inputs: none
-// outputs: none
-// assumes: na
-static
-void Timer2A_Stop(void){
-#ifndef TEST_WITHOUT_IO
-	TIMER2_CTL_R &= ~0x00000001; // disable
-#endif
-}
-//********functionName*****************
-// Multiline description
-// changes: variablesChanged
-// Callers: 
-// inputs: none
-// outputs: none
-// assumes: na
-#ifndef TEST_WITHOUT_IO
-static
-void Timer2A_Start(void){
-	TIMER2_CTL_R |= 0x00000001;   // enable
-}
-#endif
-
+#include "IO.h"
 
 
 
