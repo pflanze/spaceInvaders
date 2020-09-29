@@ -547,7 +547,7 @@ void Timer2A_Start(void){
 
 
 
-//----------------------------------------------Handlers----------------------------------------------
+//-----------------Handlers----------------------------------------------
 
 struct SoundState {
 	const unsigned int timerN;
@@ -675,8 +675,6 @@ void Timer1A_Handler(void) {
 // outputs: none
 // assumes: na
 //#if AUDIO_2A
-
-//static unsigned int frameIndex_2A = 0, sampleIndex_2A = 0, currentSample_2A = 0, frame_2A = 0;
 
 #ifndef TEST_WITHOUT_IO
 EXPORTED /* it's not in Sound.h, though, nor referenced anywhere, ? */
