@@ -93,16 +93,19 @@ void game_screen_write(struct Game *game) {
 	screen_write_xpm(Screen, basepath);
 }
 
+
+#define REPEAT(n)  for(int i=0; i<n; i++) 
+
+
 static
 void game_step(struct Game *game, FILE *step_dump_fh) {
+	// one step in the game, except for the audio sample handler:
 	PP_TO(&game->spaceInvaders, step_dump_fh);
 	SpaceInvaders_step(&game->spaceInvaders);
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 	game->frame_number++;
 }
-
-#define REPEAT(n, expr)  for(int i=0; i<n; i++) expr
 
 
 static
@@ -135,27 +138,23 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	game_step(&game, step_dump_fh);
 	game_screen_write(&game);
 
-	REPEAT(8,
-	       {
-		       GPIO_PORTE_DATA_R=1;
-		       REPEAT(10,
-					  {
-						  game_step(&game, step_dump_fh);
-						  game_screen_write(&game);
-					  });
-	       });
+	REPEAT(8) {
+		GPIO_PORTE_DATA_R=1;
+		REPEAT(10) {
+			game_step(&game, step_dump_fh);
+			game_screen_write(&game);
+		}
+	}
 
 	ADC0_SSFIFO3_R= 2000;
 
-	REPEAT(8,
-	       {
-		       GPIO_PORTE_DATA_R=1;
-		       REPEAT(10,
-					  {
-						  game_step(&game, step_dump_fh);
-						  game_screen_write(&game);
-					  });
-	       });
+	REPEAT(8) {
+		GPIO_PORTE_DATA_R=1;
+		REPEAT(10) {
+			game_step(&game, step_dump_fh);
+			game_screen_write(&game);
+		}
+	}
 
 	if (fclose(step_dump_fh) != 0) {
 		die_errno("close", path);
