@@ -105,6 +105,11 @@ void game_step(struct Game *game, FILE *step_dump_fh) {
 	SpaceInvaders_main_update_LCD(&game->spaceInvaders);
 	GPIO_PORTE_DATA_R=0; // revert the push button to off
 	game->frame_number++;
+
+	// audio sample handler:
+	REPEAT(1000) {
+		SoundPlayer_step(&game->spaceInvaders.gameEngine.soundPlayer);
+	};
 }
 
 
