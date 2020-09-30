@@ -5,7 +5,7 @@
 #include "object.h"
 
 #define PP(p)									\
-	pp_helper((p), (p) ? (p)->vtable->pp : NULL, stdout, true)
+	pp_helper((p), (p) ? (p)->vtable->pp : NULL, stderr, true)
 
 #define PP_TO(p, out)							\
 	pp_helper((p), (p) ? (p)->vtable->pp : NULL, out, true)
