@@ -41,7 +41,7 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 	}
 #endif
 
-#define NUM_SOUND_CHANNELS 2
+#define NUM_SOUND_CHANNELS 3
 
 struct SoundChannel {
 #ifdef DEBUG
