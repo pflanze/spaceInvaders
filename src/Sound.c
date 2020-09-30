@@ -211,10 +211,8 @@ void SoundPlayer_play(struct SoundPlayer *this,
 			return;
 		}
 	}
-	WARN("could not find a free sound channel for:");
-#ifdef DEBUG
-	PP(sound);
-#endif
+	WARN("could not find a free sound channel for sound `%s`",
+		 sound->symbolName);
 }
 
 
