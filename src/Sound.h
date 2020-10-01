@@ -44,7 +44,7 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 #define MAX_SAMPLE 15
 #define SILENCE_SAMPLE 7
 
-#define NUM_SOUND_CHANNELS 3
+#define NUM_SOUND_CHANNELS 6
 
 struct SoundChannel {
 #ifdef DEBUG
