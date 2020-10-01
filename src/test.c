@@ -98,7 +98,8 @@ void game_screen_write(struct Game *game) {
 
 
 static
-void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
+void game_step(struct Game *game,
+			   FILE *step_dump_fh, FILE *sound_dump_fh, FILE *sound_raw_fh) {
 	// one step in the game, except for the audio sample handler:
 	PP_TO(&game->spaceInvaders, step_dump_fh);
 	SpaceInvaders_step(&game->spaceInvaders);
@@ -117,6 +118,8 @@ void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
 		} else {
 			fprintf(sound_dump_fh, ".timerRunning = false\n");
 		}
+		fputc((256 / (MAX_SAMPLE + 1)) * soundPlayer->currentSample,
+			  sound_raw_fh);
 	}
 }
 
@@ -159,6 +162,7 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 
 	struct OutFile *stepDumpFile = OutFile_xopen(max_number_of_enemy_rows, "step.dump");
 	struct OutFile *soundDumpFile = OutFile_xopen(max_number_of_enemy_rows, "sound.dump");
+	struct OutFile *soundRawFile = OutFile_xopen(max_number_of_enemy_rows, "sound.raw");
 
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
@@ -169,13 +173,15 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 					   max_number_of_enemy_rows);
 	ADC0_SSFIFO3_R= 0;
 
-	game_step(&game, stepDumpFile->out, soundDumpFile->out);
+#define GAME_STEP game_step(&game, stepDumpFile->out, soundDumpFile->out, \
+							soundRawFile->out)
+	GAME_STEP;
 	game_screen_write(&game);
 
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, stepDumpFile->out, soundDumpFile->out);
+			GAME_STEP;
 			game_screen_write(&game);
 		}
 	}
@@ -185,11 +191,13 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, stepDumpFile->out, soundDumpFile->out);
+			GAME_STEP;
 			game_screen_write(&game);
 		}
 	}
+#undef GAME_STEP
 
+	OutFile_xclose_and_free(soundRawFile);
 	OutFile_xclose_and_free(soundDumpFile);
 	OutFile_xclose_and_free(stepDumpFile);
 }
