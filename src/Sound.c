@@ -1,11 +1,10 @@
 //sound.c
 // Runs on LM4F120 or TM4C123, 
 // This routine calls the 4-bit DAC
-// Use the Timer2 to request interrupts at a particular period.
 // based on Daniel Valvano, Jonathan Valvano 
 
 /*
-Using Timer2
+Using Timer
 Configured on 32-bit mode
 Configure on periodic mode, down-count
 */
