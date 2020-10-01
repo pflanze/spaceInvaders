@@ -108,9 +108,14 @@ void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
 
 	// audio sample handler:
 	PP_TO(&game->spaceInvaders, sound_dump_fh);
+	struct SoundPlayer *soundPlayer = &game->spaceInvaders.gameEngine.soundPlayer;
 	REPEAT(1000) {
-		PP_TO(&game->spaceInvaders.gameEngine.soundPlayer, sound_dump_fh);
-		SoundPlayer_step(&game->spaceInvaders.gameEngine.soundPlayer);
+		if (soundPlayer->timerRunning) {
+			PP_TO(soundPlayer, sound_dump_fh);
+			SoundPlayer_step(soundPlayer);
+		} else {
+			fprintf(sound_dump_fh, ".timerRunning = false\n");
+		}
 	}
 }
 
