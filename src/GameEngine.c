@@ -126,6 +126,7 @@ const struct ActorConsts smallExplosionConsts = {
 	, .maybeSound = &smallExplosion
 };
 
+#ifdef DEBUG
 static
 const char *addrToActorConstsName(const struct ActorConsts *p) {
 	if (! p) { return "NULL"; }
@@ -141,6 +142,7 @@ const char *addrToActorConstsName(const struct ActorConsts *p) {
 #undef C
 	return "<unknown ActorConsts>";
 }
+#endif
 
 //-----------------------------Actor--------------------------------------------
 
