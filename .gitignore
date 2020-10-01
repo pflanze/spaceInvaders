@@ -34,3 +34,4 @@ t/_*
 t/testsingle.c
 t/testsingle
 t/*-sound.dump*
+t/*-sound.raw*
