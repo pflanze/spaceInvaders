@@ -93,6 +93,7 @@ void SoundPlayer_pp(const struct SoundPlayer *this, FILE *out) {
 		V(pp, &this->channel[i], out);
 	}
 	PP_PRINTF(" }");
+	PP_PRINTF(", .currentSample = %u", this->currentSample);
 	PP_PRINTF(" }");
 }
 
@@ -115,6 +116,7 @@ void SoundPlayer_init(struct SoundPlayer *this) {
 	}
 #ifdef DEBUG
 	this->vtable = &SoundPlayer_ObjectInterface;
+	this->currentSample = SILENCE_SAMPLE;
 #endif
 }
 
@@ -168,8 +170,11 @@ void SoundPlayer_step(struct SoundPlayer *this) {
 		Timer1A_Stop();
 		this->timerRunning = false;
 	} else {
-		unsigned int average = sum / numchannels; // XXX cheaper division
-		writeSample(average);
+		unsigned int sample = sum / numchannels; // XXX cheaper division
+		writeSample(sample);
+#ifdef DEBUG
+		this->currentSample = sample;
+#endif
 	}
 }
 

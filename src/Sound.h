@@ -41,6 +41,9 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 	}
 #endif
 
+#define MAX_SAMPLE 15
+#define SILENCE_SAMPLE 7
+
 #define NUM_SOUND_CHANNELS 3
 
 struct SoundChannel {
@@ -62,6 +65,9 @@ struct SoundPlayer {
 #endif
 	bool timerRunning;
 	struct SoundChannel channel[NUM_SOUND_CHANNELS];
+#ifdef DEBUG
+	unsigned int currentSample;
+#endif
 };
 
 EXPORTED void SoundPlayer_init(struct SoundPlayer *this);
