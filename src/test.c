@@ -109,7 +109,8 @@ void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
 	// audio sample handler:
 	PP_TO(&game->spaceInvaders, sound_dump_fh);
 	struct SoundPlayer *soundPlayer = &game->spaceInvaders.gameEngine.soundPlayer;
-	REPEAT(1000) {
+	// 30 Hz * 367 = 11010 Hz sampling rate
+	REPEAT(367) {
 		if (soundPlayer->timerRunning) {
 			PP_TO(soundPlayer, sound_dump_fh);
 			SoundPlayer_step(soundPlayer);
