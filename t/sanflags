@@ -8,5 +8,8 @@ fi
 # XX can't have both,
 # invalid argument '-fsanitize=address' not allowed with '-fsanitize=memory'
 
-echo "-fsanitize=undefined -fsanitize=memory -fPIE -fno-omit-frame-pointer"
-
+if [ -e .use-gcc ]; then
+    echo "-fsanitize=undefined -fPIE -fno-omit-frame-pointer"
+else 
+    echo "-fsanitize=undefined -fsanitize=memory -fPIE -fno-omit-frame-pointer"
+fi
