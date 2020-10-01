@@ -140,7 +140,7 @@ const char *addrToActorConstsName(const struct ActorConsts *p) {
 	C(enemy10Consts);
 	C(smallExplosionConsts);
 #undef C
-	return "<unknown ActorConsts>";
+	return "<unknown struct ActorConsts instance>";
 }
 #endif
 
