@@ -123,16 +123,16 @@ void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
 
 #define LET_XMALLOC(var, type) type *var = xmalloc(sizeof(*var))
 
-#define DUMPFILE_PATHSIZ 100
-struct DumpFile {
-	char path[DUMPFILE_PATHSIZ];
+#define OUTFILE_PATHSIZ 100
+struct OutFile {
+	char path[OUTFILE_PATHSIZ];
 	FILE *out;
 };
 
 static
-struct DumpFile *DumpFile_xopen(unsigned int i, const char *name) {
-	LET_XMALLOC(this, struct DumpFile);
-	snprintf(this->path, DUMPFILE_PATHSIZ, "%i-%s.dump", i, name);
+struct OutFile *OutFile_xopen(unsigned int i, const char *name) {
+	LET_XMALLOC(this, struct OutFile);
+	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
 	this->out = fopen(this->path, "w");
 	if (! this->out) {
 		die_errno("open", this->path);
@@ -141,7 +141,7 @@ struct DumpFile *DumpFile_xopen(unsigned int i, const char *name) {
 }
 
 static
-void DumpFile_xclose_and_free(struct DumpFile *this) {
+void OutFile_xclose_and_free(struct OutFile *this) {
 	if (fclose(this->out) != 0) {
 		die_errno("close", this->path);
 	}
@@ -157,8 +157,8 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	*/
 	//memset(&game, 8, sizeof(game));
 
-	struct DumpFile *stepDf = DumpFile_xopen(max_number_of_enemy_rows, "step");
-	struct DumpFile *soundDf = DumpFile_xopen(max_number_of_enemy_rows, "sound");
+	struct OutFile *stepDumpFile = OutFile_xopen(max_number_of_enemy_rows, "step.dump");
+	struct OutFile *soundDumpFile = OutFile_xopen(max_number_of_enemy_rows, "sound.dump");
 
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
@@ -169,13 +169,13 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 					   max_number_of_enemy_rows);
 	ADC0_SSFIFO3_R= 0;
 
-	game_step(&game, stepDf->out, soundDf->out);
+	game_step(&game, stepDumpFile->out, soundDumpFile->out);
 	game_screen_write(&game);
 
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, stepDf->out, soundDf->out);
+			game_step(&game, stepDumpFile->out, soundDumpFile->out);
 			game_screen_write(&game);
 		}
 	}
@@ -185,13 +185,13 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, stepDf->out, soundDf->out);
+			game_step(&game, stepDumpFile->out, soundDumpFile->out);
 			game_screen_write(&game);
 		}
 	}
 
-	DumpFile_xclose_and_free(soundDf);
-	DumpFile_xclose_and_free(stepDf);
+	OutFile_xclose_and_free(soundDumpFile);
+	OutFile_xclose_and_free(stepDumpFile);
 }
 
 
