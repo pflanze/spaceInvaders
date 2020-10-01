@@ -33,3 +33,4 @@ t/.gdb_history
 t/_*
 t/testsingle.c
 t/testsingle
+t/*-sound.dump*
