@@ -98,7 +98,7 @@ void game_screen_write(struct Game *game) {
 
 
 static
-void game_step(struct Game *game, FILE *step_dump_fh) {
+void game_step(struct Game *game, FILE *step_dump_fh, FILE *sound_dump_fh) {
 	// one step in the game, except for the audio sample handler:
 	PP_TO(&game->spaceInvaders, step_dump_fh);
 	SpaceInvaders_step(&game->spaceInvaders);
@@ -107,11 +107,40 @@ void game_step(struct Game *game, FILE *step_dump_fh) {
 	game->frame_number++;
 
 	// audio sample handler:
+	PP_TO(&game->spaceInvaders, sound_dump_fh);
 	REPEAT(1000) {
+		PP_TO(&game->spaceInvaders.gameEngine.soundPlayer, sound_dump_fh);
 		SoundPlayer_step(&game->spaceInvaders.gameEngine.soundPlayer);
-	};
+	}
 }
 
+
+#define LET_XMALLOC(var, type) type *var = xmalloc(sizeof(*var))
+
+#define DUMPFILE_PATHSIZ 100
+struct DumpFile {
+	char path[DUMPFILE_PATHSIZ];
+	FILE *out;
+};
+
+static
+struct DumpFile *DumpFile_xopen(unsigned int i, const char *name) {
+	LET_XMALLOC(this, struct DumpFile);
+	snprintf(this->path, DUMPFILE_PATHSIZ, "%i-%s.dump", i, name);
+	this->out = fopen(this->path, "w");
+	if (! this->out) {
+		die_errno("open", this->path);
+	}
+	return this;
+}
+
+static
+void DumpFile_xclose_and_free(struct DumpFile *this) {
+	if (fclose(this->out) != 0) {
+		die_errno("close", this->path);
+	}
+	free(this);
+}
 
 static
 void test_run(unsigned int max_number_of_enemy_rows) {
@@ -122,14 +151,8 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	*/
 	//memset(&game, 8, sizeof(game));
 
-#define PATHSIZ 100
-	char path[PATHSIZ];
-	snprintf(path, PATHSIZ, "%i-step.dump", max_number_of_enemy_rows);
-#undef PATHSIZ
-	FILE *step_dump_fh = fopen(path, "w");
-	if (! step_dump_fh) {
-		die_errno("open", path);
-	}
+	struct DumpFile *stepDf = DumpFile_xopen(max_number_of_enemy_rows, "step");
+	struct DumpFile *soundDf = DumpFile_xopen(max_number_of_enemy_rows, "sound");
 
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
@@ -140,13 +163,13 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 					   max_number_of_enemy_rows);
 	ADC0_SSFIFO3_R= 0;
 
-	game_step(&game, step_dump_fh);
+	game_step(&game, stepDf->out, soundDf->out);
 	game_screen_write(&game);
 
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, step_dump_fh);
+			game_step(&game, stepDf->out, soundDf->out);
 			game_screen_write(&game);
 		}
 	}
@@ -156,14 +179,13 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	REPEAT(8) {
 		GPIO_PORTE_DATA_R=1;
 		REPEAT(10) {
-			game_step(&game, step_dump_fh);
+			game_step(&game, stepDf->out, soundDf->out);
 			game_screen_write(&game);
 		}
 	}
 
-	if (fclose(step_dump_fh) != 0) {
-		die_errno("close", path);
-	}
+	DumpFile_xclose_and_free(soundDf);
+	DumpFile_xclose_and_free(stepDf);
 }
 
 
