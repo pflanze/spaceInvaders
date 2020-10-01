@@ -23,6 +23,7 @@ How sound are implemented
 #  include "tm4c123gh6pm.h"
 #endif
 #include "Sound.h"
+#include "perhaps_assert.h"
 #include "debug.h"
 #include "utils.h"
 #include "IO.h"
@@ -127,6 +128,7 @@ void SoundPlayer_init(struct SoundPlayer *this) {
 
 static
 void writeSample(unsigned int sample) {
+	assert(sample <= MAX_SAMPLE);
 #ifndef TEST_WITHOUT_IO
 	GPIO_PORTB_DATA_R = (GPIO_PORTB_DATA_R &~ 0x0F) | sample;
 #endif
