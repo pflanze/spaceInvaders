@@ -37,6 +37,14 @@ files (hit return for the next image):
 
     for f in out/*; do cat "$f"; read; done
 
+The test also creates *step.dump files which show a dump of the game
+state per line, as well as *sound.dump files which additionaly show a
+dump of the sound player state for every sound sample. Also, it
+creates *sound.raw files which are raw 8 bit unsigned int audio files;
+they can be converted to WAV format using:
+
+    sox -r 11010 -c 1 -e unsigned-integer -b 8 1-sound.raw 1-sound.wav
+
 ### Dependencies
 
 You need a reasonably recent version of Clang, like `apt install
