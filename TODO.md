@@ -4,10 +4,7 @@
 
 1.  Get to work on real hardware via gcc/clang.
 1.  Verify sound is still working (how, without DAC?).
-1.  Rework sound to only use a single timer/irq handler (and to PWM at
-    the same time?).
-1.  Run sound irq handler from test, output sound data (event log, but
-    also sample log) to files for debugging.
+1.  Rework sound output to PWM
 1.  Can we get rid of `jk`?
 1.  Get rid of `origConsts` if possible (play sound immediately, so it
     won't need the change; perhaps move to functional approach (next
@@ -31,15 +28,6 @@ might be included after the above.)
 ### Build for hardware
 
 * Build for the real hardware via gcc or clang instead of Keil
-
-### Testing infrastructure
-
-* add currently playing sounds data (globals) to the game world
-  struct, to finish the no-globals work (and so sound can be verified
-  via *-step.dump files)
-* for working on Sound encoding / infrastructure also write out all
-  audio output (as 1 sample per line so diff can pick up time shifts)
-  to a separate file
 
 ### Browser/WASM
 
