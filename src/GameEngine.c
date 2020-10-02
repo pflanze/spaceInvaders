@@ -1,4 +1,3 @@
-//GameEngine.c
 /*
 
   The game engine keeps track of game statistics to perform movement,

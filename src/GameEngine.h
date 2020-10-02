@@ -1,4 +1,3 @@
-//GameEngine.h
 #ifndef _GAMEENGINE_H
 #define _GAMEENGINE_H
 #include "debug.h"
@@ -7,22 +6,18 @@
 #include "Sound.h"
 
 
-//Game over status
-#define INGAME		0
-#define LOOSE		1
-#define WIN			2
-#define STANDBY		3
-//0: In game
-//1: Game Over (you loose)
-//2: Just Won
-//3: Game on standBy
+// Game over status
+#define INGAME		0  /* In game */
+#define LOOSE		1  /* Game Over (you loose) */
+#define WIN			2  /* Just Won */
+#define STANDBY		3  /* Game on standBy */
 
-//firing delay
+// firing delay
 #define FIREDEL 	7
 
 
+// game max
 // (private, only here since used in the struct definitions)
-//game max
 #define MAXLASERS 	 	5
 #define MAX_ENEMY_PR  	4
 #define ALLOC_MAXROWS	2
