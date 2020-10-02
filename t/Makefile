@@ -67,15 +67,16 @@ depend:
 # DO NOT DELETE
 
 Buttons.o: Buttons.h utils.h
-GameEngine.o: GameEngine.h debug.h utils.h object.h sprites.h Nokia5110.h random.h perhaps_assert.h Sound.h pp.h
+GameEngine.o: GameEngine.h debug.h utils.h object.h sprites.h Nokia5110.h random.h perhaps_assert.h sounds.h Sound.h pp.h
 Init.o: Init.h debug.h
 LED.o: LED.h
 Message.o: Message.h Nokia5110.h
 Nokia5110.o: Nokia5110.h Nokia5110_font.h
 PRNG.o: PRNG.h
 Sound.o: Sound.h debug.h utils.h
-SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h random.h Message.h Sound.h SpaceInvaders.h pp.h
+SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h random.h Message.h sounds.h Sound.h SpaceInvaders.h pp.h
 pp.o: pp.h utils.h object.h
 random.o: random.h PRNG.h perhaps_assert.h
+sounds.o: debug.h sounds.h Sound.h
 stdlib_utils.o: stdlib_utils.h
 test.o: Buttons.h utils.h GameEngine.h debug.h object.h Message.h Nokia5110_font.h Nokia5110.h random.h Sound.h SpaceInvaders.h pp.h perhaps_assert.h stdlib_utils.h
