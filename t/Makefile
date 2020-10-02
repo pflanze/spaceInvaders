@@ -74,7 +74,7 @@ LED.o: LED.h
 Message.o: Message.h Nokia5110.h
 Nokia5110.o: Nokia5110.h Nokia5110_font.h
 PRNG.o: PRNG.h
-Sound.o: Sound.h utils.h object.h pp.h debug.h IO.h
+Sound.o: Sound.h utils.h object.h pp.h perhaps_assert.h debug.h IO.h
 SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h Sound.h pp.h random.h Message.h sounds.h SpaceInvaders.h
 pp.o: pp.h utils.h object.h
 random.o: random.h PRNG.h perhaps_assert.h
