@@ -7,8 +7,10 @@
 
 // Top of the object hierarchy
 
+#define OBJECT_INTERFACE  void(*pp)(const void *this, FILE *out); // pretty-print
+
 struct ObjectInterface {
-	void(*pp)(const void *this, FILE *out); // pretty-print
+	OBJECT_INTERFACE
 };
 
 

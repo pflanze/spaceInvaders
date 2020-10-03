@@ -126,9 +126,12 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	*/
 	//memset(&game, 8, sizeof(game));
 
-	struct OutFile *stepDumpFile = OutFile_xopen(max_number_of_enemy_rows, "step.dump");
-	struct OutFile *soundDumpFile = OutFile_xopen(max_number_of_enemy_rows, "sound.dump");
-	struct OutFile *soundRawFile = OutFile_xopen(max_number_of_enemy_rows, "sound.raw");
+	struct NumberedOutFile *stepDumpFile =
+		NumberedOutFile_xopen(max_number_of_enemy_rows, "step.dump");
+	struct NumberedOutFile *soundDumpFile =
+		NumberedOutFile_xopen(max_number_of_enemy_rows, "sound.dump");
+	struct NumberedOutFile *soundRawFile =
+		NumberedOutFile_xopen(max_number_of_enemy_rows, "sound.raw");
 
 	game.max_number_of_enemy_rows= max_number_of_enemy_rows;
 	game.frame_number= -1;
@@ -163,9 +166,9 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	}
 #undef GAME_STEP
 
-	OutFile_xclose_and_free(soundRawFile);
-	OutFile_xclose_and_free(soundDumpFile);
-	OutFile_xclose_and_free(stepDumpFile);
+	OutFile_xclose_and_free((struct OutFile*)soundRawFile);
+	OutFile_xclose_and_free((struct OutFile*)soundDumpFile);
+	OutFile_xclose_and_free((struct OutFile*)stepDumpFile);
 }
 
 
