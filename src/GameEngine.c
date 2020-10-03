@@ -1258,7 +1258,7 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 
 	PP_PRINTF("(struct GameEngine) {");
 	PP_PRINTF(" .soundPlayer = ");
-	V(pp, &this->soundPlayer, out);
+	VCALL(pp, &this->soundPlayer, out);
 	PP_PRINTF(", .gStatus = %u", this->gStatus);
 	PP_PRINTF(", .maxrows = %u", this->maxrows);
 	PP_PRINTF(", .lastLine = %u", this->lastLine);
@@ -1270,7 +1270,7 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 		for (int i=0; i< MAX_ENEMY_PR; i++) {
 			if (! first) { PP_PRINTF(", "); }
 			first = false;
-			V(pp, &this->gameStatColumn[i], out);
+			VCALL(pp, &this->gameStatColumn[i], out);
 		}
 	}
 	PP_PRINTF(" }");
@@ -1281,7 +1281,7 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 		for (int i=0; i < maxrows; i++) {
 			if (! first) { PP_PRINTF(", "); }
 			first = false;
-			V(pp, &this->gameStatRow[i], out);
+			VCALL(pp, &this->gameStatRow[i], out);
 		}
 	}
 	PP_PRINTF(" }");
@@ -1293,7 +1293,7 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 			for (int j=0; j < MAX_ENEMY_PR; j++) {
 				if (! first) { PP_PRINTF(", ");}
 				first = false;
-				V(pp, &this->enemy[i][j], out);
+				VCALL(pp, &this->enemy[i][j], out);
 			}
 		}
 	}
@@ -1305,13 +1305,13 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 		for (int i=0; i < MAXLASERS; i++) {
 			if (! first) { PP_PRINTF(", ");}
 			first = false;
-			V(pp, &this->laser_enemy[i], out);
+			VCALL(pp, &this->laser_enemy[i], out);
 		}
 	}
 	PP_PRINTF(" }");
 	
 	PP_PRINTF(", .ship = ");
-	V(pp, &this->ship, out);
+	VCALL(pp, &this->ship, out);
 
 	PP_PRINTF(", .laser_ship = { ");
 	{
@@ -1319,13 +1319,13 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 		for (int i=0; i< MAXLASERS; i++) {
 			if (! first) {PP_PRINTF(", ");}
 			first = false;
-			V(pp, &this->laser_ship[i], out);
+			VCALL(pp, &this->laser_ship[i], out);
 		}
 	}
 	PP_PRINTF(" }");
 
 	PP_PRINTF(", .bonusEnemy = ");
-	V(pp, &this->bonusEnemy, out);
+	VCALL(pp, &this->bonusEnemy, out);
 
 	PP_PRINTF(", .right = %s", bool_show(this->right));
 	PP_PRINTF(", .down = %s", bool_show(this->down));

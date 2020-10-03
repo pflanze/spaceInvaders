@@ -90,7 +90,7 @@ void SoundPlayer_pp(const struct SoundPlayer *this, FILE *out) {
 		if (i) {
 			PP_PRINTF(", ");
 		}
-		V(pp, &this->channel[i], out);
+		VCALL(pp, &this->channel[i], out);
 	}
 	PP_PRINTF(" }");
 	PP_PRINTF(", .currentSample = %u", this->currentSample);

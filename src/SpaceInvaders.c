@@ -56,7 +56,7 @@
 static
 void SpaceInvaders_pp(const struct SpaceInvaders *this, FILE *out) {
 	PP_PRINTF("(struct SpaceInvaders) {");
-	PP_PRINTF(" .gameEngine = "); V(pp, &this->gameEngine, out);
+	PP_PRINTF(" .gameEngine = "); VCALL(pp, &this->gameEngine, out);
 	PP_PRINTF(", .sysTickFlag = %s", bool_show(this->sysTickFlag));
 	PP_PRINTF(", .clickCounter = %u", this->clickCounter);
 	PP_PRINTF(", .multishot = %s", bool_show(this->multishot));

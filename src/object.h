@@ -13,7 +13,7 @@ struct ObjectInterface {
 
 
 // Shorter virtual call syntax
-#define V(method, o, args...)  (o)->vtable->method((o) , ##args)
+#define VCALL(method, o, args...)  (o)->vtable->method((o) , ##args)
 
 
 
