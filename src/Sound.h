@@ -8,7 +8,7 @@
 
 struct Sound {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 	const char *symbolName;
 #endif
 	const unsigned int *data;
@@ -16,7 +16,7 @@ struct Sound {
 };
 
 #ifdef DEBUG
-extern const struct ObjectInterface Sound_ObjectInterface;
+extern const struct ObjectVTable Sound_ObjectVTable;
 #endif
 
 #define DEFINE_SOUND_BEGIN(name)						\
@@ -26,7 +26,7 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 #define DEFINE_SOUND_END(name)							\
 	;													\
 	const struct Sound name = {							\
-		.vtable = &Sound_ObjectInterface,				\
+		.vtable = &Sound_ObjectVTable,				\
 		.symbolName = #name,							\
 		.data = _##name,								\
 		.size = sizeof(_##name)/sizeof(_##name[0])		\
@@ -48,7 +48,7 @@ extern const struct ObjectInterface Sound_ObjectInterface;
 
 struct SoundChannel {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	const struct Sound *playing; // NULL = channel is unused
 	unsigned int frameIndex;
@@ -61,7 +61,7 @@ EXPORTED void SoundChannel_init(struct SoundChannel *this);
 
 struct SoundPlayer {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	bool timerRunning;
 	struct SoundChannel channel[NUM_SOUND_CHANNELS];

@@ -9,7 +9,7 @@
 
 #define OBJECT_INTERFACE  void(*pp)(const void *this, FILE *out); // pretty-print
 
-struct ObjectInterface {
+struct ObjectVTable {
 	OBJECT_INTERFACE
 };
 

@@ -6,7 +6,7 @@
 
 struct SpaceInvaders {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	struct GameEngine gameEngine;
 	bool sysTickFlag;

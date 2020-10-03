@@ -42,7 +42,7 @@ _SimpleOutFile_out(const void *this) {
 	return SimpleOutFile_out(this);
 }
 
-const struct OutFileInterface SimpleOutFile_OutFileInterface = {
+const struct OutFileVTable SimpleOutFile_OutFileVTable = {
 	.pp = &_SimpleOutFile_pp,
 	.path = &_SimpleOutFile_path,
 	.out = &_SimpleOutFile_out
@@ -78,7 +78,7 @@ _NumberedOutFile_out(const void *this) {
 	return NumberedOutFile_out(this);
 }
 
-const struct OutFileInterface NumberedOutFile_OutFileInterface = {
+const struct OutFileVTable NumberedOutFile_OutFileVTable = {
 	.pp = &_NumberedOutFile_pp,
 	.path = &_NumberedOutFile_path,
 	.out = &_NumberedOutFile_out
@@ -93,7 +93,7 @@ const struct OutFileInterface NumberedOutFile_OutFileInterface = {
 EXPORTED struct SimpleOutFile *
 SimpleOutFile_xopen(const char *path) {
 	LET_XMALLOC(this, struct SimpleOutFile);
-	this->vtable = &SimpleOutFile_OutFileInterface;
+	this->vtable = &SimpleOutFile_OutFileVTable;
 	this->path = path;
 	this->out = fopen(this->path, "w");
 	if (! this->out) {
@@ -105,7 +105,7 @@ SimpleOutFile_xopen(const char *path) {
 EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name) {
 	LET_XMALLOC(this, struct NumberedOutFile);
-	this->vtable = &NumberedOutFile_OutFileInterface;
+	this->vtable = &NumberedOutFile_OutFileVTable;
 	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
 	this->out = fopen(this->path, "w");
 	if (! this->out) {

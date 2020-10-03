@@ -19,14 +19,14 @@ EXPORTED void die_errno(const char *msg, const char *arg);
 	FILE *(*out)(const void *this);
 #endif
 
-struct OutFileInterface {
+struct OutFileVTable {
 	OBJECT_INTERFACE;
 	OUTFILE_INTERFACE;
 };
 
 // abstract base class, don't instantiate
 struct OutFile {
-	const struct OutFileInterface *vtable;
+	const struct OutFileVTable *vtable;
 #ifdef DIRECT
 	FILE *out;
 #endif
@@ -36,7 +36,7 @@ struct SimpleOutFile {
 #ifdef DIRECT
 	struct OutFile base;
 #else
-	const struct OutFileInterface *vtable;
+	const struct OutFileVTable *vtable;
 	FILE *out;
 #endif
 	const char *path;
@@ -46,7 +46,7 @@ struct NumberedOutFile {
 #ifdef DIRECT
 	struct OutFile base;
 #else
-	const struct OutFileInterface *vtable;
+	const struct OutFileVTable *vtable;
 	FILE *out;
 #endif
 	char path[OUTFILE_PATHSIZ];

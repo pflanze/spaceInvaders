@@ -35,7 +35,7 @@ struct ActorConsts {
 
 struct Actor {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	const struct ActorConsts *consts;
 	const struct ActorConsts *origConsts; // NULL unless jk, in which case it
@@ -49,7 +49,7 @@ struct Actor {
 };
 
 #ifdef DEBUG
-extern const struct ObjectInterface Actor_ObjectInterface;
+extern const struct ObjectVTable Actor_ObjectVTable;
 #endif
 
 static inline
@@ -57,7 +57,7 @@ void Actor_init(struct Actor *this,
 				struct Actor values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &Actor_ObjectInterface;
+	this->vtable = &Actor_ObjectVTable;
 #endif
 }
 
@@ -74,7 +74,7 @@ const char *Actor_id_string(struct Actor *this);
 // Summary information about a column:
 struct GameStatColumn {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	unsigned char fep;	// "First enemy position" -- row number of live enemy
 						// closest to player
@@ -82,7 +82,7 @@ struct GameStatColumn {
 };
 
 #ifdef DEBUG
-extern const struct ObjectInterface GameStatColumn_ObjectInterface;
+extern const struct ObjectVTable GameStatColumn_ObjectVTable;
 #endif
 
 static inline
@@ -90,14 +90,14 @@ void GameStatColumn_init(struct GameStatColumn *this,
 						 struct GameStatColumn values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &GameStatColumn_ObjectInterface;
+	this->vtable = &GameStatColumn_ObjectVTable;
 #endif
 }
 
 // Summary information about a row:
 struct GameStatRow {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 	unsigned char fep;	// "First enemy position" -- left-most enemy in that row
 	unsigned char lep;	// "Last enemy position" -- right-most enemy in that row
@@ -105,7 +105,7 @@ struct GameStatRow {
 };
 
 #ifdef DEBUG
-extern const struct ObjectInterface GameStatRow_ObjectInterface;
+extern const struct ObjectVTable GameStatRow_ObjectVTable;
 #endif
 
 static inline
@@ -113,14 +113,14 @@ void GameStatRow_init(struct GameStatRow *this,
 					  struct GameStatRow values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &GameStatRow_ObjectInterface;
+	this->vtable = &GameStatRow_ObjectVTable;
 #endif
 }
 
 
 struct GameEngine {
 #ifdef DEBUG
-	const struct ObjectInterface *vtable;
+	const struct ObjectVTable *vtable;
 #endif
 
 	struct SoundPlayer soundPlayer;

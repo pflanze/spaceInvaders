@@ -163,7 +163,7 @@ void Actor_pp(const struct Actor *this, FILE *out) {
 static
 void _Actor_pp(const void *this, FILE *out) { Actor_pp(this, out); }
     
-const struct ObjectInterface Actor_ObjectInterface = {
+const struct ObjectVTable Actor_ObjectVTable = {
 	.pp = &_Actor_pp
 };
 
@@ -184,7 +184,7 @@ void GameStatColumn_pp(const struct GameStatColumn *this, FILE *out) {
 static
 void _GameStatColumn_pp(const void *this, FILE *out) { GameStatColumn_pp(this, out); }
 
-const struct ObjectInterface GameStatColumn_ObjectInterface = {
+const struct ObjectVTable GameStatColumn_ObjectVTable = {
 	.pp = &_GameStatColumn_pp
 };
 
@@ -206,7 +206,7 @@ void GameStatRow_pp(const struct GameStatRow *this, FILE *out) {
 static
 void _GameStatRow_pp(const void *this, FILE *out) { GameStatRow_pp(this, out); }
 
-const struct ObjectInterface GameStatRow_ObjectInterface = {
+const struct ObjectVTable GameStatRow_ObjectVTable = {
 	.pp = &_GameStatRow_pp
 };
 
@@ -1375,7 +1375,7 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 }
 static void _GameEngine_pp(const void *this, FILE *out) { GameEngine_pp(this, out); }
 
-const struct ObjectInterface GameEngine_ObjectInterface = {
+const struct ObjectVTable GameEngine_ObjectVTable = {
 	.pp = &_GameEngine_pp
 };
 
@@ -1386,7 +1386,7 @@ EXPORTED
 void GameEngine_init(struct GameEngine *this,
 					 unsigned int max_number_of_enemy_rows) {
 #ifdef DEBUG
-	this->vtable = &GameEngine_ObjectInterface;
+	this->vtable = &GameEngine_ObjectVTable;
 #endif
 
 	SoundPlayer_init(&this->soundPlayer);
