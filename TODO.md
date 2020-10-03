@@ -54,6 +54,3 @@
   records all user actions; use the recorded traces as better tests.
 * (within that GUI, step back (undo game steps).)
 
-
-# Various
-
