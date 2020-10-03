@@ -25,7 +25,7 @@ struct OutFileVTable {
 };
 
 // abstract base class, don't instantiate
-struct OutFile {
+struct OutFileInterface {
 	const struct OutFileVTable *vtable;
 #ifdef DIRECT
 	FILE *out;
@@ -34,7 +34,7 @@ struct OutFile {
 
 struct SimpleOutFile {
 #ifdef DIRECT
-	struct OutFile base;
+	struct OutFileInterface base;
 #else
 	const struct OutFileVTable *vtable;
 	FILE *out;
@@ -44,7 +44,7 @@ struct SimpleOutFile {
 
 struct NumberedOutFile {
 #ifdef DIRECT
-	struct OutFile base;
+	struct OutFileInterface base;
 #else
 	const struct OutFileVTable *vtable;
 	FILE *out;
@@ -59,7 +59,7 @@ SimpleOutFile_xopen(const char *path);
 EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name);
 
-EXPORTED void OutFile_xclose_and_free(struct OutFile *this);
+EXPORTED void OutFile_xclose_and_free(struct OutFileInterface *this);
 
 
 #endif /* _STDLIB_FILE_H */

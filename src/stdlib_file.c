@@ -115,7 +115,7 @@ NumberedOutFile_xopen(unsigned int i, const char *name) {
 }
 
 EXPORTED void
-OutFile_xclose_and_free(struct OutFile *this) {
+OutFile_xclose_and_free(struct OutFileInterface *this) {
 	if (fclose(VCALL(out, this)) != 0) {
 		die_errno("close", VCALL(path, this));
 	}
