@@ -71,7 +71,7 @@ void _SpaceInvaders_pp(const void *this, FILE *out) {
 	SpaceInvaders_pp(this, out);
 }
 
-const struct ObjectVTable SpaceInvaders_ObjectVTable = {
+const struct ObjectVTable SpaceInvaders_VTable = {
 	.pp = &_SpaceInvaders_pp
 };
 
@@ -297,7 +297,7 @@ void init_Hw(void) {
 EXPORTED
 void SpaceInvaders_init(struct SpaceInvaders *this,
 						unsigned int max_number_of_enemy_rows) {
-    this->vtable = &SpaceInvaders_ObjectVTable;
+    this->vtable = &SpaceInvaders_VTable;
 	this->sysTickFlag= false;
 	this->gameOverFlag = STANDBY;
 	this->clickCounter = 0;

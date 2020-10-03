@@ -49,7 +49,7 @@ struct Actor {
 };
 
 #ifdef DEBUG
-extern const struct ObjectVTable Actor_ObjectVTable;
+extern const struct ObjectVTable Actor_VTable;
 #endif
 
 static inline
@@ -57,7 +57,7 @@ void Actor_init(struct Actor *this,
 				struct Actor values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &Actor_ObjectVTable;
+	this->vtable = &Actor_VTable;
 #endif
 }
 
@@ -82,7 +82,7 @@ struct GameStatColumn {
 };
 
 #ifdef DEBUG
-extern const struct ObjectVTable GameStatColumn_ObjectVTable;
+extern const struct ObjectVTable GameStatColumn_VTable;
 #endif
 
 static inline
@@ -90,7 +90,7 @@ void GameStatColumn_init(struct GameStatColumn *this,
 						 struct GameStatColumn values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &GameStatColumn_ObjectVTable;
+	this->vtable = &GameStatColumn_VTable;
 #endif
 }
 
@@ -105,7 +105,7 @@ struct GameStatRow {
 };
 
 #ifdef DEBUG
-extern const struct ObjectVTable GameStatRow_ObjectVTable;
+extern const struct ObjectVTable GameStatRow_VTable;
 #endif
 
 static inline
@@ -113,7 +113,7 @@ void GameStatRow_init(struct GameStatRow *this,
 					  struct GameStatRow values) {
 	*this = values;
 #ifdef DEBUG
-	this->vtable = &GameStatRow_ObjectVTable;
+	this->vtable = &GameStatRow_VTable;
 #endif
 }
 

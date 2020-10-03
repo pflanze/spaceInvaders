@@ -16,7 +16,7 @@ struct Sound {
 };
 
 #ifdef DEBUG
-extern const struct ObjectVTable Sound_ObjectVTable;
+extern const struct ObjectVTable Sound_VTable;
 #endif
 
 #define DEFINE_SOUND_BEGIN(name)						\
@@ -26,7 +26,7 @@ extern const struct ObjectVTable Sound_ObjectVTable;
 #define DEFINE_SOUND_END(name)							\
 	;													\
 	const struct Sound name = {							\
-		.vtable = &Sound_ObjectVTable,				\
+		.vtable = &Sound_VTable,				\
 		.symbolName = #name,							\
 		.data = _##name,								\
 		.size = sizeof(_##name)/sizeof(_##name[0])		\

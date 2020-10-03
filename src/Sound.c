@@ -39,7 +39,7 @@ void Sound_pp(const struct Sound *this, FILE *out) {
 static
 void _Sound_pp(const void *this, FILE *out) { Sound_pp(this, out); }
 
-const struct ObjectVTable Sound_ObjectVTable = {
+const struct ObjectVTable Sound_VTable = {
 	.pp = &_Sound_pp
 };
 
@@ -60,7 +60,7 @@ void _SoundChannel_pp(const void *this, FILE *out) {
 	SoundChannel_pp(this, out);
 }
 
-const struct ObjectVTable SoundChannel_ObjectVTable = {
+const struct ObjectVTable SoundChannel_VTable = {
 	.pp = &_SoundChannel_pp
 };
 
@@ -74,7 +74,7 @@ void SoundChannel_init(struct SoundChannel *this) {
 		.frame = 0,
 	},
 #ifdef DEBUG
-	this->vtable = &SoundChannel_ObjectVTable;
+	this->vtable = &SoundChannel_VTable;
 #endif
 }
 
@@ -102,7 +102,7 @@ void _SoundPlayer_pp(const void *this, FILE *out) {
 	SoundPlayer_pp(this, out);
 }
 
-const struct ObjectVTable SoundPlayer_ObjectVTable = {
+const struct ObjectVTable SoundPlayer_VTable = {
 	.pp = &_SoundPlayer_pp
 };
 
@@ -115,7 +115,7 @@ void SoundPlayer_init(struct SoundPlayer *this) {
 		SoundChannel_init(&this->channel[i]);
 	}
 #ifdef DEBUG
-	this->vtable = &SoundPlayer_ObjectVTable;
+	this->vtable = &SoundPlayer_VTable;
 	this->currentSample = SILENCE_SAMPLE;
 #endif
 }
