@@ -66,15 +66,16 @@ definition (e.g. `Actor_ObjectInterface`).
 There's still a cast needed for upcasting (implementing a
 procedure/method that works for multiple subclasses).
 
-[`LET_NEW`] from [`object.h`](src/object.h) can be used to
+`LET_NEW` from [`object.h`](src/object.h) can be used to
 heap-allocate a struct type that has a vtable field and whose vtable
 exists in the variable named by the struct type name with `_VTable`
 appended. I.e. 
 
     LET_NEW(this, Foo);
 
-will `xmalloc` a `struct Foo`, assign it to the new `struct Foo
-*this`, and set its `vtable` field to `&Foo_VTable`.
+will [`xmalloc`](src/stdlib_utils.h) a `struct Foo`, assign it to the
+new `struct Foo *this` variable, and set its `vtable` field to
+`&Foo_VTable`.
 
 
 ## Pretty printing
