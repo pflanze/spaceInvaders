@@ -126,6 +126,33 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	*/
 	//memset(&game, 8, sizeof(game));
 
+	{
+		// print struct sizes to control bloat
+		struct SimpleOutFile *f = SimpleOutFile_xopen("sizes.txt");
+#define PSIZEOF(T, numvtables)										\
+		fprintf(f->out, "sizeof(%s) = %lu (%lu w/o DEBUG)\n", #T, sizeof(T), \
+				sizeof(T) - (numvtables)*sizeof(void*))
+		PSIZEOF(struct Actor, 1);
+		PSIZEOF(struct SoundChannel, 1);
+		unsigned long sp_vtables = 1+NUM_SOUND_CHANNELS;
+		PSIZEOF(struct SoundPlayer, sp_vtables);
+		unsigned long ge_vtables =
+			1 +
+			sp_vtables
+#if DRAW_ENEMIES
+			+ MAX_ENEMY_PR + ALLOC_MAXROWS
+			+ ALLOC_MAXROWS*MAX_ENEMY_PR + MAXLASERS + 1 + MAXLASERS
+#endif
+#if DRAW_BONUSENEMY
+			+ 1
+#endif
+			;
+		PSIZEOF(struct GameEngine, ge_vtables);
+		PSIZEOF(struct SpaceInvaders, 1 + ge_vtables);
+#undef PSIZEOF
+		OutFile_xclose_and_free((struct OutFile*)f);
+	}
+
 	struct NumberedOutFile *stepDumpFile =
 		NumberedOutFile_xopen(max_number_of_enemy_rows, "step.dump");
 	struct NumberedOutFile *soundDumpFile =
