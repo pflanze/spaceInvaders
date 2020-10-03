@@ -13,6 +13,10 @@ struct ObjectVTable {
 	OBJECT_INTERFACE
 };
 
+struct ObjectInterface {
+	const struct ObjectVTable *vtable;
+};
+
 
 // Shorter virtual call syntax
 #define VCALL(method, o, args...)  (o)->vtable->method((o) , ##args)
