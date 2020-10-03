@@ -132,15 +132,9 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 		XSNPRINTF(path, SIZ, "sizes-%lu.txt", sizeof(void*)*8);
 		struct SimpleOutFile *f = SimpleOutFile_xopen(path);
 #undef SIZ
-#define PSIZEOF(T, numvtables)										\
-		fprintf(													\
-			#ifdef DIRECT											\
-			f->super.out											\
-			#else													\
-				f->out												\
-			#endif													\
-			, "sizeof(%s) = %lu (%lu w/o DEBUG)\n", #T, sizeof(T),	\
-			sizeof(T) - (numvtables)*sizeof(void*))
+#define PSIZEOF(T, numvtables)											\
+		fprintf(f->out, "sizeof(%s) = %lu (%lu w/o DEBUG)\n", #T, sizeof(T), \
+				sizeof(T) - (numvtables)*sizeof(void*))
 		PSIZEOF(struct Actor, 1);
 		PSIZEOF(struct SoundChannel, 1);
 		unsigned long sp_vtables = 1+NUM_SOUND_CHANNELS;

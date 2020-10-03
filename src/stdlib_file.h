@@ -10,14 +10,8 @@ EXPORTED void die_errno(const char *msg, const char *arg);
 
 #define OUTFILE_PATHSIZ 100
 
-#ifdef DIRECT
-#  define OUTFILE_INTERFACE						\
+#define OUTFILE_INTERFACE						\
 	const char *(*path)(const void *this);
-#else
-#  define OUTFILE_INTERFACE						\
-	const char *(*path)(const void *this);		\
-	FILE *(*out)(const void *this);
-#endif
 
 struct OutFileVTable {
 	OBJECT_INTERFACE;
@@ -25,40 +19,22 @@ struct OutFileVTable {
 };
 
 
+// base class fields for OutFile classes
+#define OUTFILE_BASE							\
+	const struct OutFileVTable *vtable;			\
+	FILE *out
 
-#ifdef DIRECT
-// abstract base class, don't instantiate
-struct OutFile {
-	FILE *out;
-};
-#endif
-
-
-// bad name in case of DIRECT, should it be `SubclassOfOutFileInterface`?
 struct OutFileInterface {
-	const struct OutFileVTable *vtable;
-#ifdef DIRECT
-	struct OutFile super;
-#endif
+	OUTFILE_BASE;
 };
 
 struct SimpleOutFile {
-	const struct OutFileVTable *vtable;
-#ifdef DIRECT
-	struct OutFile super;
-#else
-	FILE *out;
-#endif
+	OUTFILE_BASE;
 	const char *path;
 };
 
 struct NumberedOutFile {
-	const struct OutFileVTable *vtable;
-#ifdef DIRECT
-	struct OutFile super;
-#else
-	FILE *out;
-#endif
+	OUTFILE_BASE;
 	char path[OUTFILE_PATHSIZ];
 };
 
