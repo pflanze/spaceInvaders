@@ -71,8 +71,7 @@ const struct OutFileVTable NumberedOutFile_VTable = {
 
 EXPORTED struct SimpleOutFile *
 SimpleOutFile_xopen(const char *path) {
-	LET_XMALLOC(this, struct SimpleOutFile);
-	this->vtable = &SimpleOutFile_VTable;
+	LET_NEW(this, SimpleOutFile);
 	this->path = path;
 	this->out = fopen(this->path, "w");
 	if (! this->out) {
@@ -83,8 +82,7 @@ SimpleOutFile_xopen(const char *path) {
 
 EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name) {
-	LET_XMALLOC(this, struct NumberedOutFile);
-	this->vtable = &NumberedOutFile_VTable;
+	LET_NEW(this, NumberedOutFile);
 	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
 	this->out = fopen(this->path, "w");
 	if (! this->out) {

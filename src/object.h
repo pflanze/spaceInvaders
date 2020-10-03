@@ -21,6 +21,9 @@ struct ObjectInterface {
 // Shorter virtual call syntax
 #define VCALL(method, o, args...)  (o)->vtable->method((o) , ##args)
 
-
+// Easy heap allocation; if you use this, you have to #include "stdlib_utils.h"
+#define LET_NEW(var, T)								\
+	LET_XMALLOC(this, struct T);					\
+	this->vtable = &T##_VTable;
 
 #endif // _OBJECT_H
