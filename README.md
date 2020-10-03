@@ -3,7 +3,7 @@
 I wrote this code as part of the final project ut610x Embedded Systems Multi-Threaded Interfacing
 
 As the project name sugests, the idea was to wite the code for our version of the game (game engine + UI) and the hardware.
-The harware parts were:
+The hardware parts were:
 * Tiva board
 * Nokia screen
 * Slider (left right movement)
