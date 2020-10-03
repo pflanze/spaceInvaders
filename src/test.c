@@ -12,22 +12,15 @@
 #include "utils.h"
 #include "pp.h"
 
-#include <stdio.h>
 #include <string.h>
-#include <errno.h>
 #include <stdlib.h>
 #include "perhaps_assert.h"
 #include "stdlib_utils.h"
+#include "stdlib_file.h"
 
 
 #define XSNPRINTF(str, n, ...) \
 	assert(snprintf(str, n, __VA_ARGS__) < n)
-
-static
-void die_errno(const char *msg, const char *arg) {
-	fprintf(stderr, "error: %s (%s): %s\n", msg, arg, strerror(errno));
-	exit(1);
-}
 
 #if __CYGWIN__
 #  define NL "\r\n"
@@ -123,33 +116,6 @@ void game_step(struct Game *game,
 	}
 }
 
-
-#define LET_XMALLOC(var, type) type *var = xmalloc(sizeof(*var))
-
-#define OUTFILE_PATHSIZ 100
-struct OutFile {
-	char path[OUTFILE_PATHSIZ];
-	FILE *out;
-};
-
-static
-struct OutFile *OutFile_xopen(unsigned int i, const char *name) {
-	LET_XMALLOC(this, struct OutFile);
-	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
-	this->out = fopen(this->path, "w");
-	if (! this->out) {
-		die_errno("open", this->path);
-	}
-	return this;
-}
-
-static
-void OutFile_xclose_and_free(struct OutFile *this) {
-	if (fclose(this->out) != 0) {
-		die_errno("close", this->path);
-	}
-	free(this);
-}
 
 static
 void test_run(unsigned int max_number_of_enemy_rows) {

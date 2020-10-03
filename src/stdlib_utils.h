@@ -16,4 +16,7 @@ void *xmalloc(size_t size) {
 	return p;
 }
 
+#define LET_XMALLOC(var, type) type *var = xmalloc(sizeof(*var))
+
+
 #endif // _STDLIB_UTILS_H
