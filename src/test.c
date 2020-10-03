@@ -153,7 +153,7 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 		PSIZEOF(struct GameEngine, ge_vtables);
 		PSIZEOF(struct SpaceInvaders, 1 + ge_vtables);
 #undef PSIZEOF
-		OutFile_xclose_and_free((struct OutFileInterface*)f);
+		OutFile_xclose_and_free(f);
 	}
 
 	struct NumberedOutFile *stepDumpFile =
@@ -196,9 +196,9 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 	}
 #undef GAME_STEP
 
-	OutFile_xclose_and_free((struct OutFileInterface*)soundRawFile);
-	OutFile_xclose_and_free((struct OutFileInterface*)soundDumpFile);
-	OutFile_xclose_and_free((struct OutFileInterface*)stepDumpFile);
+	OutFile_xclose_and_free(soundRawFile);
+	OutFile_xclose_and_free(soundDumpFile);
+	OutFile_xclose_and_free(stepDumpFile);
 }
 
 
