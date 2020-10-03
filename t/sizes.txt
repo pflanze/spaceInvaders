@@ -1,0 +1,5 @@
+sizeof(struct Actor) = 40 (32 w/o DEBUG)
+sizeof(struct SoundChannel) = 32 (24 w/o DEBUG)
+sizeof(struct SoundPlayer) = 216 (160 w/o DEBUG)
+sizeof(struct GameEngine) = 1192 (920 w/o DEBUG)
+sizeof(struct SpaceInvaders) = 1224 (944 w/o DEBUG)
