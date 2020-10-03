@@ -2,9 +2,6 @@
 
 (Corresponding to "Aims" below.)
 
-1.  Get to work on real hardware via gcc/clang.
-1.  Verify sound is still working (how, without DAC?).
-1.  Rework sound output to PWM
 1.  Can we get rid of `jk`?
 1.  Get rid of `origConsts` if possible (play sound immediately, so it
     won't need the change; perhaps move to functional approach (next
@@ -15,9 +12,11 @@
     equal to actor life time). If `vtable` is used, don't need an
     alive flag anymore, otherwise we will for safety (but then that's
     a debug feature, so, only rely on `vtable`, OK?).
-
-(Some work for audio compression is ongoing outside this repo and
-might be included after the above.)
+1.  Get to work on real hardware via gcc/clang.
+1.  Verify sound is still working (how, without DAC?).
+1.  Rework sound output to PWM
+1.  Finish and include work for audio compression that is ongoing
+    outside this repo.
 
 # Aims
 
