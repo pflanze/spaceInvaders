@@ -26,6 +26,9 @@ Demo:
 
 * https://www.youtube.com/watch?v=Jzi1S1Zj7oA
 
+See [HACKING](HACKING.md) for technical details.
+
+
 ## Automatic tests
 
 The code can be built on Linux and perhaps Cygwin/MSYS to run
