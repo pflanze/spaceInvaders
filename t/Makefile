@@ -6,9 +6,9 @@ VPATH=../src
 # ----------------------------------------------------------------------
 # Keep these variables updated manually:
 
-SRCS=Buttons.c PRNG.c GameEngine.c Init.c IO.c LED.c Message.c Nokia5110.c Sound.c sounds.c SpaceInvaders.c random.c object.c pp.c stdlib_utils.c test.c
+SRCS=Buttons.c PRNG.c GameEngine.c Init.c IO.c LED.c Message.c Nokia5110.c Sound.c sounds.c SpaceInvaders.c random.c pp.c stdlib_utils.c test.c
 
-OBJS=Buttons.o PRNG.o GameEngine.o Init.o IO.o Message.o Nokia5110.o Sound.o sounds.o SpaceInvaders.o random.o object.o pp.o stdlib_utils.o test.o
+OBJS=Buttons.o PRNG.o GameEngine.o Init.o IO.o Message.o Nokia5110.o Sound.o sounds.o SpaceInvaders.o random.o pp.o stdlib_utils.o test.o
 
 # ----------------------------------------------------------------------
 # No need for manual updating here
