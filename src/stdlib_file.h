@@ -24,29 +24,39 @@ struct OutFileVTable {
 	OUTFILE_INTERFACE;
 };
 
+
+
+#ifdef DIRECT
 // abstract base class, don't instantiate
+struct OutFile {
+	FILE *out;
+};
+#endif
+
+
+// bad name in case of DIRECT, should it be `SubclassOfOutFileInterface`?
 struct OutFileInterface {
 	const struct OutFileVTable *vtable;
 #ifdef DIRECT
-	FILE *out;
+	struct OutFile super;
 #endif
 };
 
 struct SimpleOutFile {
-#ifdef DIRECT
-	struct OutFileInterface base;
-#else
 	const struct OutFileVTable *vtable;
+#ifdef DIRECT
+	struct OutFile super;
+#else
 	FILE *out;
 #endif
 	const char *path;
 };
 
 struct NumberedOutFile {
-#ifdef DIRECT
-	struct OutFileInterface base;
-#else
 	const struct OutFileVTable *vtable;
+#ifdef DIRECT
+	struct OutFile super;
+#else
 	FILE *out;
 #endif
 	char path[OUTFILE_PATHSIZ];
