@@ -116,7 +116,6 @@ void game_step(struct Game *game,
 	}
 }
 
-
 static
 void test_run(unsigned int max_number_of_enemy_rows) {
 	struct Game game;
@@ -128,7 +127,11 @@ void test_run(unsigned int max_number_of_enemy_rows) {
 
 	{
 		// print struct sizes to control bloat
-		struct SimpleOutFile *f = SimpleOutFile_xopen("sizes.txt");
+#define SIZ 100
+		char path[SIZ];
+		XSNPRINTF(path, SIZ, "sizes-%lu.txt", sizeof(void*)*8);
+		struct SimpleOutFile *f = SimpleOutFile_xopen(path);
+#undef SIZ
 #define PSIZEOF(T, numvtables)										\
 		fprintf(f->out, "sizeof(%s) = %lu (%lu w/o DEBUG)\n", #T, sizeof(T), \
 				sizeof(T) - (numvtables)*sizeof(void*))
