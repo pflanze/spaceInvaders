@@ -43,13 +43,15 @@ compilers to avoid seeing warnings about such missing fields.
 
 ### Dynamic dispatch (virtual methods)
 
-This isn't really needed for Space Invaders (as of its current state),
-but it's neat for pretty printing (`pp.h`), especially since `PP` can
-used in GDB on any struct that implements `ObjectInterface`. (TODO:
-rename `ObjectInterface` to `PPInterface` or think about how to
-implement multiple interfaces.)
+This isn't really needed for Space Invaders (in its current state),
+but it's neat for pretty printing ([`pp.h`](src/pp.h)), especially
+since `PP` can used in GDB on any struct that implements the
+"ObjectInterface" (which is defined in [`object.h`](src/object.h)),
+also it's necessary in [`stdlib_file.c`](src/stdlib_file.c) as part of
+the testing infrastructure, to implement `OutFile_xclose_and_free` (to
+avoid code duplication via a virtual method call).
 
-A virtual call is carried out via the `V` macro. `PP`, `PP_TO` and
+A virtual call is carried out via the `VCALL` macro. `PP`, `PP_TO` and
 `PP_TO_` are convenience macros that make it even simpler.
 
 Dynamic dispatch is implemented via a field `vtable` in the struct,
@@ -60,6 +62,19 @@ To avoid compiler warnings without needing an explicit (dangerous)
 cast, wrapper procedures (e.g. `_Actor_pp`) are used between a method
 implementation (e.g. `Actor_pp`) and their use in the method table
 definition (e.g. `Actor_ObjectInterface`).
+
+There's still a cast needed for upcasting (implementing a
+procedure/method that works for multiple subclasses).
+
+[`LET_NEW`] from [`object.h`](src/object.h) can be used to
+heap-allocate a struct type that has a vtable field and whose vtable
+exists in the variable named by the struct type name with `_VTable`
+appended. I.e. 
+
+    LET_NEW(this, Foo);
+
+will `xmalloc` a `struct Foo`, assign it to the new `struct Foo
+*this`, and set its `vtable` field to `&Foo_VTable`.
 
 
 ## Pretty printing
