@@ -65,7 +65,18 @@ const struct OutFileVTable NumberedOutFile_VTable = {
 
 
 
+// base implementation:
 
+static void
+_OutFile_xopen(const struct OutFileVTable **_this) {
+	struct OutFileInterface *this = (void *)_this;
+	const char *path = VCALL(path, this);
+	this->out = fopen(path, "w");
+	if (! this->out) {
+		die_errno("open", path);
+	}
+}
+#define OutFile_xopen(this) _OutFile_xopen(&(this)->vtable)
 
 // and the 'constructors':
 
@@ -73,10 +84,7 @@ EXPORTED struct SimpleOutFile *
 SimpleOutFile_xopen(const char *path) {
 	LET_NEW(this, SimpleOutFile);
 	this->path = path;
-	this->out = fopen(this->path, "w");
-	if (! this->out) {
-		die_errno("open", this->path);
-	}
+	OutFile_xopen(this);
 	return this;
 }
 
@@ -84,10 +92,7 @@ EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name) {
 	LET_NEW(this, NumberedOutFile);
 	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
-	this->out = fopen(this->path, "w");
-	if (! this->out) {
-		die_errno("open", this->path);
-	}
+	OutFile_xopen(this);
 	return this;
 }
 
