@@ -30,9 +30,6 @@
 // format. Take dimensions from Nokia5110.h
 static
 void screen_write_xpm(const char *screen, const char *basepath) {
-	int w= SCREENW;
-	int h= SCREENH;
-
 	int pathsiz= strlen(basepath)+5;
 	char *path= xmalloc(pathsiz);
 	XSNPRINTF(path, pathsiz, "%s.xpm", basepath);
@@ -42,6 +39,8 @@ void screen_write_xpm(const char *screen, const char *basepath) {
 
 #define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno("print", path)
 
+	const int w= SCREENW;
+	const int h= SCREENH;
 	PRINTF("%s",
 	       "/* XPM */"NL
 	       "static char *foo[] = {"NL);
