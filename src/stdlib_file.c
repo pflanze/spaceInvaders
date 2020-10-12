@@ -92,8 +92,8 @@ NumberedOutFile_xopen(unsigned int i, const char *name) {
 }
 
 EXPORTED void
-OutFile_xclose_and_free(void *_this) {
-	struct OutFileInterface *this = _this;
+_OutFile_xclose_and_free(const struct OutFileVTable **_this) {
+	struct OutFileInterface *this = (void *)_this;
 	if (fclose(this->out) != 0) {
 		die_errno("close", VCALL(path, this));
 	}

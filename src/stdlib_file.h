@@ -45,7 +45,8 @@ SimpleOutFile_xopen(const char *path);
 EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name);
 
-EXPORTED void OutFile_xclose_and_free(void *this);
-// ^ `this` must satisfy `struct OutFileInterface *`
+EXPORTED void _OutFile_xclose_and_free(const struct OutFileVTable **this);
+#define OutFile_xclose_and_free(this)			\
+	_OutFile_xclose_and_free(&(this)->vtable)
 
 #endif /* _STDLIB_FILE_H */

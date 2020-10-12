@@ -56,15 +56,29 @@ A virtual call is carried out via the `VCALL` macro. `PP`, `PP_TO` and
 
 Dynamic dispatch is implemented via a field `vtable` in the struct,
 which points to a struct with the method implementations for instances
-of this struct.
+of this struct. This field must be the first field in the struct (see
+"upcasting" below for why).
 
 To avoid compiler warnings without needing an explicit (dangerous)
 cast, wrapper procedures (e.g. `_Actor_pp`) are used between a method
 implementation (e.g. `Actor_pp`) and their use in the method table
 definition (e.g. `Actor_ObjectInterface`).
 
-There's still a cast needed for upcasting (implementing a
-procedure/method that works for multiple subclasses).
+Upcasting (for implementing a procedure/method that works for multiple
+subclasses) is implemented in a type safe way (for the method user;
+note that both gcc and clang only issue a warning, though, not an
+error) by taking the type and address of the vtable field instead of
+the whole struct, and a wrapper macro that hides this, e.g. (not that
+this only works if the vtable field is always the first field in the
+struct and the compiler allocates that field at the same address as
+the struct!):
+
+    _OutFile_xclose_and_free(const struct OutFileVTable **_this) {
+        struct OutFileInterface *this = (void *)_this;
+        ...
+    }
+    #define OutFile_xclose_and_free(this)			\
+        _OutFile_xclose_and_free(&(this)->vtable)
 
 `LET_NEW` from [`object.h`](src/object.h) can be used to
 heap-allocate a struct type that has a vtable field and whose vtable
