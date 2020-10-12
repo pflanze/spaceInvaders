@@ -19,9 +19,6 @@
 #include "stdlib_file.h"
 
 
-#define XSNPRINTF(str, n, ...) \
-	assert(snprintf(str, n, __VA_ARGS__) < n)
-
 #if __CYGWIN__
 #  define NL "\r\n"
 #else 
@@ -38,7 +35,7 @@ void screen_write_xpm(const char *screen, const char *basepath) {
 
 	int pathsiz= strlen(basepath)+5;
 	char *path= xmalloc(pathsiz);
-	snprintf(path, pathsiz, "%s.xpm", basepath);
+	XSNPRINTF(path, pathsiz, "%s.xpm", basepath);
 	
 	FILE *fh= fopen(path, "w");
 	if (!fh) die_errno("open", path);

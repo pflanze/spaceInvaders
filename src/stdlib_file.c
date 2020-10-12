@@ -3,6 +3,7 @@
 #include "stdlib_file.h"
 #include "stdlib_utils.h"
 #include "pp.h"
+#include "perhaps_assert.h"
 
 
 EXPORTED
@@ -91,7 +92,7 @@ SimpleOutFile_xopen(const char *path) {
 EXPORTED struct NumberedOutFile *
 NumberedOutFile_xopen(unsigned int i, const char *name) {
 	LET_NEW(this, NumberedOutFile);
-	snprintf(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
+	XSNPRINTF(this->path, OUTFILE_PATHSIZ, "%i-%s", i, name);
 	OutFile_xopen(this);
 	return this;
 }
