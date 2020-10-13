@@ -3,9 +3,16 @@
 
 #include <stdio.h>
 #include "object.h"
+#include "stdlib_utils.h"
 
-EXPORTED void die_errno(const char *msg, const char *arg);
 
+EXPORTED void die_errno(const char *msg, const char *arg) NORETURN;
+
+// dies if cmd couldn't be run
+EXPORTED int xsystem(const char *cmd);
+
+// dies if cmd doesn't exit with code 0
+EXPORTED void xxsystem(const char *cmd);
 
 
 #define OUTFILE_PATHSIZ 100

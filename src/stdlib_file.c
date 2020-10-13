@@ -4,6 +4,7 @@
 #include "stdlib_utils.h"
 #include "pp.h"
 #include "perhaps_assert.h"
+#include <stdlib.h> /* system */
 
 
 EXPORTED
@@ -12,6 +13,29 @@ void die_errno(const char *msg, const char *arg) {
 	exit(1);
 }
 
+// dies if cmd couldn't be run
+EXPORTED
+int xsystem(const char *cmd) {
+	int res = system(cmd);
+	if (res < 0) {
+		fprintf(stderr, "error: xsystem('%s'): cmd returned %i\n", cmd, res);
+		exit(1);
+	} else {
+		return res;
+	}
+}
+
+// dies if cmd doesn't exit with code 0
+EXPORTED
+void xxsystem(const char *cmd) {
+	int res = xsystem(cmd);
+	if (res == 0) {
+		return;
+	} else {
+		fprintf(stderr, "error: xxsystem('%s'): cmd returned %i\n", cmd, res);
+		exit(1);
+	}
+}
 
 
 static void
