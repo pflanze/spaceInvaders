@@ -71,7 +71,7 @@ struct, and a wrapper macro that hides this, e.g. (not that this only
 works if the vtable field is always the first field in the struct and
 the compiler allocates that field at the same address as the struct!):
 
-    _OutFile_xclose_and_free(const struct OutFileVTable **_this) {
+    _OutFile_xclose_and_free(const struct OutFileVTable *const*_this) {
         struct OutFileInterface *this = (void *)_this;
         ...
     }

@@ -69,7 +69,7 @@ const struct OutFileVTable NumberedOutFile_VTable = {
 // base implementation:
 
 static void
-_OutFile_xopen(const struct OutFileVTable **_this) {
+_OutFile_xopen(const struct OutFileVTable *const*_this) {
 	struct OutFileInterface *this = (void *)_this;
 	const char *path = VCALL(path, this);
 	this->out = fopen(path, "w");
@@ -98,7 +98,7 @@ NumberedOutFile_xopen(unsigned int i, const char *name) {
 }
 
 EXPORTED void
-_OutFile_xclose_and_free(const struct OutFileVTable **_this) {
+_OutFile_xclose_and_free(const struct OutFileVTable *const*_this) {
 	struct OutFileInterface *this = (void *)_this;
 	if (fclose(this->out) != 0) {
 		die_errno("close", VCALL(path, this));
