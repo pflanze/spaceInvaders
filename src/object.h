@@ -7,7 +7,7 @@
 
 // Top of the object hierarchy
 
-#define OBJECT_INTERFACE  void(*pp)(const void *this, FILE *out); // pretty-print
+#define OBJECT_INTERFACE  void(*pp)(const struct ObjectVTable *const*this, FILE *out); // pretty-print
 
 struct ObjectVTable {
 	OBJECT_INTERFACE
@@ -19,7 +19,7 @@ struct ObjectInterface {
 
 
 // Shorter virtual call syntax
-#define VCALL(method, o, args...)  (o)->vtable->method((o) , ##args)
+#define VCALL(method, o, args...)  (o)->vtable->method(&(o)->vtable , ##args)
 
 // Easy heap allocation; if you use this, you have to #include "stdlib_utils.h"
 #define LET_NEW(var, T)								\

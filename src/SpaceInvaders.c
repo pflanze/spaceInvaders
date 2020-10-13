@@ -67,8 +67,8 @@ void SpaceInvaders_pp(const struct SpaceInvaders *this, FILE *out) {
 
 
 static
-void _SpaceInvaders_pp(const void *this, FILE *out) {
-	SpaceInvaders_pp(this, out);
+void _SpaceInvaders_pp(const struct ObjectVTable *const*this, FILE *out) {
+	SpaceInvaders_pp((const struct SpaceInvaders *)this, out);
 }
 
 const struct ObjectVTable SpaceInvaders_VTable = {

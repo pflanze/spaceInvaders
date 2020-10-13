@@ -159,9 +159,10 @@ void Actor_pp(const struct Actor *this, FILE *out) {
 	PP_PRINTF(", .frame = %i", this->frame);
 	PP_PRINTF(" }");
 }
-
 static
-void _Actor_pp(const void *this, FILE *out) { Actor_pp(this, out); }
+void _Actor_pp(const struct ObjectVTable *const*this, FILE *out) {
+	Actor_pp((const struct Actor *)this, out);
+}
     
 const struct ObjectVTable Actor_VTable = {
 	.pp = &_Actor_pp
@@ -182,7 +183,9 @@ void GameStatColumn_pp(const struct GameStatColumn *this, FILE *out) {
 	PP_PRINTF(" }");
 }
 static
-void _GameStatColumn_pp(const void *this, FILE *out) { GameStatColumn_pp(this, out); }
+void _GameStatColumn_pp(const struct ObjectVTable *const*this, FILE *out) {
+	GameStatColumn_pp((const struct GameStatColumn *)this, out);
+}
 
 const struct ObjectVTable GameStatColumn_VTable = {
 	.pp = &_GameStatColumn_pp
@@ -204,7 +207,9 @@ void GameStatRow_pp(const struct GameStatRow *this, FILE *out) {
 	PP_PRINTF(" }");
 }
 static
-void _GameStatRow_pp(const void *this, FILE *out) { GameStatRow_pp(this, out); }
+void _GameStatRow_pp(const struct ObjectVTable *const*this, FILE *out) {
+	GameStatRow_pp((const struct GameStatRow *)this, out);
+}
 
 const struct ObjectVTable GameStatRow_VTable = {
 	.pp = &_GameStatRow_pp
@@ -1373,7 +1378,9 @@ void GameEngine_pp(const struct GameEngine *this, FILE *out) {
 
 	PP_PRINTF(" }");
 }
-static void _GameEngine_pp(const void *this, FILE *out) { GameEngine_pp(this, out); }
+static void _GameEngine_pp(const struct ObjectVTable *const*this, FILE *out) {
+	GameEngine_pp((const struct GameEngine *)this, out);
+}
 
 const struct ObjectVTable GameEngine_VTable = {
 	.pp = &_GameEngine_pp

@@ -17,7 +17,8 @@
 
 
 EXPORTED void pp_helper(const void *p,
-						void(*_pp)(const void *this, FILE *out),
+						void(*_pp)(const struct ObjectVTable *const*this,
+								   FILE *out),
 						FILE *out,
 						bool newline);
 

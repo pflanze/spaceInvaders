@@ -21,8 +21,8 @@ SimpleOutFile_pp(const struct SimpleOutFile *this, FILE *out) {
 	PP_PRINTF(" .path = \"%s\"", VCALL(path, this)); // needs escaping!
 	PP_PRINTF(" }");
 }
-static void _SimpleOutFile_pp(const void *this, FILE *out) {
-	SimpleOutFile_pp(this, out);
+static void _SimpleOutFile_pp(const struct ObjectVTable *const*this, FILE *out) {
+	SimpleOutFile_pp((const struct SimpleOutFile *)this, out);
 }
 
 static const char *
@@ -46,8 +46,8 @@ NumberedOutFile_pp(const struct NumberedOutFile *this, FILE *out) {
 	PP_PRINTF(" /* , .path reads as \"%s\" */", VCALL(path, this)); // needs escaping, too!
 	PP_PRINTF(" }");
 }
-static void _NumberedOutFile_pp(const void *this, FILE *out) {
-	NumberedOutFile_pp(this, out);
+static void _NumberedOutFile_pp(const struct ObjectVTable *const*this, FILE *out) {
+	NumberedOutFile_pp((const struct NumberedOutFile *)this, out);
 }
 
 static const char *

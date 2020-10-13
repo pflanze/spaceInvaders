@@ -37,7 +37,9 @@ void Sound_pp(const struct Sound *this, FILE *out) {
 }
 
 static
-void _Sound_pp(const void *this, FILE *out) { Sound_pp(this, out); }
+void _Sound_pp(const struct ObjectVTable *const*this, FILE *out) {
+	Sound_pp((const struct Sound *)this, out);
+}
 
 const struct ObjectVTable Sound_VTable = {
 	.pp = &_Sound_pp
@@ -56,8 +58,8 @@ void SoundChannel_pp(const struct SoundChannel *this, FILE *out) {
 }
 
 static
-void _SoundChannel_pp(const void *this, FILE *out) {
-	SoundChannel_pp(this, out);
+void _SoundChannel_pp(const struct ObjectVTable *const*this, FILE *out) {
+	SoundChannel_pp((const struct SoundChannel *)this, out);
 }
 
 const struct ObjectVTable SoundChannel_VTable = {
@@ -98,8 +100,8 @@ void SoundPlayer_pp(const struct SoundPlayer *this, FILE *out) {
 }
 
 static
-void _SoundPlayer_pp(const void *this, FILE *out) {
-	SoundPlayer_pp(this, out);
+void _SoundPlayer_pp(const struct ObjectVTable *const*this, FILE *out) {
+	SoundPlayer_pp((const struct SoundPlayer *)this, out);
 }
 
 const struct ObjectVTable SoundPlayer_VTable = {
