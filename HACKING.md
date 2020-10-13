@@ -65,13 +65,11 @@ implementation (e.g. `Actor_pp`) and their use in the method table
 definition (e.g. `Actor_ObjectInterface`).
 
 Upcasting (for implementing a procedure/method that works for multiple
-subclasses) is implemented in a type safe way (for the method user;
-note that both gcc and clang only issue a warning, though, not an
-error) by taking the type and address of the vtable field instead of
-the whole struct, and a wrapper macro that hides this, e.g. (not that
-this only works if the vtable field is always the first field in the
-struct and the compiler allocates that field at the same address as
-the struct!):
+subclasses) is implemented in a type safe way (for the method user) by
+taking the type and address of the vtable field instead of the whole
+struct, and a wrapper macro that hides this, e.g. (not that this only
+works if the vtable field is always the first field in the struct and
+the compiler allocates that field at the same address as the struct!):
 
     _OutFile_xclose_and_free(const struct OutFileVTable **_this) {
         struct OutFileInterface *this = (void *)_this;
