@@ -206,6 +206,7 @@ int main () {
 	   versions of the frames */
 
 	// assume that MingW's shell can do redirection
+	system("md5sum *-sound.dump *-sound.raw > md5sums.txt");
 	system("git status --porcelain out > t.out");
 
 	const char *path= "t.out";
