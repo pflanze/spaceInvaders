@@ -8,12 +8,12 @@ const char *bool_show(bool v) {
 }
 
 EXPORTED
-void pp_helper(const void *p,
-			   void(*_pp)(const struct ObjectVTable *const*this, FILE *out),
+void pp_helper(const struct ObjectVTable *const*_this,
 			   FILE *out,
 			   bool newline) {
-	if (p) {
-		_pp(p, out);
+	const struct ObjectInterface *this = (const struct ObjectInterface *)_this;
+	if (this) {
+		VCALL(pp, this, out);
 	} else {
 		PP_PRINTF("NULL");
 	}
