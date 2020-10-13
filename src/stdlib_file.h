@@ -11,7 +11,7 @@ EXPORTED void die_errno(const char *msg, const char *arg);
 #define OUTFILE_PATHSIZ 100
 
 #define OUTFILE_INTERFACE						\
-	const char *(*path)(const void *this);
+	const char *(*path)(const struct OutFileVTable *const*this);
 
 struct OutFileVTable {
 	OBJECT_INTERFACE;

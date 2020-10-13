@@ -30,8 +30,8 @@ SimpleOutFile_path(const struct SimpleOutFile *this) {
 	return this->path;
 }
 static const char *
-_SimpleOutFile_path(const void *this) {
-	return SimpleOutFile_path(this);
+_SimpleOutFile_path(const struct OutFileVTable *const*this) {
+	return SimpleOutFile_path((const struct SimpleOutFile *)this);
 }
 
 const struct OutFileVTable SimpleOutFile_VTable = {
@@ -55,8 +55,8 @@ NumberedOutFile_path(const struct NumberedOutFile *this) {
 	return this->path;
 }
 static const char *
-_NumberedOutFile_path(const void *this) {
-	return NumberedOutFile_path(this);
+_NumberedOutFile_path(const struct OutFileVTable *const*this) {
+	return NumberedOutFile_path((const struct NumberedOutFile *)this);
 }
 
 const struct OutFileVTable NumberedOutFile_VTable = {
