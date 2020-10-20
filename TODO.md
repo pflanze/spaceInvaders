@@ -13,8 +13,7 @@
     alive flag anymore, otherwise we will for safety (but then that's
     a debug feature, so, only rely on `vtable`, OK?).
 1.  Get to work on real hardware via gcc/clang.
-1.  Verify sound is still working (how, without DAC?).
-1.  Rework sound output to PWM
+1.  Change sound output to use PWM
 1.  Finish and include work for audio compression that is ongoing
     outside this repo.
 
@@ -31,7 +30,7 @@
 ### Browser/WASM
 
 * get it to play in browsers via HTML canvas
-    * GUI in HTML/js or React (forget about Nuclear?)
+    * GUI in HTML/js or React (or LVGL via WASM?)
 
 ## Secondary
 
@@ -50,7 +49,8 @@
 
 ### Testing infrastructure
 
-* have a GUI that allows to play the game interactively on Linux and
-  records all user actions; use the recorded traces as better tests.
+* make a GUI (in LVGL?) that allows to play the game interactively on
+  Linux and records all user actions; use the recorded traces as
+  better tests.
 * (within that GUI, step back (undo game steps).)
 
