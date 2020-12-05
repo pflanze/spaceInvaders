@@ -24,15 +24,13 @@ CC=`./compiler`
 CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
-all: depend
-	make runtest
-
 runtest: test out
 	./test
 
 out:
 	mkdir -p out
 
+# link
 test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
 
@@ -53,30 +51,17 @@ testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
 
 clean:
-	rm -f *.o test testsingle
-
-depend:
-	cp Makefile $(VPATH)/
-	(cd $(VPATH) && makedepend -- $(CFLAGS) -- $(SRCS)) > .makedepend.log 2>&1
-	mv $(VPATH)/Makefile .
-	./makedepend_clean Makefile
+	rm -f *.o *.d test testsingle
 
 
-# DO NOT DELETE
+# For normal builds, use autodepend approach from:
+# https://scottmcpeak.com/autodepend/autodepend.html
 
-Buttons.o: Buttons.h utils.h
-GameEngine.o: GameEngine.h debug.h utils.h object.h Sound.h pp.h sprites.h Nokia5110.h random.h perhaps_assert.h sounds.h
-IO.o: IO.h
-Init.o: Init.h debug.h
-LED.o: LED.h
-Message.o: Message.h Nokia5110.h
-Nokia5110.o: Nokia5110.h Nokia5110_font.h
-PRNG.o: PRNG.h
-Sound.o: Sound.h utils.h object.h pp.h perhaps_assert.h debug.h IO.h
-SpaceInvaders.o: Nokia5110.h Buttons.h utils.h GameEngine.h debug.h object.h Sound.h pp.h random.h Message.h sounds.h SpaceInvaders.h
-pp.o: pp.h utils.h object.h
-random.o: random.h PRNG.h perhaps_assert.h
-sounds.o: debug.h sounds.h Sound.h utils.h object.h pp.h
-stdlib_file.o: stdlib_file.h object.h utils.h stdlib_utils.h pp.h perhaps_assert.h
-stdlib_utils.o: stdlib_utils.h
-test.o: Buttons.h utils.h GameEngine.h debug.h object.h Sound.h pp.h Message.h Nokia5110_font.h Nokia5110.h random.h SpaceInvaders.h perhaps_assert.h stdlib_utils.h stdlib_file.h
+# pull in dependency info for *existing* .o files
+-include $(OBJS:.o=.d)
+
+# compile and generate dependency info
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(VPATH)/$*.c -o $*.o
+	$(CC) -MM $(CFLAGS) $(VPATH)/$*.c -o $*.d
+

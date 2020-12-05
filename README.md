@@ -59,12 +59,13 @@ they can be converted to WAV format using:
 
 ### Dependencies
 
+This needs either gcc or clang, with support for the `-MM`
+option. (TCC's `-MD` option might work, too, but would need an
+adaption of the Makefile.)
+
 You need a reasonably recent version of Clang, like `apt install
 clang-10`, for the sanitizers to work. (Otherwise disable them by
 running `touch .nosan` in `t/`.)
-
-Running `make depend` requires `makedepend` which is in the
-`xutils-dev` package on Debian.
 
 If you get something like:
 
@@ -79,12 +80,10 @@ You'll want to install `gdb`.
 
 ### make targets
 
-* `depend`: update the Makefile for changes in cross file dependencies
-    (header file includes)
-* `runtest`: run the test suite (via `test`)
+* `runtest`: run the test suite (via `test`); this is the default
+    target
 * `test`: binary built via separate compilation
 * `testsingle`: binary built with whole-program analysis
-* default: runs `make depend` then `make runtest`
 
 ### Compiler configuration
 
