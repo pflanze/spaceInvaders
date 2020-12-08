@@ -83,6 +83,7 @@ You'll want to install `gdb`.
 * `runtest`: run the test suite (via `test`); this is the default
     target
 * `test`: binary built via separate compilation
+* `runtestsingle`: run the test suite via `testsingle`
 * `testsingle`: binary built with whole-program analysis
 
 ### Compiler configuration

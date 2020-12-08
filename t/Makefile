@@ -24,8 +24,7 @@ CC=`./compiler`
 CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
-runtest: test out
-	./test
+default: runtest
 
 out:
 	mkdir -p out
@@ -33,6 +32,9 @@ out:
 # link
 test: $(OBJS)
 	$(CC) $(SAN) -o test $(OBJS)
+
+runtest: test out
+	./test
 
 # depend on OBJS here just to make sure it's rebuilt on any file
 # change, since that's the only way dependency info is accessible
@@ -49,6 +51,10 @@ testsingle.o: testsingle.c
 
 testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
+
+runtestsingle: testsingle out
+	./testsingle
+
 
 clean:
 	rm -f *.o *.d test testsingle
