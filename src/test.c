@@ -35,9 +35,9 @@ void screen_write_xpm(const char *screen, const char *basepath) {
 	XSNPRINTF(path, pathsiz, "%s.xpm", basepath);
 	
 	FILE *fh= fopen(path, "w");
-	if (!fh) die_errno("open", path);
+	if (!fh) die_errno_1("open", path);
 
-#define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno("print", path)
+#define PRINTF(...) if(fprintf(fh, __VA_ARGS__) < 0) die_errno_1("print", path)
 
 	const int w= SCREENW;
 	const int h= SCREENH;
@@ -62,7 +62,7 @@ void screen_write_xpm(const char *screen, const char *basepath) {
 	
 #undef PRINTF
 	
-	if (fclose(fh)) die_errno("close", path);
+	if (fclose(fh)) die_errno_1("close", path);
 
 	free(path);
 }
@@ -212,11 +212,11 @@ int main () {
 
 	const char *path= "t.out";
 	FILE *fh= fopen(path, "r");
-	if (!fh) die_errno("open", path);
+	if (!fh) die_errno_1("open", path);
 	char buf[1024];
 	int got= fread(buf, 1, 1014, fh);
-	if (ferror(fh)) die_errno("fread", path);
-	if (fclose(fh)) die_errno("close", path);
+	if (ferror(fh)) die_errno_1("fread", path);
+	if (fclose(fh)) die_errno_1("close", path);
 
 	if (got==0) {
 		printf("all tests OK.\n");

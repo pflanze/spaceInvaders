@@ -1,15 +1,21 @@
+#include "stdlib_file.h"
 #include <errno.h>
 #include <string.h>
-#include "stdlib_file.h"
+#include <stdlib.h> /* system */
 #include "stdlib_utils.h"
 #include "pp.h"
 #include "perhaps_assert.h"
-#include <stdlib.h> /* system */
 
 
 EXPORTED
-void die_errno(const char *msg, const char *arg) {
-	fprintf(stderr, "error: %s (%s): %s\n", msg, arg, strerror(errno));
+void die_errno_1(const char *msg, const char *arg1) {
+	fprintf(stderr, "error: %s (%s): %s\n", msg, arg1, strerror(errno));
+	exit(1);
+}
+
+EXPORTED
+void die_errno_2(const char *msg, const char *arg1, const char *arg2) {
+	fprintf(stderr, "error: %s (%s, %s): %s\n", msg, arg1, arg2, strerror(errno));
 	exit(1);
 }
 
@@ -98,7 +104,7 @@ _OutFile_xopen(const struct OutFileVTable *const*_this) {
 	const char *path = VCALL(path, this);
 	this->out = fopen(path, "w");
 	if (! this->out) {
-		die_errno("open", path);
+		die_errno_1("open", path);
 	}
 }
 #define OutFile_xopen(this) _OutFile_xopen(&(this)->vtable)
@@ -125,7 +131,7 @@ EXPORTED void
 _OutFile_xclose_and_free(const struct OutFileVTable *const*_this) {
 	struct OutFileInterface *this = (void *)_this;
 	if (fclose(this->out) != 0) {
-		die_errno("close", VCALL(path, this));
+		die_errno_1("close", VCALL(path, this));
 	}
 	free(this);
 }

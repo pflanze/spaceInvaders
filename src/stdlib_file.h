@@ -6,7 +6,9 @@
 #include "stdlib_utils.h"
 
 
-EXPORTED void die_errno(const char *msg, const char *arg) NORETURN;
+EXPORTED void die_errno_1(const char *msg, const char *arg) NORETURN;
+EXPORTED void die_errno_2(const char *msg, const char *arg1, const char *arg2)
+	NORETURN;
 
 // dies if cmd couldn't be run
 EXPORTED int xsystem(const char *cmd);
