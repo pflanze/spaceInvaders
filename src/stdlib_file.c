@@ -102,6 +102,20 @@ static void
 _OutFile_xopen(const struct OutFileVTable *const*_this) {
 	struct OutFileInterface *this = (void *)_this;
 	const char *path = VCALL(path, this);
+	{
+		size_t pathlen = strlen(path);
+		size_t backuppathlen = pathlen+1;
+		char *backuppath = xmalloc(backuppathlen+1);
+		memcpy(backuppath, path, pathlen);
+		backuppath[backuppathlen-1] = '~';
+		backuppath[backuppathlen] = 0;
+		if (rename(path, backuppath) < 0) {
+			if (!(errno == ENOENT)) {
+				die_errno_2("rename", path, backuppath);
+			}
+		}
+		free(backuppath);
+	}
 	this->out = fopen(path, "w");
 	if (! this->out) {
 		die_errno_1("open", path);
