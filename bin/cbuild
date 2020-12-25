@@ -127,9 +127,11 @@ sub usage {
 
   Env vars:
 
-    CC      the c compiler (and arguments, space separated; required)
-    CFLAGS  the compiler flags (none if not given)
-    VPATH   path to the source files (current dir if not given)
+    CC      the c compiler (and arguments, space separated; required);
+            currently CC is also used for linking, thus pass arguments
+            that are also relevant for linking in CC, not CFLAGS.
+    CFLAGS  the compiler flags (none if not given).
+    VPATH   path to the source files (current dir if not given).
 
   (Christian Jaeger <$email>)
 ";
@@ -167,10 +169,12 @@ my $printprefix= "";
 
 my $cached= PFLANZE::Cached->new();
 
-# CCo is the only modifying operation for now; it is also doing the
-# corresponding cache entry invalidation.
-sub CCo ($outpath, $args) {
-    my @cmd= (@CC, @CFLAGS, @$args, "-o", $outpath);
+# ------------------------------------------------------------------
+# Modifying operations: they are also doing the corresponding cache
+# entry invalidations.
+
+sub _CCo ($outpath, $FLAGS, $args) {
+    my @cmd= (@CC, @$FLAGS, @$args, "-o", $outpath);
     print STDERR $printprefix,
         join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
     $cached->invalidate($outpath);
@@ -178,6 +182,16 @@ sub CCo ($outpath, $args) {
         xxsystem_safe @cmd;
     }
 }
+
+sub CCo ($outpath, $args) {
+    _CCo $outpath, \@CFLAGS, $args
+}
+
+sub LDo ($outpath, $args) {
+    _CCo $outpath, [], $args
+}
+
+# ------------------------------------------------------------------
 
 sub _path ($suffix) {
     sub ($basepath) {
@@ -370,9 +384,7 @@ sub make ($path) {
                 0
             }->();
             if ($do_rebuild) {
-                # Amazing that it works without the need to change
-                # other options?
-                CCo $path, [reverse @opaths];
+                LDo $path, [reverse @opaths];
                 $nbuilt++;
             }
             $nbuilt

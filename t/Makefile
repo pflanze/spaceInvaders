@@ -11,14 +11,14 @@ SAN:=`./sanflags`
 #SAN:=
 
 CC:=`./compiler`
-CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
+CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG
 
 
 default: runtest
 
 .PHONY: test
 test:
-	CFLAGS="$(CFLAGS)" CC="$(CC)" VPATH="$(VPATH)" ../bin/cbuild test
+	CFLAGS="$(CFLAGS)" CC="$(CC) $(SAN)" VPATH="$(VPATH)" ../bin/cbuild test
 
 .PHONY: runtest
 runtest: test
@@ -36,7 +36,7 @@ testsingle.c: $(ALLSRCS)
 # all! Had to rename our assert.h for that reason. Maybe there's
 # something more precise?)
 testsingle.o: testsingle.c
-	$(CC) $(CFLAGS) -UEXPORTED -DEXPORTED=static -I$(VPATH) -c -o testsingle.o testsingle.c
+	$(CC) $(SAN) $(CFLAGS) -UEXPORTED -DEXPORTED=static -I$(VPATH) -c -o testsingle.o testsingle.c
 
 testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
