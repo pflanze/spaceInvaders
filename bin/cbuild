@@ -6,9 +6,46 @@
 use strict; use warnings FATAL => 'uninitialized';
 use experimental 'signatures';
 
-use lib "/opt/functional-perl/lib";
-use Chj::singlequote qw(possibly_singlequote_sh);
-use Chj::xperlfunc qw(xxsystem xslurp); # xprintln XX do xprintlnstderr pls xwarn
+# use lib "/opt/functional-perl/lib";
+# use Chj::singlequote qw(possibly_singlequote_sh);
+
+sub singlequote_sh($str, $alternative = undef) {
+    if (defined $str) {
+        $str =~ s/\'/'\\\''/sg;
+        "'$str'"
+    } else {
+        defined($alternative) ? $alternative : "undef"
+    }
+}
+
+sub possibly_singlequote_sh($str) {
+    if ($str =~ m{^[=\w/.-]+\z}) {
+        $str
+    } else {
+        singlequote_sh $str
+    }
+}
+
+# use Chj::xperlfunc qw(xsystem_safe xgetfile_utf8);
+
+sub xxsystem_safe {
+    @_ > 0 or die "xxsystem_safe: missing arguments";
+    no warnings;
+    (system { $_[0] } @_) >= 0
+        or die "xxsystem_safe: could not start command '$_[0]': $!";
+    $? == 0 or die "xxsystem_safe: process terminated with " . exitcode($?);
+}
+
+sub xgetfile_utf8($path) {
+    open my $in, "<", $path or die "xgetfile_utf8($path): open: $!";
+    binmode $in, ":encoding(UTF-8)" or die "binmode";
+    local $/;
+    my $cnt = <$in> // die "xgetfile_utf8($path): read: $!";
+    close $in or die "xgetfile_utf8($path): close: $!";
+    $cnt
+}
+
+
 
 my $verbose=0;
 
@@ -143,7 +180,7 @@ sub CCo ($outpath, $args) {
         join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
     $cached->invalidate($outpath);
     unless ($opt_dry) {
-        xxsystem @cmd;
+        xxsystem_safe @cmd;
     }
 }
 
@@ -198,7 +235,7 @@ sub load_d_for ($basepath) {
     main::dbg "load_d_for $basepath";#
     my $dpath= dpath $basepath;
     my $opath= opath $basepath;
-    my $str= xslurp ($dpath);
+    my $str= xgetfile_utf8 ($dpath);
     $str=~ s/^\Q$opath\E://
         or die "file '$dpath' does not start with '$opath'";
     $str=~ s/\\\n/ /sg;
