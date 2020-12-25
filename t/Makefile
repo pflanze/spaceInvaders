@@ -26,15 +26,12 @@ CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -W
 
 default: runtest
 
-out:
-	mkdir -p out
-
 .PHONY: test
 test:
 	../bin/makec test
 
 .PHONY: runtest
-runtest: test out
+runtest: test
 	./test
 
 # depend on OBJS here just to make sure it's rebuilt on any file
@@ -54,7 +51,7 @@ testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
 
 .PHONY: runtestsingle
-runtestsingle: testsingle out
+runtestsingle: testsingle
 	./testsingle
 
 
