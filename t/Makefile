@@ -48,5 +48,5 @@ runtestsingle: testsingle
 
 .PHONY: clean
 clean:
-	rm -f *.o *.d test testsingle
+	rm -f *.o *.d test testsingle testsingle.c
 
