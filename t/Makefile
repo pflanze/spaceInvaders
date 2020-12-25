@@ -3,16 +3,6 @@ VPATH=../src
 # From here on do not use the "../src" prefix, relative paths are assumed
 # to be found there already.
 
-# ----------------------------------------------------------------------
-# Keep these variables updated manually:
-
-SRCS=Buttons.c PRNG.c GameEngine.c Init.c IO.c LED.c Message.c Nokia5110.c Sound.c sounds.c SpaceInvaders.c random.c pp.c stdlib_utils.c stdlib_file.c test.c
-
-OBJS=Buttons.o PRNG.o GameEngine.o Init.o IO.o Message.o Nokia5110.o Sound.o sounds.o SpaceInvaders.o random.o pp.o stdlib_utils.o stdlib_file.o test.o
-
-# ----------------------------------------------------------------------
-# No need for manual updating here
-
 SAN:=`./sanflags`
 
 # To make it possible to work with
@@ -34,10 +24,11 @@ test:
 runtest: test
 	./test
 
-# depend on OBJS here just to make sure it's rebuilt on any file
-# change, since that's the only way dependency info is accessible
-# currently:
-testsingle.c: $(OBJS)
+
+ALLSRCS:=$(patsubst $(VPATH)/%,%,$(wildcard $(VPATH)/*.c $(VPATH)/*.h))
+SRCS:=$(patsubst $(VPATH)/%,%,$(wildcard $(VPATH)/*.c))
+
+testsingle.c: $(ALLSRCS)
 	./make_testsingle $(SRCS) > testsingle.c
 
 # (Note: using -I is not optimal, as it makes it look in VPATH for
