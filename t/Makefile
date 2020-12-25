@@ -29,10 +29,11 @@ default: runtest
 out:
 	mkdir -p out
 
-# link
-test: $(OBJS)
-	$(CC) $(SAN) -o test $(OBJS)
+.PHONY: test
+test:
+	../bin/makec test
 
+.PHONY: runtest
 runtest: test out
 	./test
 
@@ -52,32 +53,12 @@ testsingle.o: testsingle.c
 testsingle: testsingle.o
 	$(CC) $(SAN) -o testsingle testsingle.o
 
+.PHONY: runtestsingle
 runtestsingle: testsingle out
 	./testsingle
 
 
+.PHONY: clean
 clean:
 	rm -f *.o *.d test testsingle
 
-
-# For normal builds, use autodepend approach from:
-# https://scottmcpeak.com/autodepend/autodepend.html
-
-# pull in dependency info for *existing* .o files
--include $(OBJS:.o=.d)
-
-# compile and generate dependency info;
-# more complicated dependency computation, so all prereqs listed
-# will also become command-less, prereq-less targets
-#   sed:    strip the target (everything before colon)
-#   sed:    remove any continuation backslashes
-#   fmt -1: list words one per line
-#   sed:    strip leading spaces
-#   sed:    add trailing colons
-%.o: %.c
-	$(CC) -c $(CFLAGS) $(VPATH)/$*.c -o $*.o
-	$(CC) -MM $(CFLAGS) $(VPATH)/$*.c -o $*.d
-	@cp -f $*.d $*.d.tmp
-	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
-	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
-	@rm -f $*.d.tmp
