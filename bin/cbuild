@@ -163,11 +163,6 @@ our @CC= getenv_list "CC" or die "$myname: missing CC env var\n";
 our @CFLAGS= getenv_list "CFLAGS";
 
 
-package PFLANZE::Foo {
-    our @A=1;
-}
-import PFLANZE::Foo::constructors;
-
 my $printprefix= "";
 
 my $cached= PFLANZE::Cached->new();
