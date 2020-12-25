@@ -18,7 +18,7 @@ default: runtest
 
 .PHONY: test
 test:
-	../bin/makec test
+	../bin/cbuild test
 
 .PHONY: runtest
 runtest: test
