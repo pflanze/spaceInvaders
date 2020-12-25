@@ -1,0 +1,344 @@
+#!/usr/bin/perl -w
+
+# Sat 19 Dec 01:33:42 UTC 2020
+(my $email='ch%christianjaeger,ch')=~ tr/%,/@./;
+
+use strict; use warnings FATAL => 'uninitialized';
+use experimental 'signatures';
+
+use Getopt::Long;
+use lib "/opt/functional-perl/lib";
+use Chj::singlequote qw(possibly_singlequote_sh);
+use Chj::backtick qw(xbacktick);
+use Chj::xperlfunc qw(xxsystem xslurp); # xprintln XX do xprintlnstderr pls xwarn
+
+my $verbose=0;
+
+sub basepath ($path, $suffix) {
+    # unlike basename this does not cut away the dir; and it dies if
+    # the suffix is wrong/missing.
+    $path=~ s/\Q$suffix\E\z//
+      or die "path does not end in suffix $suffix: $path";
+    $path
+}
+sub maybe_suffix ($path) {
+    if ($path=~ /\.(\w+)\z/) {
+        $1
+    } else {
+        undef
+    }
+}
+
+sub dbg {
+    print STDERR @_, "\n" if $verbose;
+}
+
+
+package PFLANZE::Cached {
+    # To avoid stats etc. during the same run if the results couldn't
+    # have changed. XX careful!! when making this thing parallel!
+
+    use Chj::xperlfunc ();
+
+    my $allow_cache= 1;
+
+    sub new ($class) {
+        bless {}, $class
+    }
+
+    sub xstat ($s, $path) {
+        if ($allow_cache and exists $$s{$path}) {
+            main::dbg "# xstat($path): cached";
+            if (defined (my $st= $$s{$path})) {
+                $st
+            } else {
+                # previous Xstat call gave undef, i.e. not exist
+                die "xstat($path): file does not exist";
+            }
+        } else {
+            main::dbg "xstat($path): get from OS";
+            local $Chj::xperlfunc::time_hires= 1;
+            $$s{$path}= Chj::xperlfunc::xstat($path)
+        }
+    }
+
+    sub Xstat ($s, $path) {
+        if ($allow_cache and exists $$s{$path}) {
+            main::dbg "# Xstat($path): cached";
+            $$s{$path}
+        } else {
+            main::dbg "Xstat($path): get from OS";
+            local $Chj::xperlfunc::time_hires= 1;
+            $$s{$path}= Chj::xperlfunc::Xstat($path)
+        }
+    }
+
+    sub invalidate($s, $path) {
+        main::dbg "invalidate($path)";
+        delete $$s{$path}
+    }
+}
+
+$0=~ /(.*?)([^\/]+)\z/s or die "?";
+my ($mydir, $myname)=($1,$2);
+sub usage {
+    print STDERR map{"$_\n"} @_ if @_;
+    print "$myname target(s)
+
+  A build tool that knows how to build C programs, with automatic
+  dependency handling. (Really just to figure out the best algorithm
+  that would really be used.) Uses -MM compiler flag to generate and
+  update dependency tracking (*.d) files as needed.
+
+  (Christian Jaeger <$email>)
+";
+exit (@_ ? 1 : 0);
+}
+
+our $opt_dry;
+GetOptions("verbose"=> \$verbose,
+	   "help"=> sub{usage},
+	   "dry-run"=> \$opt_dry,
+	   ) or exit 1;
+usage unless @ARGV;
+
+sub getlist {
+    my $str= xbacktick @_;
+    chomp $str;
+    split / +/, $str
+}
+
+our $VPATH= "../src";
+our @SAN= getlist "./sanflags";
+our @CC= getlist "./compiler";
+our @CFLAGS= (qw(-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG), @SAN);
+
+
+package PFLANZE::Foo {
+    our @A=1;
+}
+import PFLANZE::Foo::constructors;
+
+my $printprefix= "";
+
+my $cached= PFLANZE::Cached->new();
+
+# CCo is the only modifying operation for now; it is also doing the
+# corresponding cache entry invalidation.
+sub CCo ($outpath, $args) {
+    my @cmd= (@CC, @CFLAGS, @$args, "-o", $outpath);
+    print STDERR $printprefix,
+        join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
+    $cached->invalidate($outpath);
+    unless ($opt_dry) {
+        xxsystem @cmd;
+    }
+}
+
+sub _path ($suffix) {
+    sub ($basepath) {
+        die "wrong basepath '$basepath'" if $basepath=~ m/^\Q$VPATH/;
+        "$basepath.$suffix"
+    }
+}
+sub dpath; *dpath= _path "d";
+sub opath; *opath= _path "o";
+sub cpath ($basepath) {
+    my $suffix= "c";
+    die "wrong basepath" if $basepath=~ m/^\Q$VPATH/;
+    "$VPATH/$basepath.$suffix"
+}
+
+
+# basepath means the non-VPATH-prefixed path without suffix
+
+sub basepath_of_path ($path) {
+    my $b= $path;
+    $b=~ s/\.\w+\z//
+        or die "path does not have a suffix: '$b'";
+    $b=~ s/^\Q$VPATH\E\/*//
+        or die "cpath does not start with VPATH: '$path'";
+    $b
+}
+
+sub basepath_of_cpath ($cpath) {
+    my $b= basepath $cpath, ".c";
+    $b=~ s/^\Q$VPATH\E\/*//
+        or die "cpath does not start with VPATH: '$cpath'";
+    $b
+}
+
+sub basepath_of_opath ($opath) {
+    basepath $opath, ".o";
+}
+
+
+# XX misnamed: does not check whether making is needed!
+sub _make_d_for ($basepath) {
+    CCo dpath($basepath), ["-MM", cpath($basepath)];
+}
+
+our %deps_for; # opath => [ sourcefiles ]
+
+sub load_d_for ($basepath) {
+    main::dbg "load_d_for $basepath";#
+    my $dpath= dpath $basepath;
+    my $opath= opath $basepath;
+    my $str= xslurp ($dpath);
+    $str=~ s/^\Q$opath\E://
+        or die "file '$dpath' does not start with '$opath'";
+    $str=~ s/\\\n/ /sg;
+    my @deps= grep {length $_} split /\s+/, $str;
+    $deps_for{$opath}= \@deps;
+}
+
+sub old_dependencies_for ($basepath, $they_should_be_already_loaded) {
+    # only works if d file already exists!
+    my $opath= opath $basepath;
+    $deps_for{$opath} // do {
+        die "bug" if $they_should_be_already_loaded;
+        load_d_for $basepath;
+        $deps_for{$opath}
+    }
+}
+
+sub dependencies_for ($cpath) {
+    my $basepath= basepath_of_cpath $cpath;
+    # .d needs to be made if .d is missing, .c is newer, or any of the
+    # previously recorded dependencies have changed; the latter since
+    # any included .h file may change which other .h files it
+    # includes, too.
+    my $dpath= dpath $basepath;
+    my $do_rebuild= sub {
+        my $targetstat= $cached->Xstat($dpath);
+        return 1 if ! $targetstat;
+        # The deps include the cpath, so don't have to check that one
+        # separately. And it doesn't matter whether we use a .d file
+        # older than the .c file and checking on dependencies that are
+        # not dependencies anymore: since the worst that happens is
+        # that we signal the need for a rebuild for a dependency that
+        # isn't one any more but that case needs a rebuild anyway.
+        my $deps= old_dependencies_for $basepath, 0;
+        for my $path (@$deps) {
+            # XX oh, might have to *build* that dependency (in the
+            # general case)
+            my $pathstat= $cached->Xstat($path);
+            return 1 if ! $pathstat;
+            return 1 if $targetstat->mtime <= $pathstat->mtime;
+        }
+        0
+    }->();
+    if ($do_rebuild) {
+        _make_d_for $basepath;
+        load_d_for $basepath;
+        old_dependencies_for $basepath, 1
+    } else {
+        old_dependencies_for $basepath, 0
+    }
+}
+
+sub make_o ($opath) {
+    my $basepath= basepath_of_opath $opath;
+    my $cpath= cpath $basepath;
+    my $do_rebuild= sub {
+        my $targetstat= $cached->Xstat($opath);
+        return 1 if ! $targetstat;
+
+        my $deps= dependencies_for $cpath;
+        for my $path (@$deps) {
+            # XX oh, might have to *build* that dependency (in the
+            # general case)
+            my $pathstat= $cached->Xstat($path);
+            return 1 if ! $pathstat;
+            return 1 if $targetstat->mtime <= $pathstat->mtime;
+        }
+        0
+    }->();
+    if ($do_rebuild) {
+        CCo $opath, ["-c", $cpath];
+        1
+    } else {
+        0
+    }
+}
+
+sub make ($path) {
+    if (my $suff = maybe_suffix $path) {
+        if ($suff eq 'o') { make_o $path }
+        else {
+            die "Don't know how to handle file suffix '$suff' for: $path"
+        }
+    } else {
+        # non-suffixed path: linking.
+        my $basepath= $path;
+        my $cpath= cpath $basepath;
+        if ($cached->Xstat($cpath)) {
+            # For all of $basepath's dependencies for which a $cpath
+            # exists, build the corresponding $opath, and include it
+            # in the linking.
+            my $nbuilt= 0;
+            my @opaths;
+            my %done_opath;
+
+            my $make_os_for;
+            $make_os_for= sub ($basepath) {
+                my $cpath= cpath $basepath;
+                return unless $cached->Xstat($cpath);
+                # There *is* a C file; build it:
+                my $opath= opath $basepath;
+                return if $done_opath{$opath}++;
+                # ^ could check make_o's result instead, but this is
+                #   more efficient.
+                $nbuilt+= make_o $opath;
+                push @opaths, $opath;
+                my $deps= dependencies_for $cpath;
+                for my $path (@$deps) {
+                    my $basepath= basepath_of_path $path;
+                    $make_os_for->($basepath);
+                }
+            };
+            $make_os_for->($basepath);
+            undef $make_os_for;
+
+            my $do_rebuild= sub {
+                my $opath= $path; # well..
+                my $targetstat= $cached->Xstat($opath);
+                return 1 if ! $targetstat;
+                # @opaths are our @$deps here:
+                for my $path (@opaths) {
+                    # XX "oh, might have to *build* that dependency
+                    # (in the general case)" case here, BUT: if we
+                    # build here, then we can't short-cut evaluation!
+                    # For now, keep above build and this here
+                    # separated.
+                    my $pathstat= $cached->Xstat($path);
+                    return 1 if ! $pathstat;
+                    # ^ XX btw: weird case! (In other do_rebuild
+                    # loops, too.) Should really build, and fail in
+                    # that step, instead of letting compiler fail? We
+                    # here know it's a dependency, why don't *we* tell
+                    # the user that it's missing and we don't know how
+                    # to build it?
+                    return 1 if $targetstat->mtime <= $pathstat->mtime;
+                }
+                0
+            }->();
+            if ($do_rebuild) {
+                # Amazing that it works without the need to change
+                # other options?
+                CCo $path, [reverse @opaths];
+                $nbuilt++;
+            }
+            $nbuilt
+        } else {
+            # XX in the more general case, try to make $cpath
+            # first/instead.
+            die "There is no C file '$cpath' for '$basepath', don't know how to proceed"
+        }
+    }
+}
+
+for my $path (@ARGV) {
+    make $path
+        or print STDERR "$path: nothing to be done\n";
+}
