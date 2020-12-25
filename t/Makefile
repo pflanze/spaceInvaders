@@ -13,14 +13,14 @@ OBJS=Buttons.o PRNG.o GameEngine.o Init.o IO.o Message.o Nokia5110.o Sound.o sou
 # ----------------------------------------------------------------------
 # No need for manual updating here
 
-SAN=`./sanflags`
+SAN:=`./sanflags`
 
 # To make it possible to work with
 #   valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --keep-stacktraces=alloc-and-free ./test
 # disable sanitizer via "touch .nosan" or by clearing the SAN variable here: 
-#SAN=
+#SAN:=
 
-CC=`./compiler`
+CC:=`./compiler`
 CFLAGS=-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG $(SAN)
 
 
