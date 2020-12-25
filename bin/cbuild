@@ -8,7 +8,6 @@ use experimental 'signatures';
 
 use lib "/opt/functional-perl/lib";
 use Chj::singlequote qw(possibly_singlequote_sh);
-use Chj::backtick qw(xbacktick);
 use Chj::xperlfunc qw(xxsystem xslurp); # xprintln XX do xprintlnstderr pls xwarn
 
 my $verbose=0;
@@ -89,6 +88,12 @@ sub usage {
   that would really be used.) Uses -MM compiler flag to generate and
   update dependency tracking (*.d) files as needed.
 
+  Env vars:
+
+    CC      the c compiler (and arguments, space separated; required)
+    CFLAGS  the compiler flags (none if not given)
+    VPATH   path to the source files (current dir if not given)
+
   (Christian Jaeger <$email>)
 ";
 exit (@_ ? 1 : 0);
@@ -106,16 +111,19 @@ if (sub {
 }
 usage unless @ARGV;
 
-sub getlist {
-    my $str= xbacktick @_;
-    chomp $str;
-    split / +/, $str
+sub getenv_list ($envname) {
+    split / +/, ($ENV{$envname} // "")
 }
 
-our $VPATH= "../src";
-our @SAN= getlist "./sanflags";
-our @CC= getlist "./compiler";
-our @CFLAGS= (qw(-fdiagnostics-color=always -Werror=incompatible-pointer-types -std=c99 -Wall -Wextra -Wno-missing-field-initializers -DTEST_WITHOUT_IO -gdwarf-4 -g3 -DEXPORTED= -DDEBUG), @SAN);
+our $VPATH= do {
+    if (defined (my $v= $ENV{VPATH})) {
+        "$v/"
+    } else {
+        ""
+    }
+};
+our @CC= getenv_list "CC" or die "$myname: missing CC env var\n";
+our @CFLAGS= getenv_list "CFLAGS";
 
 
 package PFLANZE::Foo {
@@ -141,7 +149,8 @@ sub CCo ($outpath, $args) {
 
 sub _path ($suffix) {
     sub ($basepath) {
-        die "wrong basepath '$basepath'" if $basepath=~ m/^\Q$VPATH/;
+        die "wrong basepath '$basepath'"
+            if (length $VPATH and $basepath=~ m/^\Q$VPATH/);
         "$basepath.$suffix"
     }
 }
@@ -149,8 +158,9 @@ sub dpath; *dpath= _path "d";
 sub opath; *opath= _path "o";
 sub cpath ($basepath) {
     my $suffix= "c";
-    die "wrong basepath" if $basepath=~ m/^\Q$VPATH/;
-    "$VPATH/$basepath.$suffix"
+    die "wrong basepath '$basepath'"
+        if (length $VPATH and $basepath=~ m/^\Q$VPATH/);
+    "$VPATH$basepath.$suffix"
 }
 
 
@@ -160,14 +170,14 @@ sub basepath_of_path ($path) {
     my $b= $path;
     $b=~ s/\.\w+\z//
         or die "path does not have a suffix: '$b'";
-    $b=~ s/^\Q$VPATH\E\/*//
+    $b=~ s/^\Q$VPATH\E//
         or die "cpath does not start with VPATH: '$path'";
     $b
 }
 
 sub basepath_of_cpath ($cpath) {
     my $b= basepath $cpath, ".c";
-    $b=~ s/^\Q$VPATH\E\/*//
+    $b=~ s/^\Q$VPATH\E//
         or die "cpath does not start with VPATH: '$cpath'";
     $b
 }

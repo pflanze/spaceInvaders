@@ -18,7 +18,7 @@ default: runtest
 
 .PHONY: test
 test:
-	../bin/cbuild test
+	CFLAGS="$(CFLAGS)" CC="$(CC)" VPATH="$(VPATH)" ../bin/cbuild test
 
 .PHONY: runtest
 runtest: test
