@@ -3,8 +3,14 @@
 # Sat 19 Dec 01:33:42 UTC 2020
 (my $email='ch%christianjaeger,ch')=~ tr/%,/@./;
 
+$0=~ /(.*?)([^\/]+)\z/s or die "?";
+my ($mydir, $myname)=($1,$2);
+
 use strict; use warnings FATAL => 'uninitialized';
 use experimental 'signatures';
+
+use POSIX qw(:sys_wait_h _exit EEXIST dup2);
+# ^ XX only when using smp?
 
 # use lib "/opt/functional-perl/lib";
 # use Chj::singlequote qw(possibly_singlequote_sh);
@@ -33,7 +39,7 @@ sub xxsystem_safe {
     no warnings;
     (system { $_[0] } @_) >= 0
         or die "xxsystem_safe: could not start command '$_[0]': $!";
-    $? == 0 or die "xxsystem_safe: process terminated with " . exitcode($?);
+    $? == 0 or die "xxsystem_safe: process terminated with status $?";
 }
 
 sub xgetfile_utf8($path) {
@@ -46,6 +52,21 @@ sub xgetfile_utf8($path) {
 }
 
 
+sub tempdir () {
+    my $tries= 0;
+  TRY: {
+      my $str = $$ . "-" . rand;
+      $str=~ s/0?\.//;
+      my $path= "/tmp/$str";
+      if (mkdir $path) {
+          $path
+      } elsif ($! == EEXIST and $tries++ < 5) {
+          redo TRY;
+      } else {
+          die "mkdir($path): $!";
+      }
+    }
+}
 
 my $verbose=0;
 
@@ -65,13 +86,209 @@ sub maybe_suffix ($path) {
 }
 
 sub dbg {
-    print STDERR @_, "\n" if $verbose;
+    print STDERR "$myname: ", @_, "\n" if $verbose;
 }
 
+# ------------------------------------------------------------------
+# Task system for parallel execution:
+
+sub fork_off($thunk) {
+    my $pid= fork;
+    defined $pid or die "fork: $!";
+    if ($pid) {
+        $pid
+    } else {
+        # Capture exceptions since we don't want there to be a chance
+        # of them being captured further up. We do need to exit. Is it
+        # right to call _exit? No, we'll want to flush.
+        eval {
+            $thunk->();
+            exit 0;
+        };
+        #warn "$myname: process $$: exiting by exception: $@";
+        warn "$myname: subprocess exception: $@";
+        #exit 1;
+        # There are some unexplained cleanup handlers that lead to the
+        # program exiting NOT with exit code 1 but 0 that way, thus, use
+        # _exit instead, but for that do flush filehandles (needed?):
+        close STDOUT or warn "close stdout: $!";
+        close STDERR or warn "close stderr: $!";
+        _exit 1;
+    }
+}
+
+my $max_jobs;
+
+my @waiting_tasks;
+my %running_tasks; # by pid
+my @finished_tasks;
+
+my $tmpdir= tempdir;
+my $tmpdir_owner_pid= $$;
+END {
+    local $?;
+    local $@;
+    local $!;
+    if ($$ == $tmpdir_owner_pid) {
+        unlink $_ for glob "$tmpdir/*";
+        rmdir $tmpdir;
+    }
+}
+
+package PFLANZE::Task {
+    # id, thunk, outpath, pid, status
+    sub start ($self) {
+        $$self{thunk} or die "already started";
+
+        my $outpath= "$tmpdir/$$self{id}";
+        open my $out, ">", $outpath
+            or die "open($outpath): $!";
+        my $thunk= sub {
+            my $fno= fileno($out) // die "fileno: $!";
+            main::dup2($fno, 1) or die "dup2($fno,1): $!";
+            main::dup2($fno, 2) or die "dup2($fno,2): $!";
+            goto $$self{thunk}
+        };
+        my $pid= main::fork_off($thunk);
+        $$self{pid}= $pid;
+        close $out or die "close($outpath): $!";
+        $$self{outpath}= $outpath;
+        $$self{thunk}= undef; # for GC
+        $running_tasks{$pid}= $self;
+        # It was already removed from @waiting_tasks, OK?
+    }
+    sub join ($self, $say_status = 0) {
+        open my $in, "<", $$self{outpath} or die "open($$self{outpath}): $!";
+        print STDERR $_ while (<$in>); # we don't know whether it was to stdout/err
+        close $in or die $!;
+        # if ($say_status) {
+        #     if ($$self{status} != 0) {
+        #         # This is pointless as the child already printed the
+        #         # status to the file at outpath.
+        #         print STDERR
+        #             "$myname: process $$self{pid} exited with status $$self{status}\n";
+        #     }
+        # }
+        $$self{status}
+    }
+    # sub xjoin ($self) {
+    #     # On error, does not return but throw an exception that
+    #     # signals the need to finish_all_tasks_early.
+    #     my $status= $self->join(1);
+    #     return if $status == 0;
+    #     die $immediate_stop_exception
+    # }
+    # Ah, can't use this from signal handler as the signal handler
+    # must collect all children before throwing.
+}
+
+sub scheduler_update () {
+    # Move waiting tasks to running state if there are available
+    # slots.
+    while (1) {
+        last if (scalar keys %running_tasks) >= $max_jobs;
+        last unless @waiting_tasks;
+        my $task= shift @waiting_tasks;
+        $task->start;
+    }
+}
+
+{
+    no experimental 'signatures';
+    my $taskid= 0;
+    sub schedule(&) {
+        my ($thunk)= @_;
+        my $task= bless { id=> $taskid++,
+                          thunk=> $thunk,
+                          outpath=> undef,
+                          pid=> undef,
+                          status=> undef },
+            "PFLANZE::Task";
+        push @waiting_tasks, $task;
+        # Start it, if possible, and get the scheduling via sigchld
+        # going:
+        scheduler_update;
+        ()
+    }
+}
+
+sub await_all_tasks($do_schedule) {
+    while (scalar keys %running_tasks) {
+        scheduler_update if $do_schedule;
+        # ^ repeatedly as it doesn't necessarily make all waiting
+        #   tasks runnable on each call.
+        
+        # warn "waiting...";
+        sleep 1; # will be interrupted by SIGCHLD thus not a problem.
+    }
+}
+
+sub finish_all_tasks($do_schedule) {
+    # Waits for all tasks to finish (then, if $do_immediate_join is
+    # false, prints all join results of the finished tasks and returns
+    # all failed tasks).
+    await_all_tasks($do_schedule);
+    # There should be none if $do_immediate_join, but anyway:
+    my @t= sort { $a->{id} cmp $b->{id} } @finished_tasks;
+    my @failed_tasks;
+    for my $t (@t) {
+        if ($t->join(1) != 0) {
+            push @failed_tasks, $t;
+        }
+    }
+    @failed_tasks
+}
+
+sub finish_all_tasks_early() {
+    @waiting_tasks= (); # kill them before started.
+    finish_all_tasks(0)
+}
+
+my $do_immediate_join= 1;
+our $do_die_from_sighandler= 0;
+my $global_num_failed_tasks= 0; # ugly
+
+my $main_pid= $$;
+sub child_handler {
+    return unless $$ == $main_pid; # needed?
+    local $?;
+    local $@;
+    local $!;
+    my $num_failed_tasks= 0;
+    while (1) {
+        my $pid= waitpid -1, WNOHANG;
+        last if $pid <= 0;
+        my $status= $?;
+        dbg "child $pid: status $status";
+        my $task= delete $running_tasks{$pid} //
+            die "bug: unknown child pid $pid";
+        $$task{status}= $status;
+        if ($do_immediate_join) {
+            $task->join(1);
+            if ($status != 0) {
+                $num_failed_tasks++;
+            }
+        } else {
+            # only non joined are left that way, ok?
+            push @finished_tasks, $task;
+        }
+    }
+    if ($num_failed_tasks) {
+        $global_num_failed_tasks += $num_failed_tasks;
+        die bless [$num_failed_tasks], "PFLANZE::ImmediateStopException"
+            if $do_die_from_sighandler;
+    } else {
+        scheduler_update;
+    }
+}
+
+$SIG{CHLD}= \&child_handler;
+
+# ------------------------------------------------------------------
 
 package PFLANZE::Cached {
     # To avoid stats etc. during the same run if the results couldn't
-    # have changed. XX careful!! when making this thing parallel!
+    # have changed. Careful, only ever use from main process!
 
     use Chj::xperlfunc ();
 
@@ -114,8 +331,6 @@ package PFLANZE::Cached {
     }
 }
 
-$0=~ /(.*?)([^\/]+)\z/s or die "?";
-my ($mydir, $myname)=($1,$2);
 sub usage {
     print STDERR map{"$_\n"} @_ if @_;
     print "$myname target(s)
@@ -146,9 +361,17 @@ if (sub {
     Getopt::Long::GetOptions("verbose"=> \$verbose,
                              "help"=> sub{usage},
                              "dry-run"=> \$opt_dry,
+                             "jobs=n"=> \$max_jobs,
         ) or exit 1;
 }
 usage unless @ARGV;
+
+$max_jobs //= do {
+    my $s= xgetfile_utf8 "/proc/cpuinfo";
+    my $n= $s=~ s/((?:^|\n)processor\s*:)/$1/g;
+    warn "$myname: using --jobs=$n\n";
+    $n
+};
 
 sub getenv_list ($envname) {
     split / +/, ($ENV{$envname} // "")
@@ -315,7 +538,11 @@ sub make_o ($opath) {
         0
     }->();
     if ($do_rebuild) {
-        CCo $opath, ["-c", $cpath];
+        schedule {
+            CCo $opath, ["-c", $cpath];
+        };
+        # ^ should explicitly say or something; Hey, is like Erlang/
+        #   mailboxes. Pick up from there by filter.
         1
     } else {
         0
@@ -384,6 +611,11 @@ sub make ($path) {
                 0
             }->();
             if ($do_rebuild) {
+                finish_all_tasks(1);
+                # ^ those will be our dependencies (we're only
+                #   scheduling object file builds). XX except, when
+                #   building multiple binaries, could profit from
+                #   delayed, non-waiting, link step!
                 LDo $path, [reverse @opaths];
                 $nbuilt++;
             }
@@ -396,7 +628,29 @@ sub make ($path) {
     }
 }
 
-for my $path (@ARGV) {
-    make $path
-        or print STDERR "$path: nothing to be done\n";
-}
+# use FP::Repl::Trap;
+
+eval {
+    local $do_die_from_sighandler= 1;
+    # ^XX *IS* Perl changing that back before eval becomes ineffective?
+    for my $path (@ARGV) {
+        make $path
+            or print STDERR "$path: nothing to be done\n";
+    }
+    1
+} || do {
+    my $e= $@;
+    # Yes, UNIVERSAL::isa shouldn't be used as $e could override isa,
+    # but this is a simple enough case where it won't, and we don't
+    # want to carry the loading cost of Safe::Isa.
+    if (UNIVERSAL::isa($e, "PFLANZE::ImmediateStopException")) {
+        # my ($num_failed)= @$e; pointless as we're not receiving
+        # notification on other failed tasks outside the eval scope
+        # above.
+        my @more_failed= finish_all_tasks_early;
+        my $n= $global_num_failed_tasks + @more_failed;
+        die "$myname: $n failed job(s), terminating early.\n";
+    } else {
+        die $e
+    }
+};
