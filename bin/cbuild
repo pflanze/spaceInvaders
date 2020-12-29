@@ -51,6 +51,9 @@ sub xgetfile_utf8($path) {
     $cnt
 }
 
+sub xexec {
+    exec @_ or _exit 127; #?
+}
 
 sub tempdir () {
     my $tries= 0;
@@ -68,7 +71,7 @@ sub tempdir () {
     }
 }
 
-my $verbose=0;
+our $verbose=0;
 
 sub basepath ($path, $suffix) {
     # unlike basename this does not cut away the dir; and it dies if
@@ -103,7 +106,9 @@ sub fork_off($thunk) {
         # right to call _exit? No, we'll want to flush.
         eval {
             $thunk->();
-            exit 0;
+            close STDOUT or warn "close stdout: $!";
+            close STDERR or warn "close stderr: $!";
+            _exit 0;
         };
         #warn "$myname: process $$: exiting by exception: $@";
         warn "$myname: subprocess exception: $@";
@@ -117,7 +122,10 @@ sub fork_off($thunk) {
     }
 }
 
-my $max_jobs;
+our $max_jobs;
+
+our $do_die_from_sighandler= 0;
+my $global_num_failed_tasks= 0; # ugly
 
 my @waiting_tasks;
 my %running_tasks; # by pid
@@ -138,28 +146,36 @@ END {
 package PFLANZE::Task {
     # id, thunk, outpath, pid, status
     sub start ($self) {
-        $$self{thunk} or die "already started";
+        my $thunk= $$self{thunk} or die "already started";
 
         my $outpath= "$tmpdir/$$self{id}";
         open my $out, ">", $outpath
             or die "open($outpath): $!";
-        my $thunk= sub {
-            my $fno= fileno($out) // die "fileno: $!";
-            main::dup2($fno, 1) or die "dup2($fno,1): $!";
-            main::dup2($fno, 2) or die "dup2($fno,2): $!";
-            goto $$self{thunk}
+        my $job= sub {
+            open STDOUT, ">&", $out or die $!;
+            open STDERR, ">&", $out or die $!;
+            goto $thunk
         };
-        my $pid= main::fork_off($thunk);
-        $$self{pid}= $pid;
-        close $out or die "close($outpath): $!";
-        $$self{outpath}= $outpath;
-        $$self{thunk}= undef; # for GC
-        $running_tasks{$pid}= $self;
-        # It was already removed from @waiting_tasks, OK?
+        {
+            my $old_num= $global_num_failed_tasks;
+            local $do_die_from_sighandler= 0; # stop interruptions
+            my $pid= main::fork_off($job);
+            $$self{pid}= $pid;
+            close $out or die "close($outpath): $!";
+            $$self{outpath}= $outpath;
+            $$self{thunk}= undef; # for GC
+            $running_tasks{$pid}= $self;
+            # It was already removed from @waiting_tasks, OK?
+            if ($global_num_failed_tasks != $old_num) {
+                die bless [], "PFLANZE::ImmediateStopException"
+                    if $do_die_from_sighandler;
+            }
+        }
     }
     sub join ($self, $say_status = 0) {
         open my $in, "<", $$self{outpath} or die "open($$self{outpath}): $!";
-        print STDERR $_ while (<$in>); # we don't know whether it was to stdout/err
+        my $prefix = $main::verbose ? "|| " : "";
+        print STDERR "$prefix$_" while (<$in>); # we don't know whether it was to stdout/err
         close $in or die $!;
         # if ($say_status) {
         #     if ($$self{status} != 0) {
@@ -185,6 +201,7 @@ package PFLANZE::Task {
 sub scheduler_update () {
     # Move waiting tasks to running state if there are available
     # slots.
+    return unless defined $max_jobs;
     while (1) {
         last if (scalar keys %running_tasks) >= $max_jobs;
         last unless @waiting_tasks;
@@ -219,7 +236,9 @@ sub await_all_tasks($do_schedule) {
         #   tasks runnable on each call.
         
         # warn "waiting...";
-        sleep 1; # will be interrupted by SIGCHLD thus not a problem.
+        sleep 1; # will be interrupted by SIGCHLD thus not a
+                 # problem. XX except there is a race where SIGCHLD
+                 # can happen after the above but before here?
     }
 }
 
@@ -245,8 +264,6 @@ sub finish_all_tasks_early() {
 }
 
 my $do_immediate_join= 1;
-our $do_die_from_sighandler= 0;
-my $global_num_failed_tasks= 0; # ugly
 
 my $main_pid= $$;
 sub child_handler {
@@ -275,7 +292,7 @@ sub child_handler {
     }
     if ($num_failed_tasks) {
         $global_num_failed_tasks += $num_failed_tasks;
-        die bless [$num_failed_tasks], "PFLANZE::ImmediateStopException"
+        die bless [], "PFLANZE::ImmediateStopException"
             if $do_die_from_sighandler;
     } else {
         scheduler_update;
@@ -288,20 +305,21 @@ $SIG{CHLD}= \&child_handler;
 
 package PFLANZE::Cached {
     # To avoid stats etc. during the same run if the results couldn't
-    # have changed. Careful, only ever use from main process!
+    # have changed.
 
     use Chj::xperlfunc ();
 
     my $allow_cache= 1;
 
     sub new ($class) {
-        bless {}, $class
+        bless {pid=> $$, path=>{}}, $class
     }
 
     sub xstat ($s, $path) {
+        die "not in correct process" unless $$s{pid} == $$;
         if ($allow_cache and exists $$s{$path}) {
             main::dbg "# xstat($path): cached";
-            if (defined (my $st= $$s{$path})) {
+            if (defined (my $st= $$s{path}{$path})) {
                 $st
             } else {
                 # previous Xstat call gave undef, i.e. not exist
@@ -310,24 +328,26 @@ package PFLANZE::Cached {
         } else {
             main::dbg "xstat($path): get from OS";
             local $Chj::xperlfunc::time_hires= 1;
-            $$s{$path}= Chj::xperlfunc::xstat($path)
+            $$s{path}{$path}= Chj::xperlfunc::xstat($path)
         }
     }
 
     sub Xstat ($s, $path) {
-        if ($allow_cache and exists $$s{$path}) {
+        die "not in correct process" unless $$s{pid} == $$;
+        if ($allow_cache and exists $$s{path}{$path}) {
             main::dbg "# Xstat($path): cached";
-            $$s{$path}
+            $$s{path}{$path}
         } else {
             main::dbg "Xstat($path): get from OS";
             local $Chj::xperlfunc::time_hires= 1;
-            $$s{$path}= Chj::xperlfunc::Xstat($path)
+            $$s{path}{$path}= Chj::xperlfunc::Xstat($path)
         }
     }
 
     sub invalidate($s, $path) {
+        die "not in correct process" unless $$s{pid} == $$;
         main::dbg "invalidate($path)";
-        delete $$s{$path}
+        delete $$s{path}{$path}
     }
 }
 
@@ -348,12 +368,18 @@ sub usage {
     CFLAGS  the compiler flags (none if not given).
     VPATH   path to the source files (current dir if not given).
 
+  Options:
+    --jobs n   number of jobs to run in parallel (default: as many as
+               there are CPUs)
+    --single   run single-threaded (overrides --jobs if given later)
+
   (Christian Jaeger <$email>)
 ";
 exit (@_ ? 1 : 0);
 }
 
 our $opt_dry;
+our $opt_single;
 if (sub {
     for (@ARGV) { return 1 if /^-/ } 0
     }->()) {
@@ -362,15 +388,23 @@ if (sub {
                              "help"=> sub{usage},
                              "dry-run"=> \$opt_dry,
                              "jobs=n"=> \$max_jobs,
+                             "single"=> sub {
+                                 $max_jobs= undef;
+                                 $opt_single= 1;
+                             },
         ) or exit 1;
 }
 usage unless @ARGV;
 
 $max_jobs //= do {
-    my $s= xgetfile_utf8 "/proc/cpuinfo";
-    my $n= $s=~ s/((?:^|\n)processor\s*:)/$1/g;
-    warn "$myname: using --jobs=$n\n";
-    $n
+    if ($opt_single) {
+        undef
+    } else {
+        my $s= xgetfile_utf8 "/proc/cpuinfo";
+        my $n= $s=~ s/((?:^|\n)processor\s*:)/$1/g;
+        warn "$myname: using --jobs=$n\n";
+        $n
+    }
 };
 
 sub getenv_list ($envname) {
@@ -396,22 +430,38 @@ my $cached= PFLANZE::Cached->new();
 # Modifying operations: they are also doing the corresponding cache
 # entry invalidations.
 
-sub _CCo ($outpath, $FLAGS, $args) {
-    my @cmd= (@CC, @$FLAGS, @$args, "-o", $outpath);
-    print STDERR $printprefix,
-        join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
+sub _CCo ($do_schedule, $outpath, $FLAGS, $args) {
     $cached->invalidate($outpath);
-    unless ($opt_dry) {
-        xxsystem_safe @cmd;
+    my @cmd= (@CC, @$FLAGS, @$args, "-o", $outpath);
+    my $pr= sub {
+        print STDERR $printprefix,
+            join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
+    };
+    if ($opt_dry) {
+        &$pr
+    } else {
+        if (defined $max_jobs and $do_schedule) {
+            schedule {
+                &$pr;
+                xexec @cmd;
+            }
+        } else {
+            &$pr;
+            xxsystem_safe @cmd;
+        }
     }
 }
 
 sub CCo ($outpath, $args) {
-    _CCo $outpath, \@CFLAGS, $args
+    _CCo 0, $outpath, \@CFLAGS, $args
+}
+
+sub schedule_CCo ($outpath, $args) {
+    _CCo 1, $outpath, \@CFLAGS, $args
 }
 
 sub LDo ($outpath, $args) {
-    _CCo $outpath, [], $args
+    _CCo 0, $outpath, [], $args
 }
 
 # ------------------------------------------------------------------
@@ -538,10 +588,8 @@ sub make_o ($opath) {
         0
     }->();
     if ($do_rebuild) {
-        schedule {
-            CCo $opath, ["-c", $cpath];
-        };
-        # ^ should explicitly say or something; Hey, is like Erlang/
+        schedule_CCo $opath, ["-c", $cpath];
+        # ^ should explicitly say what?; Hey, is like Erlang/
         #   mailboxes. Pick up from there by filter.
         1
     } else {
@@ -587,6 +635,13 @@ sub make ($path) {
             $make_os_for->($basepath);
             undef $make_os_for;
 
+            dbg "LD, step 0";
+            finish_all_tasks(1);
+            # ^ our dependencies are in there, and only those (we're
+            #   only scheduling object file builds). XX except, when
+            #   building multiple binaries, could profit from delayed,
+            #   non-waiting, link step!
+            dbg "LD, step 1";
             my $do_rebuild= sub {
                 my $opath= $path; # well..
                 my $targetstat= $cached->Xstat($opath);
@@ -611,11 +666,6 @@ sub make ($path) {
                 0
             }->();
             if ($do_rebuild) {
-                finish_all_tasks(1);
-                # ^ those will be our dependencies (we're only
-                #   scheduling object file builds). XX except, when
-                #   building multiple binaries, could profit from
-                #   delayed, non-waiting, link step!
                 LDo $path, [reverse @opaths];
                 $nbuilt++;
             }
