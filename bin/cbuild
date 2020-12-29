@@ -88,8 +88,16 @@ sub maybe_suffix ($path) {
     }
 }
 
+my $t0;
+sub init_dbg {
+    require Time::HiRes;
+    $t0= Time::HiRes::time();
+}
 sub dbg {
-    print STDERR "$myname: ", @_, "\n" if $verbose;
+    if ($verbose) {
+        my $t= Time::HiRes::time() - $t0;
+        print STDERR "$t $myname: ", @_, "\n"
+    }
 }
 
 # ------------------------------------------------------------------
@@ -395,6 +403,7 @@ if (sub {
         ) or exit 1;
 }
 usage unless @ARGV;
+init_dbg if $verbose;
 
 $max_jobs //= do {
     if ($opt_single) {
@@ -434,6 +443,7 @@ sub _CCo ($do_schedule, $outpath, $FLAGS, $args) {
     $cached->invalidate($outpath);
     my @cmd= (@CC, @$FLAGS, @$args, "-o", $outpath);
     my $pr= sub {
+        dbg "child $$ is: @cmd";
         print STDERR $printprefix,
             join (" ", map {possibly_singlequote_sh $_} @cmd), "\n";
     };
