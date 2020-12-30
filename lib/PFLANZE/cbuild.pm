@@ -1,3 +1,10 @@
+# Copyright (c) 2003-2020 Christian Jaeger, copying@christianjaeger.ch
+#
+# This is free software, offered under either the same terms as perl 5
+# or the terms of the Artistic License version 2 or the terms of the
+# MIT License (Expat version). See the file COPYING.md that came
+# bundled with this file.
+
 package PFLANZE::cbuild;
 
 use strict; use warnings FATAL => 'uninitialized';
