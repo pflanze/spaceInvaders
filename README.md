@@ -60,8 +60,8 @@ they can be converted to WAV format using:
 ### Dependencies
 
 This needs either gcc or clang, with support for the `-MM`
-option. (TCC's `-MD` option might work, too, but would need an
-adaption of the Makefile.)
+option. (TCC's `-MD` option might work, too, but will need an adaption
+of `bin/cbuild`.)
 
 You need a reasonably recent version of Clang, like `apt install
 clang-10`, for the sanitizers to work. (Otherwise disable them by
