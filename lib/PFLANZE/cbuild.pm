@@ -18,6 +18,8 @@ our @EXPORT_OK= qw(
     xxsystem_safe
     xgetfile_utf8
     xexec
+    min
+    max
     tempdir
     );
 
@@ -71,6 +73,26 @@ sub xgetfile_utf8($path) {
 sub xexec {
     exec @_ or _exit 127; #?
 }
+
+
+# use FP::Div qw(min max);
+
+sub min {
+    my $x = shift;
+    for (@_) {
+        $x = $_ if $_ < $x
+    }
+    $x
+}
+
+sub max {
+    my $x = shift;
+    for (@_) {
+        $x = $_ if $_ > $x
+    }
+    $x
+}
+
 
 package Chj::xperlfunc::xstat {
 
@@ -151,6 +173,8 @@ package Chj::xperlfunc {
     }
 }
 
+
+# Written from scratch here:
 
 sub tempdir () {
     my $tries= 0;

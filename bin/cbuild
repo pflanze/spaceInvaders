@@ -25,6 +25,8 @@ use PFLANZE::cbuild qw(
     xgetfile_utf8
     xexec
     tempdir
+    min
+    max
     );
 
 use POSIX qw(:sys_wait_h _exit EEXIST dup2);
@@ -511,6 +513,12 @@ sub old_dependencies_for ($basepath, $they_should_be_already_loaded) {
     }
 }
 
+sub needs_rebuild ($source, $derived) {
+    (max($source->mtime, $source->ctime)
+     >=
+     min($derived->mtime, $derived->ctime))
+}
+
 sub dependencies_for ($cpath) {
     my $basepath= basepath_of_cpath $cpath;
     # .d needs to be made if .d is missing, .c is newer, or any of the
@@ -533,7 +541,7 @@ sub dependencies_for ($cpath) {
             # general case)
             my $pathstat= $cached->Xstat($path);
             return 1 if ! $pathstat;
-            return 1 if $targetstat->mtime <= $pathstat->mtime;
+            return 1 if needs_rebuild($pathstat, $targetstat);
         }
         0
     }->();
@@ -559,7 +567,7 @@ sub make_o ($opath) {
             # general case)
             my $pathstat= $cached->Xstat($path);
             return 1 if ! $pathstat;
-            return 1 if $targetstat->mtime <= $pathstat->mtime;
+            return 1 if needs_rebuild($pathstat, $targetstat);
         }
         0
     }->();
@@ -637,7 +645,7 @@ sub make ($path) {
                     # here know it's a dependency, why don't *we* tell
                     # the user that it's missing and we don't know how
                     # to build it?
-                    return 1 if $targetstat->mtime <= $pathstat->mtime;
+                    return 1 if needs_rebuild($pathstat, $targetstat);
                 }
                 0
             }->();
