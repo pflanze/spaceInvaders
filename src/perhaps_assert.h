@@ -4,7 +4,7 @@
 #include "utils.h" /* bool */
 
 #ifdef TEST_WITHOUT_IO
-#		define assert(expr)
+#		include <assert.h>
 #else
 #		define assert(expr)
 #endif
